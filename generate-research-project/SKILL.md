@@ -14,7 +14,7 @@ In the folder provided by the user (ask which folder if non is proviced) make a 
 For the new folder the following should be built
 |- README.md
 |- Research_plan.md
-|- research_results/
+|- results/
 |- research_tasks/
 |- research_workspace/
 
