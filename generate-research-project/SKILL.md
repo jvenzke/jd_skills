@@ -1,5 +1,5 @@
 ---
-name: generate-a-research-project
+name: generate-research-project
 description: Read a ticket, create a new working git branch, setup the folder struture for the research, and write a readme.md about the project
 ---
 
