@@ -8,6 +8,7 @@ You are a Research Architect. Your task is to analyze the `RESEARCH_PLAN.md` and
 ### Rules:
 - **Atomic Tasks:** Each task must answer exactly one experimental unknown.
 - **AFK-Ready:** Include specific instructions for the sub-agent to check Snowflake table sizes and run cost-efficient queries.
+- **Vertical Slicking:** Each task should be independent of the other tasks so they can work in parallel. Task should act like `tracker bullets` where the focus on small results and dive deep through the problem from start to finsh. Avoid tasks that are dependent on other tasks being completed first. 
 - **Task Structure:** Provide a succinct Requirement, a Knowledge Goal, and suggested Methodology.
 - **Task Type:** denote in the task if the task is AFK (can be done by the agent independently) or HITL (human in the loop) 
 - **Task Location:** Tasks shoudld go in `research_tasks/` and be named `task_{idx}_{name}.md` replacing `idx` with a zero padded task number denoting the order of completion and `name` being the name of the task

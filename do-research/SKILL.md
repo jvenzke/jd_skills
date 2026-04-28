@@ -21,5 +21,5 @@ Do not work on anything outside of the scope of the provided task.
 - **Code:** Code and other related files should be saved in an `task_[name]/src` folder under the `research_tasks` main folder
 
 ### Required Output:
-At the end of the task, produce a `results_log.md` that summarizes findings, provides the final SQL/Python snippets, and embeds the `.png` plots.
+At the end of the task, produce a `results_log.md` that summarizes findings, provides the final SQL/Python snippets, and embeds the `.png` plots. All plots should be included in the `results_log.md` file with descriptions of what they show and why they are important to the research.
 
