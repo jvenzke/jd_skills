@@ -1,5 +1,9 @@
-# jd_skills
-skills for cursor
+# Skills for cursor
+Joel DeVenzke 
+
+# General skills 
+- `\grill-me`: get the agent and user on the same page about a problem/project
+- `\caveman`: reduces token usage
 
 
 # Research agent workflow 
