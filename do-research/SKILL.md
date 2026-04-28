@@ -23,3 +23,4 @@ Do not work on anything outside of the scope of the provided task.
 ### Required Output:
 At the end of the task, produce a `results_log.md` that summarizes findings, provides the final SQL/Python snippets, and embeds the `.png` plots. All plots should be included in the `results_log.md` file with descriptions of what they show and why they are important to the research.
 
+Ensure that all research progress can be human reviewed and provide a review summary and process at the end of the session.
