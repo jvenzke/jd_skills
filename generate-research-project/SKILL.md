@@ -16,7 +16,6 @@ For the new folder the following should be built
 |- Research_plan.md
 |- results/
 |- research_tasks/
-|- research_workspace/
 
 README.md should containt a link to the ticket and summarize the issues related to the ticket 
 
