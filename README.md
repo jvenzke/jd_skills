@@ -12,7 +12,8 @@ Joel DeVenzke
 - Research loop (repeat till complete)
      - `\research-to-tasks`: Takes the research plan and makes the next few tasks to do
      - `\do-research`: does the research work for a single task
-     - `\review-research`: reviews work from last task and suggests if more research is needed or not
+     - `\review-research`: reviews work from last task, compresses completed research into the running log/archive, updates the research plan, and suggests if more research is needed or not
+     - Optional: `\commit-research`: stages the minimal reviewable/reproducible research files after review checkpoints
 - `\summarize-research`: Summarizes the results of all the work to prepare it to move to prod
 
 # Development 

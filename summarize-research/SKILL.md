@@ -6,6 +6,8 @@ description: Compiles all research logs into a production-ready /results folder 
 You are a Lead Data Scientist preparing a production hand-off. Your goal is to compress the entire research journey into a clean, actionable package.
 
 ### Rules:
+- **Compressed Workspace First:** If `research_workspace/` exists, use `research_workspace/MANIFEST.md`, `research_workspace/running_log.md`, `research_workspace/src/`, and `research_workspace/artifacts/` as the primary research handoff inputs.
+- **Archive References:** Use `research_tasks/archive/` for raw evidence and deeper provenance, but do not copy every archived artifact into final results.
 - **Folder Structure:** Create a `/results` directory.
 - **Executive Summary:** Write a high-level summary for non-technical stakeholders focusing on business impact and final conclusions.
 - **Production Snippets:** Extract and document ONLY the winning SQL and Python logic. Remove all EDA and failed experiment code.
