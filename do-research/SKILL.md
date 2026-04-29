@@ -17,10 +17,11 @@ Do not work on anything outside of the scope of the provided task.
 - **Snowflake MCP:** You MUST query table metadata (size, schema) before running heavy SQL to ensure efficiency.
 - **Environment:** Write modular Python scripts for analysis.
 - **Visuals:** All plots must be generated via **Plotly** and saved as `.png` files in the task directory.
-- **Logging:** Maintain a `results_log.md` in a new `task_[name]` folder under the `research_tasks` main folder.
-- **Code:** Code and other related files should be saved in an `task_[name]/src` folder under the `research_tasks` main folder
+- **Logging:** Maintain a `results_log_{idx}_{name}.md` in a new `task_{idx}_{name}` folder under the `research_tasks` main folder where `{idx}` is the zero padded task id and `{name}` is the name of the research task
+- **Code:** Code and other related files should be saved in an `task_{idx}_{name}/src` folder under the `research_tasks` main folder.
 
 ### Required Output:
-At the end of the task, produce a `results_log.md` that summarizes findings, provides the final SQL/Python snippets, and embeds the `.png` plots. All plots should be included in the `results_log.md` file with descriptions of what they show and why they are important to the research.
+At the end of the task, summarizes findings, provides the final SQL/Python snippets, and embeds the `.png` plots in `results_log_{idx}_{name}.md`. 
+All plots should be included in the `results_log_{idx}_{name}.md` file with descriptions of what they show and why they are important to the research.
 
 Ensure that all research progress can be human reviewed and provide a review summary and process at the end of the session.
