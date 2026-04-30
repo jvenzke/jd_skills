@@ -14,13 +14,13 @@ Some skills are inspired by Matt Pocock's [Skills for Real Engineers](https://gi
 - [`/grill-me`](grill-me/SKILL.md): Stress-test a plan or design with one question at a time until the agent and user share a clear understanding.
 - [`/caveman`](caveman/SKILL.md): Switch to ultra-compressed communication to reduce token usage.
 
-## Development Workflow (WIP/Not tested)
+## Development Workflow (Last updated: 2026-04-30)
 
 1. [`/grill-me`](grill-me/SKILL.md): Resolve the design tree for a problem or project.
 2. [`/to-prd`](to-prd/SKILL.md): Turn the current conversation and codebase understanding into a PRD under `.working_items/`.
 3. [`/prd-to-issue-files`](prd-to-issue-files/SKILL.md): Break an approved PRD into ordered, vertical-slice issue markdown files.
 
-## PR Review Workflow (WIP)
+## PR Review Workflow (Last updated: 2026-04-30)
 
 Use this workflow to review GitHub PRs across fresh chats without losing context. Review state is written under `.working_items/pr-review/<owner>-<repo>-<pr-number>/` in the target repo, and each phase updates `NEXT_CHAT_PROMPT.md` so the next chat can resume cleanly.
 
@@ -35,7 +35,7 @@ Approved comments are staged locally until `/submit-pr-review`; they should beco
 
 The workflow also tracks changed-line review coverage in `COVERAGE.md`. `/submit-pr-review` reports what percent of changed lines were presented to the human reviewer, what percent were reviewed only by the agent, and any unreviewed remainder. Agent-covered lines are grouped by why they were not shown, such as peripheral change, covered by tests/CI, matching an inspected pattern, duplicate mechanical change, static-review-only, or stale/superseded context.
 
-## Research Agent Workflow (WIP)
+## Research Agent Workflow (Last updated: 2026-04-30)
 
 1. [`/generate-research-project`](generate-research-project/SKILL.md): Start from a Jira ticket or linked README, optionally create a git branch, and build the project scaffold:
    - `README.md`
