@@ -32,8 +32,9 @@ Use the todo feature to track the workflow before starting. Create one todo for 
    - Optimize the handoff code for clarity and reproducibility.
 
 5. **Collate Final Assets**
-   - Copy final `.png` visualizations into `/results/assets`.
-   - Link each retained visualization from `/results/README.md`.
+   - Copy final interactive `.html` visualizations and other presentation-ready assets into `/results/assets`.
+   - Copy `.png` visualizations only when they are needed for Markdown files, static previews, or final handoff contexts that cannot render HTML.
+   - Link each retained visualization from `/results/README.md`, using HTML links for interactive artifacts and PNG embeds only when Markdown needs an inline image.
 
 6. **Build Presentation Webpage**
    - Create a static webpage in `/results` that can be used as a presentation for the data science group.
@@ -44,6 +45,7 @@ Use the todo feature to track the workflow before starting. Create one todo for 
 7. **Clean Up Human Review Page**
    - Locate `RESEARCH_REVIEW.html` in the research project working folder if it exists.
    - If it exists, clean it up as a reviewer-facing companion to the final package: remove stale task tiles, fix broken relative links, group related task tiles into clear sections, clarify section summaries and dependency relationships, and point curated artifacts to `research_workspace/artifacts/` or `/results/assets` as appropriate.
+   - Prefer linking or embedding curated `.html` artifacts for reviewable charts; keep `.png` references only for Markdown/static-preview needs or browser fallbacks.
    - Preserve its purpose as an interactive review surface for task-level evidence. Do not turn it into the final presentation webpage.
    - If no `RESEARCH_REVIEW.html` exists, do not create one unless the user asks; note that no human review page was available to clean up.
 
