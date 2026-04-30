@@ -2,6 +2,8 @@
 
 Author: Joel DeVenzke
 
+Some skills are inspired by Matt Pocock's [Skills for Real Engineers](https://github.com/mattpocock/skills/tree/main).
+
 ## General Skills
 
 - `/grill-me`: Stress-test a plan or design with one question at a time until the agent and user share a clear understanding.
