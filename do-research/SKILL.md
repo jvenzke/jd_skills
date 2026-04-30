@@ -19,7 +19,7 @@ Before writing new tools or repeating previous setup, inspect `research_workspac
 - **Snowflake MCP:** You MUST query table metadata (size, schema) before running heavy SQL to ensure efficiency.
 - **Environment:** Write modular Python scripts for analysis.
 - **Visuals:** All plots must be generated via **Plotly** and saved as `.png` files in the task directory.
-- **Logging:** Maintain a `results_log_{idx}_{name}.md` in a new `task_{idx}_{name}` folder under the `research_tasks` main folder where `{idx}` is the zero padded task id and `{name}` is the name of the research task
+- **Logging:** Maintain a `results_log_{idx}_{name}.md` in a new `task_{idx}_{name}` folder under the `research_tasks` main folder where `{idx}` is the zero padded task id and `{name}` is the name of the research task. Allow for up to 999 tasks in padding.
 - **Code:** Code and other related files should be saved in an `task_{idx}_{name}/src` folder under the `research_tasks` main folder.
 
 ### Required Output:
