@@ -19,7 +19,9 @@ You are a Research Architect. Your task is to analyze the `RESEARCH_PLAN.md` and
 - **No Context Bloat:** Reference `RESEARCH_PLAN.md`, `research_workspace/running_log.md`, `research_workspace/MANIFEST.md`, and reusable modules in `research_workspace/src/` instead of copying long prior research notes into each task.
 - **Task Type:** Denote in the task if the task is AFK (can be done by the agent independently) or HITL (human in the loop).
 - **Task Location:** Tasks should go in `research_tasks/` and be named `task_{idx}_{name}.md`, replacing `idx` with a zero-padded task number denoting the order of completion and `name` with the task name.
-- **Logging for task:** Include in the task markdown that the logs wshould be written to a file with this naming convension: `results_log_{idx}_{name}.md`
+- **Logging for task:** Include in the task markdown that the logs should be written to a file with this naming convention: `results_log_{idx}_{name}.md`
+- **Review Artifacts:** Include task instructions to preserve artifacts needed by `RESEARCH_REVIEW.html`: an artifact manifest, representative CSV/JSON samples, schema or data dictionary notes, final SQL, final Python, Plotly PNG previews, standalone Plotly HTML when a plot is useful interactively, and concise descriptions of how each artifact should be reviewed.
+- **Review Grouping Metadata:** Include a short review metadata block in each task with the intended review section, related task ids or expected dependencies, linked unknown/hypothesis, task tile title, and the one-sentence reason this task belongs in that section.
 
 ### Out of Scope:
 - Do not complete any research tasks.
@@ -27,7 +29,7 @@ You are a Research Architect. Your task is to analyze the `RESEARCH_PLAN.md` and
 - Only update `RESEARCH_PLAN.md` after user approval and create the approved `task_{idx}_{name}.md` files.
 
 ### Tasks to complete:
-Review the `RESEARCH_PLAN.md` and suggest the smallest unblocked next set of tasks, usually 1 task and never more than 3. For each task, explain why it is the current priority, what dependency check made it eligible now, and ask for the user's approval to hand it off to edit the `RESEARCH_PLAN.md` and create the `task_{idx}_{name}.md` files.
+Review the `RESEARCH_PLAN.md` and suggest the smallest unblocked next set of tasks, usually 1 task and never more than 3. For each task, explain why it is the current priority, what dependency check made it eligible now, which review section and task tile it should appear under in `RESEARCH_REVIEW.html`, which review artifacts the task must keep, and ask for the user's approval to hand it off to edit the `RESEARCH_PLAN.md` and create the `task_{idx}_{name}.md` files.
 
 Interview me relentlessly about every aspect of this plan until we reach a shared understanding. Walk down each branch of the design tree, resolving dependencies between decisions one-by-one. For each question, provide your recommended answer.
 

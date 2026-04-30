@@ -31,8 +31,8 @@ Some skills are inspired by Matt Pocock's [Skills for Real Engineers](https://gi
    - `RESEARCH_PLAN.md`
    - `RESEARCH_PLAN_PITCH_DECK.html`
 3. Repeat the research loop until the plan converges:
-   - [`/to-research-tasks`](to-research-tasks/SKILL.md): Convert the current plan and compressed workspace context into the smallest unblocked task set, usually one AFK-ready task and never more than three.
-   - [`/do-research`](do-research/SKILL.md): Execute one approved task in a scoped task folder, write modular analysis code, generate Plotly PNGs, and log findings in `results_log_{idx}_{name}.md`.
-   - [`/review-research`](review-research/SKILL.md): Review the latest task results with the user, decide whether the work has converged, compress completed work into `research_workspace/`, archive completed raw task materials, update the pitch deck, and update `RESEARCH_PLAN.md`.
+   - [`/to-research-tasks`](to-research-tasks/SKILL.md): Convert the current plan and compressed workspace context into the smallest unblocked task set, usually one AFK-ready task and never more than three, including the review artifacts each task must preserve.
+   - [`/do-research`](do-research/SKILL.md): Execute one approved task in a scoped task folder, write modular analysis code, generate Plotly PNGs and review artifacts, and log findings in `results_log_{idx}_{name}.md`.
+   - [`/review-research`](review-research/SKILL.md): Review the latest task results with the user, decide whether the work has converged, build or update `RESEARCH_REVIEW.html`, compress completed work into `research_workspace/`, archive completed raw task materials, update the pitch deck, and update `RESEARCH_PLAN.md`.
    - Optional [`/commit-research`](commit-research/SKILL.md): Stage only the minimal reviewable and reproducible research files after review checkpoints. Do not commit unless explicitly asked.
 4. [`/summarize-research`](summarize-research/SKILL.md): Build the final production handoff in `/results`, including the executive summary, production-ready SQL/Python snippets, final assets, presentation webpage, and project README updates.

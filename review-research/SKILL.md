@@ -3,7 +3,7 @@ name: review-research
 description: Evaluates sub-agent results, updates the RESEARCH_PLAN.md, and determines if the research has converged or needs more iterations.
 ---
 
-You are a Principal Investigator. Analyze the latest `results_log.md` to update the project state.
+You are a Principal Investigator. Analyze the latest task results to update the project state and maintain a human review page.
 
 ### Rules:
 - **Truth Consolidation:** Move resolved "Unknowns" from the experimental section to the "Knowledge Base" in `RESEARCH_PLAN.md`.
@@ -12,12 +12,15 @@ You are a Principal Investigator. Analyze the latest `results_log.md` to update 
 - **Knowledge updates:** Research often raises new questions, blind spots, and knowledge. Document all changes in the `RESEARCH_PLAN.md` file. A researcher should be able to gain all needed knowledge from that file.
 - **Stale information cleanup:** Remove stale definitions, assumptions, paths, and interpretations from active sections of `RESEARCH_PLAN.md` so future research agents do not treat outdated ideas as current guidance.
 - **Independent next steps:** If multiple proposed next steps are completely independent, suggest all of them in the next steps instead of forcing a single sequence.
-- **Step tracking:** Use the todo feature to track all five task steps and make sure they are completed in order.
+- **Human review surface:** Maintain `RESEARCH_REVIEW.html` as a standalone static HTML page for reviewing task outputs, curated artifacts, data samples, plots, decisions, and reviewer notes. It must open directly in a browser without a build step or external dependencies.
+- **Review structure:** Group similar tasks into named sections that explain the shared research theme, linked unknowns, dependency relationships, and combined takeaway before showing individual task details.
+- **Review provenance:** Preserve links from `RESEARCH_REVIEW.html` to original archived task outputs and curated `research_workspace/artifacts/` copies so reviewers can trace summaries back to raw evidence.
+- **Step tracking:** Use the todo feature to track all six task steps and make sure they are completed in order.
 
 ### Task:
 
 1. **Review the research logs**
-   - Review the linked research logs, prioritizing the `results_log.md` file(s) provided.
+   - Review the linked research logs, prioritizing the `results_log_{idx}_{name}.md` file(s), task artifact manifests, and task review artifacts provided.
    - Provide a clear, short summary of the methods used and results of the experiment.
    - Include things learned, new questions, blind spots, and other interesting notes.
    - Pause and allow the user to ask questions about the results before moving on. 
@@ -39,20 +42,35 @@ You are a Principal Investigator. Analyze the latest `results_log.md` to update 
    - Preserve detailed provenance in `research_workspace/running_log.md`: paths tried, wins, failures, methods, implementation details, artifacts, raw evidence locations, reusable code, unresolved risks, and open questions.
    - Archive completed task folders from `research_tasks/task_*` and completed task definition files from `research_tasks/task*.md`; do not archive pending or incomplete work unless the user approves.
    - Archiving is best done via the `mv` command line interface so files are moved intact instead of being rewritten or manually copied.
-   - Copy only key reusable or frequently referenced artifacts into `research_workspace/artifacts/`; leave original artifacts with archived task folders and link both curated and original paths from `running_log.md`.
+   - Copy key reusable or frequently referenced artifacts into `research_workspace/artifacts/`, including review-ready artifacts needed by `RESEARCH_REVIEW.html`: representative CSV/JSON samples, schema/metadata files, standalone plot HTML files, PNG previews, data dictionaries, query files, and artifact manifests.
+   - Leave original artifacts with archived task folders and link both curated and original paths from `running_log.md`.
    - Extract reusable operational code into `research_workspace/src/` only when it is clearly reusable; leave one-off EDA, failed experiment code, task-specific notebooks, and hard-coded scripts in the archived task folder.
    - End this step with a short summary of what moved, what was consolidated, and what reusable assets now exist.
 
-4. **Update the pitch deck**
+4. **Update the human review page**
+   - Locate `RESEARCH_REVIEW.html` in the research project working folder.
+   - If it does not exist, create a standalone static HTML page that opens directly in a browser without a build step or external dependencies.
+   - Write a concise summary of the planned review page changes.
+   - Ask the user to approve the planned review page changes before editing files.
+   - After approval, create or update `RESEARCH_REVIEW.html` so a human reviewer can move through grouped research sections and individual task tiles, inspect methods, results, plots, sample data, source artifact links, reviewer decisions, unresolved questions, convergence evidence, and next-step recommendations.
+   - Organize similar tasks into sections by research question, hypothesis, data source, experimental method, or decision dependency. Each section should explain why the tasks are grouped, how they link to each other, what upstream decision or unknown they address, and the combined takeaway.
+   - Add a tile for each reviewed task inside its section. Each tile should show task id/name, status, task type, research question, key finding, confidence or evidence strength, dependency links to related tasks, artifact links, and a clear action such as review details, inspect data, compare plots, or mark follow-up.
+   - Embed compact task summaries and small review datasets directly in the page when useful. Link to large artifacts instead of inlining them.
+   - Include interactive controls that are feasible in static HTML, such as section/task filters, collapsible grouped sections, sortable/filterable small tables, image/plot galleries, task-tile status filters, relationship links between dependent tasks, and reviewer note checklists stored as editable text areas or local browser state when appropriate.
+   - Prefer relative links to `research_workspace/artifacts/` for curated artifacts and `research_tasks/archive/` for original raw task folders.
+   - End this step with a short summary of what changed in `RESEARCH_REVIEW.html` and which artifacts still need better review coverage.
+
+5. **Update the pitch deck**
    - Locate `RESEARCH_PLAN_PITCH_DECK.html` in the research project working folder.
    - If the pitch deck does not exist, produce it using the requirements from the `research-plan` skill: a standalone static HTML pitch deck that opens directly in a browser without a build step or external dependencies.
    - Write a concise summary of the planned pitch deck changes.
+   - Include graphs and diagrams where useful for improving clarity.
    - Ask the user to approve the planned pitch deck changes before editing files.
    - After approval, create or update `RESEARCH_PLAN_PITCH_DECK.html` so it reflects the latest research results, decisions, pivots, unresolved risks, convergence status, and next-step asks.
    - Keep the deck presentation-ready with slide-like sections, minimal inline CSS, and speaker-friendly framing.
    - End this step with a short summary of what changed in `RESEARCH_PLAN_PITCH_DECK.html`.
 
-5. **Update the research plan**
+6. **Update the research plan**
    - Write a concise summary of the planned changes to `RESEARCH_PLAN.md`.
    - Ask the user to approve the planned plan changes before editing files.
    - After approval, update `RESEARCH_PLAN.md`.
@@ -64,5 +82,5 @@ You are a Principal Investigator. Analyze the latest `results_log.md` to update 
    - End this step with a short summary of what changed in `RESEARCH_PLAN.md` and what approvals are needed next.
 
 ### Out of Scope:
-No new research tasks should be generated or executed. Only `RESEARCH_PLAN.md`, `RESEARCH_PLAN_PITCH_DECK.html`, and compression-related files under `research_workspace/` and `research_tasks/archive/` should be changed.
+No new research tasks should be generated or executed. Only `RESEARCH_PLAN.md`, `RESEARCH_PLAN_PITCH_DECK.html`, `RESEARCH_REVIEW.html`, and compression-related files under `research_workspace/` and `research_tasks/archive/` should be changed.
 

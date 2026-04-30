@@ -41,18 +41,25 @@ Use the todo feature to track the workflow before starting. Create one todo for 
    - Design it as a clear presentation artifact, not a raw research log.
    - Link the webpage from `/results/README.md`.
 
-7. **Write Final Research README**
+7. **Clean Up Human Review Page**
+   - Locate `RESEARCH_REVIEW.html` in the research project working folder if it exists.
+   - If it exists, clean it up as a reviewer-facing companion to the final package: remove stale task tiles, fix broken relative links, group related task tiles into clear sections, clarify section summaries and dependency relationships, and point curated artifacts to `research_workspace/artifacts/` or `/results/assets` as appropriate.
+   - Preserve its purpose as an interactive review surface for task-level evidence. Do not turn it into the final presentation webpage.
+   - If no `RESEARCH_REVIEW.html` exists, do not create one unless the user asks; note that no human review page was available to clean up.
+
+8. **Write Final Research README**
    - Write `/results/README.md` with the executive summary, final methodology, production snippets, visual asset links, and reproduction notes.
    - Keep the README focused on the final answer rather than the full exploration history.
 
-8. **Update Project README**
+9. **Update Project README**
    - Add a quick summary of work completed, results, and links to important handoff materials in the main `README.md` for the research project.
-   - Link to `/results` and `/research_workspace` as needed.
+   - Link to `/results`, `/research_workspace`, and `RESEARCH_REVIEW.html` as needed.
 
-9. **Review Final Package**
+10. **Review Final Package**
    - Verify all todos are complete.
    - Confirm `/results/README.md` links resolve.
    - Confirm the static presentation webpage exists and is linked.
+   - If `RESEARCH_REVIEW.html` exists, confirm its main section links, task tile links, and curated artifact links resolve.
    - Present the final directory structure for review.
 
 Compile all findings now and present the final directory structure for review.
