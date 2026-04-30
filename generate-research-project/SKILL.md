@@ -29,4 +29,4 @@ README.md should contain:
 - A link to the ticket and a summary of the issues related to the ticket, when using a ticket
 - A link to the source README and a summary of the research context from that README, when using a README
 
-All other files and folders should be left blank 
+All other files and folders should have an empty readme placed in the folders.

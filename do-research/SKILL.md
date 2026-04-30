@@ -22,9 +22,16 @@ Before writing new tools or repeating previous setup, inspect `research_workspac
 - **Logging:** Maintain a `results_log_{idx}_{name}.md` in a new `task_{idx}_{name}` folder under the `research_tasks` main folder where `{idx}` is the zero padded task id and `{name}` is the name of the research task. Allow for up to 999 tasks in padding.
 - **Code:** Code and other related files should be saved in an `task_{idx}_{name}/src` folder under the `research_tasks` main folder.
 
+### Out Of Scope:
+- Do not edit the original `task*.md` file.
+- Do not move work, artifacts, code, or results into other folders.
+- Only edit files inside the task folder created for the research task.
+- If work should be promoted, moved, or reused elsewhere, document that recommendation for the review process instead of performing the move.
+
 ### Required Output:
 At the end of the task, summarizes findings, provides the final SQL/Python snippets, and embeds the `.png` plots in `results_log_{idx}_{name}.md`. 
 All plots should be included in the `results_log_{idx}_{name}.md` file with descriptions of what they show and why they are important to the research.
+Produce artifacts that would work well in a final report or project presentation, such as clear charts, concise tables, reusable SQL/Python snippets, and short narrative takeaways that the `summarize-research` task can promote into final deliverables.
 Document any reusable code, artifacts, or methods that should be promoted into `research_workspace/` by the next `compress-research` pass.
 
 Ensure that all research progress can be human reviewed and provide a review summary and process at the end of the session.
