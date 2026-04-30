@@ -4,6 +4,11 @@ Author: Joel DeVenzke
 
 Some skills are inspired by Matt Pocock's [Skills for Real Engineers](https://github.com/mattpocock/skills/tree/main).
 
+## References
+
+- [Interesting talk on AI development and the importance of good coding practices](https://youtu.be/v4F1gFy-hqg?si=1opnC2coaZ8HVh7v)
+- [Longer walkthrough](https://github.com/jvenzke/jd_skills/tree/main)
+
 ## General Skills
 
 - [`/grill-me`](grill-me/SKILL.md): Stress-test a plan or design with one question at a time until the agent and user share a clear understanding.
