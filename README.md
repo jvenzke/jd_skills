@@ -19,6 +19,7 @@ The [`/meta-review`](meta-review/SKILL.md) skill is the source of truth for what
 - Keep each `SKILL.md` under 40 actionable directives. Count numbered steps and bullets; ignore frontmatter, headings, examples, and reference links. If you cannot fit the work in 40 directives after compression, split the skill.
 - One skill, one job. Split when a skill has independent triggers or workflows. Merge when two skills are always invoked together, share decision logic, and have no meaningful independent use.
 - Stay orthogonal. Communicate with upstream and downstream skills through stable artifacts (named files, sections, manifests), not implicit chat state. A skill should be resumable in a fresh chat by reading those artifacts.
+- When a skill prepares work for another skill, write the next-step context to a durable Markdown or structured file and name that file in the skill. Include what changed, what remains undecided, and which skill or workflow step should run next.
 - Don't repeat yourself. If two skills share the same interview, decision tree, or output format, reference the canonical skill instead of duplicating it.
 - Be terse. Every bullet should carry weight; cut narration, restatement, and obvious commentary. Compress before adding.
 - Gate irreversible work behind explicit user approval (file moves, deletions, commits, pushes, schema changes, network calls).
@@ -29,6 +30,7 @@ The [`/meta-review`](meta-review/SKILL.md) skill is the source of truth for what
 
 - Each step in a workflow should map to one skill with one clear output artifact. Skills must not spill into the next step's responsibility.
 - Define the artifact contract between steps explicitly (file names, folder layout, section headings, manifests). Downstream skills depend on the artifact, not on chat memory.
+- Use the README workflow section to explain the next step for each phase, including the handoff file the next chat should read before continuing.
 - Persist workflow state in a known location so any step can be resumed cold (e.g., `.working_items/`, `research_workspace/`, the research project folder).
 - Include a loop step and a convergence/exit criterion when the workflow is iterative (plan → execute → review → compress).
 - List the workflow in this README with numbered steps, a `Last updated` date, and an explicit status tag (e.g., `Currently untested`) so consumers know how much to trust it.
