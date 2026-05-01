@@ -43,6 +43,11 @@ The [`/meta-review`](meta-review/SKILL.md) skill is the source of truth for what
 
 ## Research Agent Workflow (Last updated: 2026-05-01)
 
+> **Token Optimization Rules:** This workflow aggressively minimizes context bloat:
+> - HTML review surfaces are generated from `review_state.json` and `pitch_deck_state.json` via local scripts; the LLM does not write HTML directly.
+> - The `running_log.md` is periodically compressed into `core_context.md` to keep context dense.
+> - Raw data artifacts (CSV/JSON rows) are excluded from the LLM context; agents only read summary stats (`df.describe()`) and schemas.
+
 1. [`/generate-research-project`](generate-research-project/SKILL.md): Start from a Jira ticket or linked README, optionally create a git branch, and build the project scaffold:
    - `README.md`
    - `RESEARCH_PLAN.md`
