@@ -4,7 +4,9 @@ description: Interview the user to turn a vague research idea into a rigorous, f
 ---
 
 Your goal is to build a `RESEARCH_PLAN.md` that can be handed off to a junior data scientist, plus a static HTML pitch deck for presenting the plan at a data science group meeting.
-  
+
+> **Wiki integration:** If `llm_wiki/` exists in the repo, follow the `llm_wiki` skill's "Research workflow integration" section before drafting interview questions — load relevant wiki pages so you don't ask questions the wiki already answers, and cite them from `RESEARCH_PLAN.md`.
+
 ### Rules:
 - **Categorization:** You must separate unknowns into:
     1. **Feasibility:** Data access, SQL table sizes, cost, and scale.

@@ -5,6 +5,8 @@ description: Compiles all research logs into a production-ready /results folder 
 
 You are a Lead Data Scientist preparing a production hand-off. Your goal is to compress the entire research journey into a clean, actionable package.
 
+> **Wiki integration:** If `llm_wiki/` exists in the repo, the converged research findings must be filed back into the wiki as part of this workflow (Step 10 below). Follow the `llm_wiki` skill's "Research workflow integration" section. Both wiki linters must pass before summarize is declared complete.
+
 ### Required Workflow:
 
 Use the todo feature to track the workflow before starting. Create one todo for each step below, keep exactly one step `in_progress`, and mark each step `completed` before starting the next one. Do not skip or reorder steps unless the user explicitly asks.
@@ -57,11 +59,27 @@ Use the todo feature to track the workflow before starting. Create one todo for 
    - Add a quick summary of work completed, results, and links to important handoff materials in the main `README.md` for the research project.
    - Link to `/results`, `/research_workspace`, and `RESEARCH_REVIEW.html` as needed.
 
-10. **Review Final Package**
+10. **File Findings into the Wiki** (only if `llm_wiki/` exists in the repo)
+   - Invoke the `llm_wiki` skill's Ingest workflow on the converged findings. Specifically:
+     - Decide which `llm_wiki/<project>/` folder the findings belong to.
+     - Create or update wiki pages for new entities, concepts, and analyses surfaced by the research. Follow the wiki's frontmatter and link-style conventions.
+     - Add cross-references from related existing pages.
+     - Update `llm_wiki/index.md` with new/changed pages.
+     - Append `## [YYYY-MM-DD] ingest | <Research Title>` to `llm_wiki/log.md` with a brief note of pages touched.
+   - Run **both wiki linters** — both must report zero errors before this step is complete:
+     ```sh
+     python3 llm_wiki/skills/llm_wiki/lint_links.py
+     python3 llm_wiki/skills/llm_wiki/lint_frontmatter.py
+     ```
+   - If either linter fails, fix the issue and re-run. Do not proceed to step 11 with linter errors.
+   - End this step with a short summary of which wiki pages were created/updated.
+
+11. **Review Final Package**
    - Verify all todos are complete.
    - Confirm `/results/README.md` links resolve.
    - Confirm the static presentation webpage exists and is linked.
    - If `RESEARCH_REVIEW.html` exists, confirm its main section links, task tile links, and curated artifact links resolve.
+   - If `llm_wiki/` exists, confirm both wiki linters pass.
    - Present the final directory structure for review.
 
 Compile all findings now and present the final directory structure for review.

@@ -17,6 +17,7 @@ You are a Research Architect. Your task is to analyze the `RESEARCH_PLAN.md` and
 - **Task Structure:** Provide a succinct Requirement, a Knowledge Goal, and suggested Methodology.
 - **Self-Contained Task Files:** Each `task_{idx}_{name}.md` file must include enough context, requirements, constraints, and starting methodology for the assigned agent to begin without needing the planning conversation.
 - **No Context Bloat:** Reference `RESEARCH_PLAN.md`, `research_workspace/running_log.md`, `research_workspace/MANIFEST.md`, and reusable modules in `research_workspace/src/` instead of copying long prior research notes into each task.
+- **Wiki Context (if `llm_wiki/` exists):** Each task gets a "Wiki context" block listing relevant `llm_wiki/<project>/*.md` pages as markdown links. The sub-agent reads them as task context. This keeps tasks small while still grounding them in canonical knowledge. See the `llm_wiki` skill's "Research workflow integration" section.
 - **Task Type:** Denote in the task if the task is AFK (can be done by the agent independently) or HITL (human in the loop).
 - **Task Location:** Tasks should go in `research_tasks/` and be named `task_{idx}_{name}.md`, replacing `idx` with a zero-padded task number denoting the order of completion and `name` with the task name.
 - **Logging for task:** Include in the task markdown that the logs should be written to a file with this naming convention: `results_log_{idx}_{name}.md`
