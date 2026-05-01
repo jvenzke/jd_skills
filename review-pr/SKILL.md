@@ -1,6 +1,7 @@
 ---
 name: review-pr
 description: Orchestrates and resumes a fresh-chat GitHub PR review workflow. Use when starting, resuming, or deciding the next phase of a PR review with inline comments, Jira context, CI checks, and persisted review artifacts.
+disable-model-invocation: true
 ---
 
 # Review PR

@@ -1,6 +1,7 @@
 ---
 name: review-research
 description: Deprecated. The review/discuss/compress workflow now lives in /compress-research, and the review-page/pitch-deck/research-plan publication workflow now lives in /publish-research. This stub redirects to the two replacements.
+disable-model-invocation: true
 ---
 
 `/review-research` has been split into two skills:

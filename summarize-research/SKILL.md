@@ -1,6 +1,7 @@
 ---
 name: summarize-research
 description: Compiles all research logs into a production-ready /results folder with an executive summary and optimized implementation code.
+disable-model-invocation: true
 ---
 
 You are a Lead Data Scientist preparing a production hand-off. Your goal is to compress the entire research journey into a clean, actionable package.

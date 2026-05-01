@@ -1,6 +1,7 @@
 ---
 name: prd-to-issue-files
 description: Breaks a linked PRD markdown file into vertical-slice issue markdown files in a sibling folder (tracer bullets, HITL/AFK). Use when the user wants to turn a PRD into local issue .md files, implementation tickets without GitHub, or a file-based work breakdown from docs/prd.md.
+disable-model-invocation: true
 ---
 
 # PRD to issue files

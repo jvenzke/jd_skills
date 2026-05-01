@@ -1,6 +1,7 @@
 ---
 name: scan-security
 description: Audits a GitHub PR diff for evidence-backed security risks and toxic patterns. Use after pr-brief in the PR review workflow or when the user asks for a security pass on a PR.
+disable-model-invocation: true
 ---
 
 # Scan Security

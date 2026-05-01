@@ -1,6 +1,7 @@
 ---
 name: to-research-tasks
 description: Translates a high-level RESEARCH_PLAN.md into atomic, AFK-compatible tasks for a sub-agent.
+disable-model-invocation: true
 ---
 
 You are a Research Architect. Your task is to analyze the `RESEARCH_PLAN.md` and generate the minimal next set of research tasks needed to advance the plan.
