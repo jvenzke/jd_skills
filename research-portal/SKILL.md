@@ -21,10 +21,10 @@ The portal is intentionally:
 
 This rule binds every skill that produces HTML. Before finishing any HTML-producing task:
 
-1. **Identify the entry page** for this research project. In order of preference:
-   - `RESEARCH_REVIEW.html` (preferred entry once any review work has happened — it's the reviewer-facing index).
-   - `RESEARCH_PLAN_PITCH_DECK.html` (acceptable entry early in a project, before any tasks are reviewed).
-   - `index.html` (only if neither of the above exists yet — and if you find yourself creating one, prefer creating `RESEARCH_REVIEW.html` instead, since the rest of the workflow expects that filename).
+1. **Identify the entry page** for this research project:
+   - `index.html` (project root) is the **persistent entry**. Created by `/research-plan` at project bootstrap; updated by every subsequent skill that produces or modifies HTML in the project. Always present from `/research-plan` onwards. This is the breadcrumb target for every other HTML file in the project.
+   - `RESEARCH_REVIEW.html` is a **child review-state surface** linked from `index.html`'s §Review section. Created by `/publish-research` when there is something to review. Owns the rich tile-grid of task evidence; `index.html` owns the lightweight nav.
+   - `RESEARCH_PLAN_PITCH_DECK.html` is a stakeholder-facing slide deck linked from `index.html`'s §Plan section. Not an entry page.
 2. **Add an inbound link to every new HTML file** in the most appropriate Tier-1 or Tier-2 section before declaring the work done:
    - **Leaf review artifacts** (`task_{idx}_{name}/review_artifacts/*.html` produced by `/do-research`) → linked from the task's tile in the matching Tier-2 section of `RESEARCH_REVIEW.html`. If `RESEARCH_REVIEW.html` doesn't exist yet, the task `results_log_{idx}_{name}.md` must list the artifact, and `/publish-research` will create the tile in its next pass — but **the task author must surface this gap explicitly** in their final summary so the next reviewer doesn't miss it.
    - **Templated viewer variants** (one per model / variant / family) → each variant gets its own tile, or a single tile that links to a parent index page (e.g. `cgp_diagnostic_index.html`) which then links to all variants. Either pattern is fine; an unlinked variant is not.
@@ -61,15 +61,19 @@ Any line printed by the audit is an orphan and must be fixed before declaring th
 
 | Other skill | HTML surface it owns | Which tier of this spec |
 |---|---|---|
+| `/research-plan` | `index.html` (create) | Tier-1 persistent entry: header, §Plan, §Tasks (empty), §Review (placeholder), §Wiki |
 | `/research-plan` | `RESEARCH_PLAN_PITCH_DECK.html` | A single-page slide-deck variant of Tier 1; sectioned, no tile grid required |
+| `/to-research-tasks` | `index.html` (append placeholder tile to §Tasks for each new task spec) | Tier-1 index update only |
 | `/do-research` | `task_{idx}_{name}/review_artifacts/*.html` (Plotly charts, scrubbers) | Tier 3 leaf views (interactive Plotly or static) |
-| `/publish-research` | `RESEARCH_REVIEW.html` | Tier 1 index → Tier 2 task-group sections of tiles → links into Tier 3 review artifacts produced by `/do-research` |
+| `/do-research` | `index.html` (upgrade task tile to "Done" + link the leaf) | Tier-1 index update only |
+| `/publish-research` | `RESEARCH_REVIEW.html` | Tier 1 review-state surface, child of `index.html` — task-group sections of tiles → links into Tier 3 review artifacts produced by `/do-research` |
+| `/publish-research` | `index.html` (link `RESEARCH_REVIEW.html` from §Review) | Tier-1 index update only |
 | `/publish-research` | `RESEARCH_PLAN_PITCH_DECK.html` (refresh) | Same Tier-1 deck variant as `/research-plan`, updated with latest results |
 | `/summarize-research` | `/results/<presentation>.html` | Tier 1 final-handoff variant, narrative-led, links into `/results/assets/` |
+| `/summarize-research` | `index.html` (link `/results/<presentation>.html` from §Review) | Tier-1 index update only |
 | `/summarize-research` | `RESEARCH_REVIEW.html` (cleanup) | Same Tier-1 review index, with stale tiles removed and links fixed |
 | `/compress-research` | (none — defers all HTML edits to `/publish-research`) | n/a |
 | `/commit-research` | (none — only stages files; uses the no-orphan rule to decide what to keep) | n/a |
-| `/to-research-tasks` | (none — declares which Tier-2 section a task tile should land in) | n/a |
 
 When any of those skills says "produce/update an HTML page", consult this skill for structure, theme, components, and data-loading; do not invent a new pattern.
 
@@ -227,9 +231,10 @@ These match the contracts in `/generate-research-project`, `/do-research`, `/com
 ```
 <research_project>/
 ├── README.md
+├── index.html                           ← Tier 1 persistent entry · this skill (created by /research-plan)
 ├── RESEARCH_PLAN.md
 ├── RESEARCH_PLAN_PITCH_DECK.html        ← Tier 1 (deck variant) · this skill
-├── RESEARCH_REVIEW.html                 ← Tier 1 (review index) · this skill
+├── RESEARCH_REVIEW.html                 ← Tier 1 (review-state child of index.html) · this skill (created by /publish-research)
 ├── research_tasks/
 │   ├── task_001_<name>.md
 │   ├── task_001_<name>/

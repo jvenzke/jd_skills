@@ -41,4 +41,6 @@ Link to `review_artifacts/artifact_manifest.json` from `results_log_{idx}_{name}
 Produce artifacts that would work well in a final report or project presentation, such as clear charts, concise tables, reusable SQL/Python snippets, and short narrative takeaways that the `summarize-research` task can promote into final deliverables.
 Document any reusable code, artifacts, or methods that should be promoted into `research_workspace/` by the next `compress-research` pass.
 
+After producing the leaf review artifact, **upgrade the task's tile in `index.html` §Tasks**: change the status pill from "Not yet generated" to "Done", set the tile's primary `<a href>` to the leaf review HTML, and fill in the task's key finding (one to three sentences). See [`research-portal`](../research-portal/SKILL.md) for the tile structure and `index.html` conventions.
+
 Ensure that all research progress can be human reviewed and provide a review summary and process at the end of the session.

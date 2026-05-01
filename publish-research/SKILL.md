@@ -29,6 +29,7 @@ Both HTML deliverables (`RESEARCH_REVIEW.html` in Step 1 and `RESEARCH_PLAN_PITC
 
 1. **Update the human review page**
    - Locate `RESEARCH_REVIEW.html` in the research project working folder. If it does not exist, create it following the Tier-1 review-index conventions in [`research-portal`](../research-portal/SKILL.md).
+   - Once `RESEARCH_REVIEW.html` exists, **update `index.html`'s §Review section** to replace the placeholder note with a single prominent link to `RESEARCH_REVIEW.html`. `index.html` is the persistent project entry; `RESEARCH_REVIEW.html` is a child surface linked from it.
    - Apply the `Decisions captured for /publish-research` items that target the review page.
    - Organize similar tasks into Tier-2 sections by research question, hypothesis, data source, experimental method, or decision dependency. Each section header (`.section-label`) explains why the tasks are grouped, how they link to each other, what upstream decision or unknown they address, and the combined takeaway.
    - Each reviewed task gets one `.tile` anchor in its section, populated per the Tier-1 tile contract (icon, title/subtitle, description with headline number, pills for status/task-type/linked-unknown, meta line, CTA verb).

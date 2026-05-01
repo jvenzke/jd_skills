@@ -58,9 +58,10 @@ Use the todo feature to track the workflow before starting. Create one todo for 
    - Write `/results/README.md` with the executive summary, final methodology, production snippets, visual asset links, and reproduction notes.
    - Keep the README focused on the final answer rather than the full exploration history.
 
-9. **Update Project README**
+9. **Update Project README and Index**
    - Add a quick summary of work completed, results, and links to important handoff materials in the main `README.md` for the research project.
    - Link to `/results`, `/research_workspace`, and `RESEARCH_REVIEW.html` as needed.
+   - Update `index.html`'s §Review section to link the final presentation page at `/results/<presentation>.html`. `index.html` is the persistent project entry; the presentation is the final-handoff surface linked from it. See [`research-portal`](../research-portal/SKILL.md).
 
 10. **File Findings into the Wiki** (only if `llm_wiki/` exists in the repo)
    - Invoke the `llm_wiki` skill's Ingest workflow on the converged findings. Specifically:

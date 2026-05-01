@@ -13,9 +13,10 @@ Your goal is to build a `RESEARCH_PLAN.md` that can be handed off to a junior da
     1. **Feasibility:** Data access, SQL table sizes, cost, and scale.
     2. **Experimental:** Scientific questions to be answered.
     3. **Out-of-Scope:** Boundaries to prevent agent drift.
-- **Output:** Once the interview is complete, create both files in the working folder of the project:
+- **Output:** Once the interview is complete, create the following files in the working folder of the project:
     1. `RESEARCH_PLAN.md` - a rigorous handoff plan for a junior data scientist.
     2. `RESEARCH_PLAN_PITCH_DECK.html` - a standalone static HTML pitch deck for a data science group meeting.
+    3. `index.html` - the project's persistent Tier-1 entry page. See [`research-portal`](../research-portal/SKILL.md). Bootstrap it with: a header (project title, ticket link, owner, status chip), a §Plan section linking `README.md` + `RESEARCH_PLAN.md` + `RESEARCH_PLAN_PITCH_DECK.html`, an empty §Tasks section, a §Review placeholder noting that `RESEARCH_REVIEW.html` will appear after `/publish-research` runs, and a §Wiki section linking the most-relevant wiki pages cited in the project README. `index.html` is a permanent navigation surface — every subsequent skill that creates or modifies HTML in the project updates it.
 - **Pitch deck requirements:** Follow the Tier-1 deck variant in [`research-portal`](../research-portal/SKILL.md) — shared `:root` theme, `.intro` card, slide-like `<h2>` sections separated by horizontal rules, no tile grid, prints clean, self-contained (no build step, no external dependencies). Slide content must include:
     1. Title, owner, date, and one-sentence thesis.
     2. Problem and motivation.
