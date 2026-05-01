@@ -7,7 +7,7 @@ Some skills are inspired by Matt Pocock's [Skills for Real Engineers](https://gi
 ## References
 
 - [Interesting talk on AI development and the importance of good coding practices](https://youtu.be/v4F1gFy-hqg?si=1opnC2coaZ8HVh7v)
-- [Longer walkthrough](https://github.com/jvenzke/jd_skills/tree/main)
+- [Longer walkthrough](https://youtu.be/-QFHIoCo-Ko?si=d8P-EoPUrC0qJa_L)
 
 ## General Skills
 
