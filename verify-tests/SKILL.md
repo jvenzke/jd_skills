@@ -1,6 +1,7 @@
 ---
 name: verify-tests
 description: Performs CI-first PR test review and test-quality analysis. Use after pr-brief or scan-security to inspect GitHub Actions results, changed logic coverage, assertions, and regression tests.
+disable-model-invocation: true
 ---
 
 # Verify Tests

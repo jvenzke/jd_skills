@@ -9,12 +9,37 @@ Some skills are inspired by Matt Pocock's [Skills for Real Engineers](https://gi
 - [Interesting talk on AI development and the importance of good coding practices](https://youtu.be/v4F1gFy-hqg?si=1opnC2coaZ8HVh7v)
 - [Longer walkthrough](https://youtu.be/-QFHIoCo-Ko?si=d8P-EoPUrC0qJa_L)
 
+## Authoring Principles
+
+The [`/meta-review`](meta-review/SKILL.md) skill is the source of truth for what "good" looks like; it is what evaluates new and existing skills against the criteria below. Run it after any workflow or skill change so issues get logged in `meta-review/problems.md` and the skills evolve.
+
+### Writing a Skill
+
+- The frontmatter `description` is the trigger contract. Make it specific enough that the agent can decide whether to read the skill from the description alone, including cue phrases the user is likely to say.
+- Keep each `SKILL.md` under 40 actionable directives. Count numbered steps and bullets; ignore frontmatter, headings, examples, and reference links. If you cannot fit the work in 40 directives after compression, split the skill.
+- One skill, one job. Split when a skill has independent triggers or workflows. Merge when two skills are always invoked together, share decision logic, and have no meaningful independent use.
+- Stay orthogonal. Communicate with upstream and downstream skills through stable artifacts (named files, sections, manifests), not implicit chat state. A skill should be resumable in a fresh chat by reading those artifacts.
+- Don't repeat yourself. If two skills share the same interview, decision tree, or output format, reference the canonical skill instead of duplicating it.
+- Be terse. Every bullet should carry weight; cut narration, restatement, and obvious commentary. Compress before adding.
+- Gate irreversible work behind explicit user approval (file moves, deletions, commits, pushes, schema changes, network calls).
+- Use a consistent shape: short intent statement, numbered workflow, small set of rules, and an explicit out-of-scope or exit section when useful. [`review-research`](review-research/SKILL.md) is the reference for multi-step skills; [`grill-me`](grill-me/SKILL.md) is the reference for single-purpose skills.
+- Set `disable-model-invocation: true` for skills that should only be invoked explicitly by the user (see [`meta-review`](meta-review/SKILL.md)).
+
+### Developing a Workflow
+
+- Each step in a workflow should map to one skill with one clear output artifact. Skills must not spill into the next step's responsibility.
+- Define the artifact contract between steps explicitly (file names, folder layout, section headings, manifests). Downstream skills depend on the artifact, not on chat memory.
+- Persist workflow state in a known location so any step can be resumed cold (e.g., `.working_items/`, `research_workspace/`, the research project folder).
+- Include a loop step and a convergence/exit criterion when the workflow is iterative (plan → execute → review → compress).
+- List the workflow in this README with numbered steps, a `Last updated` date, and an explicit status tag (e.g., `Currently untested`) so consumers know how much to trust it.
+- After running a new workflow end-to-end, invoke [`/meta-review`](meta-review/SKILL.md) to capture missed steps, bloat, duplication across skills, and split/merge candidates before the next iteration.
+
 ## General Skills
 
 - [`/grill-me`](grill-me/SKILL.md): Stress-test a plan or design with one question at a time until the agent and user share a clear understanding.
 - [`/meta-review`](meta-review/SKILL.md): Review how skills performed in the current chat, propose compact improvements, and log approved recurring problems.
 
-## Research Agent Workflow (Last updated: 2026-04-30)
+## Research Agent Workflow (Last updated: 2026-05-01)
 
 1. [`/generate-research-project`](generate-research-project/SKILL.md): Start from a Jira ticket or linked README, optionally create a git branch, and build the project scaffold:
    - `README.md`
@@ -27,9 +52,12 @@ Some skills are inspired by Matt Pocock's [Skills for Real Engineers](https://gi
 3. Repeat the research loop until the plan converges:
    - [`/to-research-tasks`](to-research-tasks/SKILL.md): Convert the current plan and compressed workspace context into the smallest unblocked task set, usually one AFK-ready task and never more than three, including the review artifacts each task must preserve.
    - [`/do-research`](do-research/SKILL.md): Execute one approved task in a scoped task folder, write modular analysis code, generate Plotly HTML review artifacts for `RESEARCH_REVIEW.html`, create PNGs only when Markdown logs or READMEs need inline static images, and log findings in `results_log_{idx}_{name}.md`.
-   - [`/review-research`](review-research/SKILL.md): Review the latest task results with the user, decide whether the work has converged, build or update `RESEARCH_REVIEW.html` from curated HTML-first review artifacts, compress completed work into `research_workspace/`, archive completed raw task materials, update the pitch deck, and update `RESEARCH_PLAN.md`.
+   - [`/compress-research`](compress-research/SKILL.md): Review the latest task results with the user, capture the alignment discussion in `research_workspace/discussion_log.md`, and compress completed work into `research_workspace/` and `research_tasks/archive/`. Does not edit the review surfaces.
+   - [`/publish-research`](publish-research/SKILL.md): Read `discussion_log.md`, update `RESEARCH_REVIEW.html`, `RESEARCH_PLAN_PITCH_DECK.html`, and `RESEARCH_PLAN.md` to reflect the captured decisions, then clear the discussion log so the next review cycle starts fresh. Replaces the publication half of the deprecated `/review-research` skill.
    - Optional [`/commit-research`](commit-research/SKILL.md): Stage only the minimal reviewable and reproducible research files after review checkpoints. Do not commit unless explicitly asked.
 4. [`/summarize-research`](summarize-research/SKILL.md): Build the final production handoff in `/results`, including the executive summary, production-ready SQL/Python snippets, final assets, presentation webpage, and project README updates.
+
+> The single `/review-research` skill has been split into `/compress-research` (review/discuss/compress) and `/publish-research` (update review HTML, pitch deck, research plan, then reset the discussion log). The old `/review-research` slug is kept as a thin stub that redirects to the two replacements.
 
 ## Development Workflow (Last updated: 2026-04-30; Currently untested)
 

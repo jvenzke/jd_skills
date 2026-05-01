@@ -1,6 +1,7 @@
 ---
 name: pr-brief
 description: Performs PR intake and topology mapping for the review workflow. Use first when reviewing a GitHub PR to snapshot metadata, branch-derived Jira context, checks, comments, diff files, and gravity-center files.
+disable-model-invocation: true
 ---
 
 # PR Brief

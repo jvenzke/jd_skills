@@ -1,6 +1,7 @@
 ---
 name: update-ticket
 description: Write a summary of the work completed to the ticket as a comment
+disable-model-invocation: true
 ---
 
 check the `readme.md` file for the ticket in question. 

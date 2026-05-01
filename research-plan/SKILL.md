@@ -1,6 +1,7 @@
 ---
 name: research-plan
 description: Interview the user to turn a vague research idea into a rigorous, falsifiable plan. Categorizes unknowns into feasibility, experimental, and out-of-scope.
+disable-model-invocation: true
 ---
 
 Your goal is to build a `RESEARCH_PLAN.md` that can be handed off to a junior data scientist, plus a static HTML pitch deck for presenting the plan at a data science group meeting.
