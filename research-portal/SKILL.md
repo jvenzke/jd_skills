@@ -180,9 +180,39 @@ This is the most opinionated piece. The pattern that works:
    </script>
    ```
 
-   The HTML ships with a `_placeholder` sentinel; a Python build step (or the `/do-research` agent itself when finalizing the artifact) swaps the placeholder for the real JSON when generating a self-contained file. Until then, it falls back to `fetch`. This dual-mode is what makes the same template work both checked-in (inline, portable, opens under `file://`) and during dev (fetch, fast iteration).
+   The HTML ships with a `_placeholder` sentinel; a Python build step (or the `/do-research` agent itself when finalizing the artifact) swaps the placeholder for the real JSON when generating a self-contained file. Until then, it falls back to `fetch`. This dual-mode is what makes the same template work both checked-in (inline, portable, opens under `file://`) and during dev (fetch, fast iteration). When swapping in real JSON, sanitize first — see § "JSON sanitization for browser parsing" below.
 
 6. **Templating:** when there are N variants of the same viewer (e.g. one viewer per model variant), keep one `.tmpl.html` and a small Python builder that substitutes `DATA_FILE` and the page title. Do **not** maintain N copies by hand. The builder lives in `research_workspace/src/` once it's stable, per `/compress-research` compression rules.
+
+---
+
+## JSON sanitization for browser parsing
+
+Any artifact destined for a browser — Tier-1 pages with embedded task summaries, Tier-3 leaf scrubbers with inline data, presentation pages with charts — must serialize JSON correctly for browser parsing. **Python's `json.dump` is permissive by default and will silently break the page.**
+
+**The pitfall:** Python's `json.dump` writes `NaN`, `Infinity`, and `-Infinity` as bare literals (e.g. `"value": NaN`). These are valid Python JSON but **invalid per the JSON spec**. Browser `JSON.parse` rejects them. With the dual-mode loading pattern above, the inline-script parse fails silently, the page falls through to the `fetch(...)` fallback, and that fetch is CORS-blocked under `file://`. The user sees a CORS error in the console; the actual cause is a stale `NaN` in the embedded JSON.
+
+**The rule:** sanitize non-finite floats to `None` and serialize with `allow_nan=False`. Fail loudly at serialization time, not silently in the user's browser.
+
+```python
+import math, json
+
+def sanitize_for_browser(o):
+    if isinstance(o, float) and not math.isfinite(o):
+        return None
+    if isinstance(o, dict):
+        return {k: sanitize_for_browser(v) for k, v in o.items()}
+    if isinstance(o, list):
+        return [sanitize_for_browser(v) for v in o]
+    return o
+
+# Always pair sanitization with allow_nan=False:
+json.dump(sanitize_for_browser(data), f, allow_nan=False)
+```
+
+The same rule applies to inline `<script type="application/json">` blocks, sidecar `.json` files loaded via `fetch`, dataframes exported with `df.to_json()` (also defaults to permissive — pass `default_handler=str` and pre-sanitize), Plotly figure JSON containing numerical results from analyses where divisions or log-transforms can produce non-finite values, and any `numpy` array containing `np.nan` / `np.inf`. These are the most common offenders.
+
+**Diagnostic hint:** if a static HTML dashboard loads fine via `python -m http.server` but shows a CORS error when opened directly under `file://`, the inline-JSON parse is silently failing — almost always due to a non-finite literal. Check the embedded JSON for `NaN` or `Infinity` tokens before chasing the CORS message.
 
 ---
 
@@ -310,3 +340,4 @@ Run this when any of the invoking skills produces or updates an HTML surface.
 - **Don't bury the headline.** The headline number for each task (the "+27.7pp" type result) should appear in the *tile description on the review page*, not just inside the deep page.
 - **Don't leave orphan HTML.** Any new `.html` file must be linked from the entry page in ≤2 clicks before the task is declared done. An unreachable page is an invisible page — it does not count as a deliverable. See the "Hard rule: no orphan HTML" section above.
 - **Don't duplicate this skill's conventions inline in other skills.** When `/research-plan`, `/do-research`, `/publish-research`, or `/summarize-research` produces HTML, they should reference this skill, not redefine its rules.
+- **Don't embed unsanitized JSON.** `NaN` / `Infinity` / `-Infinity` from Python's default `json.dump` will silently break browser parsing and produce a misleading CORS error. Always sanitize non-finite floats to `None` and serialize with `allow_nan=False`. See § "JSON sanitization for browser parsing".
