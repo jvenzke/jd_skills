@@ -16,13 +16,14 @@ Review only the current chat context. Do not use parent transcripts unless the u
 4. Use a read-only subagent only for long, messy, or multi-skill sessions; verify its recommendations yourself.
 5. For each skill, compare observed behavior against its instructions and approved user expectations.
 6. Check whether the skill forgot steps, struggled, caused confusion, duplicated another skill, or exceeded 40 actionable directives in `SKILL.md`.
-7. Count only actionable bullets or numbered steps; ignore frontmatter, headings, examples, and reference links.
-8. Treat a problem as recurring when the same skill has the same failure pattern twice or the issue matches an active log entry.
-9. Suggest a split when a skill has independent triggers/workflows or cannot fit the instruction budget after compression.
-10. Suggest a merge when skills are usually invoked together, duplicate decision logic, and have no meaningful independent use.
-11. Keep findings and fixes terse; include only critical evidence.
-12. Group findings by skill and ask for a decision on each issue: apply the suggested edit, log the problem, or disregard it.
-13. Do not edit a skill, update the log, commit, or push without explicit user approval for that action.
+7. For skills that hand work to a next step, verify the skill wrote the needed next-step context to a durable file or declared artifact so a fresh chat can continue without relying on chat memory.
+8. Count only actionable bullets or numbered steps; ignore frontmatter, headings, examples, and reference links.
+9. Treat a problem as recurring when the same skill has the same failure pattern twice or the issue matches an active log entry.
+10. Suggest a split when a skill has independent triggers/workflows or cannot fit the instruction budget after compression.
+11. Suggest a merge when skills are usually invoked together, duplicate decision logic, and have no meaningful independent use.
+12. Keep findings and fixes terse; include only critical evidence.
+13. Group findings by skill and ask for a decision on each issue: apply the suggested edit, log the problem, or disregard it.
+14. Do not edit a skill, update the log, commit, or push without explicit user approval for that action.
 
 ## Logging
 
@@ -50,4 +51,4 @@ Resolved entry format:
 
 ## Final Report
 
-End with a concise chat report: skills reviewed, issues applied/logged/disregarded, unresolved recurring problems, merge/split guidance, and any commit or push status.
+End with a concise chat report: skills reviewed, issues applied/logged/disregarded, missing or confirmed next-step artifacts, unresolved recurring problems, merge/split guidance, and any commit or push status.

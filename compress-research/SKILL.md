@@ -25,7 +25,7 @@ Keep `research_workspace/discussion_log.md` as the running record of the current
 ### Task:
 
 1. **Review the research logs**
-   - Review the linked research logs, prioritizing the `results_log_{idx}_{name}.md` file(s), task artifact manifests, and task review artifacts provided.
+   - Review the linked research logs, prioritizing the `results_log_{idx}_{name}.md` file(s), task artifact manifests, and task review artifacts provided. Enforce a **metadata-only** approach: read only summary statistics and schema descriptions; do not read raw data rows (CSV/JSON) into context to minimize token usage.
    - Provide a clear, short summary of the methods used and results of the experiment.
    - Include things learned, new questions, blind spots, and other interesting notes.
    - Pause and allow the user to ask questions about the results before moving on.
@@ -45,7 +45,7 @@ Keep `research_workspace/discussion_log.md` as the running record of the current
    - Write a concise summary of the planned compression work and ask for approval before editing files.
    - After approval, compress the workspace.
    - Create or update `research_workspace/running_log.md`, `research_workspace/MANIFEST.md`, `research_workspace/src/` when reusable code exists, `research_workspace/artifacts/` for curated key artifacts, and `research_tasks/archive/` for completed raw task folders and completed task markdown files.
-   - Preserve detailed provenance in `research_workspace/running_log.md`: paths tried, wins, failures, methods, implementation details, artifacts, raw evidence locations, reusable code, unresolved risks, and open questions. Cross-reference the relevant sections of `discussion_log.md` rather than duplicating them.
+   - Preserve detailed provenance in `research_workspace/running_log.md`: paths tried, wins, failures, methods, implementation details, artifacts, raw evidence locations, reusable code, unresolved risks, and open questions. Cross-reference the relevant sections of `discussion_log.md` rather than duplicating them. To prevent unbounded token growth, periodically compress older sections of `running_log.md` into a dense `core_context.md` (or merge into `MANIFEST.md`), keeping only recent iterations active.
    - Archive completed task folders from `research_tasks/task_*` and completed task definition files from `research_tasks/task*.md`; do not archive pending or incomplete work unless the user approves. Use the `mv` command line interface so files are moved intact instead of being rewritten or manually copied.
    - Copy review-ready artifacts to `research_workspace/artifacts/`: representative CSV/JSON samples, schema/metadata files, standalone plot HTML files, PNG previews only when required for Markdown/static-preview use, data dictionaries, query files, and artifact manifests.
    - Leave original artifacts with archived task folders and link both curated and original paths from `running_log.md`.

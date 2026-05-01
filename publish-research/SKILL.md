@@ -19,29 +19,25 @@ You are a Principal Investigator. The compression pass is complete and `research
 
 These rules apply to both `RESEARCH_REVIEW.html` (Step 1) and `RESEARCH_PLAN_PITCH_DECK.html` (Step 2):
 
-- The page must be a standalone static HTML file that opens directly in a browser without a build step or external dependencies.
+- To minimize token usage, do **not** directly read or edit the HTML markup of these files.
+- Instead, update structured state files (`research_workspace/review_state.json` and `research_workspace/pitch_deck_state.json`) with the new content, and rely on a local build script to generate the HTML.
+- The resulting generated pages must be standalone static HTML files.
 - Prefer relative links to `research_workspace/artifacts/` for curated artifacts and `research_tasks/archive/` for original raw task folders.
-- Prefer embedded or linked standalone `.html` chart artifacts for plots; use `.png` only as lightweight previews or fallbacks when no useful HTML artifact exists.
-- For each deliverable: write a concise summary of the planned changes, ask for approval before editing, then apply the edits, and end with a short summary of what changed.
-- Do not introduce build-time dependencies, npm packages, CDN-loaded frameworks, or external font/icon downloads.
+- Prefer embedded or linked standalone `.html` chart artifacts for plots; use `.png` only as lightweight previews or fallbacks.
 
 ### Task:
 
-1. **Update the human review page**
-   - Locate `RESEARCH_REVIEW.html` in the research project working folder. If it does not exist, create it under the Static HTML Deliverable Rules above.
-   - Apply the `Decisions captured for /publish-research` items that target the review page.
-   - Organize similar tasks into sections by research question, hypothesis, data source, experimental method, or decision dependency. Each section should explain why the tasks are grouped, how they link to each other, what upstream decision or unknown they address, and the combined takeaway.
-   - Add a tile per reviewed task showing task id/name, status, task type, research question, key finding, confidence/evidence strength, dependency links to related tasks, artifact links, and a clear reviewer action (review details, inspect data, compare plots, mark follow-up).
-   - Embed compact task summaries and small review datasets directly in the page when useful. Link to large artifacts instead of inlining them.
-   - Include interactive controls feasible in static HTML: section/task filters, collapsible grouped sections, sortable/filterable small tables, image/plot galleries, task-tile status filters, relationship links between dependent tasks, and reviewer note checklists stored as editable text areas or local browser state when appropriate.
-   - End this step with a short summary of what changed in `RESEARCH_REVIEW.html` and which artifacts still need better review coverage.
+1. **Update the human review page state**
+   - Locate `research_workspace/review_state.json`. If it does not exist, create it with a structured schema for review sections and tasks.
+   - Apply the `Decisions captured for /publish-research` items by updating the JSON state.
+   - Organize similar tasks into sections in the JSON by research question, hypothesis, or data source.
+   - Add a tile object per reviewed task showing task id/name, status, key finding, artifact links, etc.
+   - End this step by saving the JSON and providing a shell command or script instruction to regenerate `RESEARCH_REVIEW.html`.
 
-2. **Update the pitch deck**
-   - Locate `RESEARCH_PLAN_PITCH_DECK.html` in the research project working folder. If it does not exist, create it under the Static HTML Deliverable Rules above using the layout requirements from the `research-plan` skill.
-   - Apply the `Decisions captured for /publish-research` items that target the deck so it reflects the latest results, decisions, pivots, unresolved risks, convergence status, and next-step asks.
-   - Include graphs and diagrams where they improve clarity.
-   - Keep the deck presentation-ready with slide-like sections, minimal inline CSS, and speaker-friendly framing.
-   - End this step with a short summary of what changed in `RESEARCH_PLAN_PITCH_DECK.html`.
+2. **Update the pitch deck state**
+   - Locate `research_workspace/pitch_deck_state.json`. If it does not exist, create it.
+   - Apply the `Decisions captured for /publish-research` items to the JSON so it reflects the latest pivots, convergence status, and asks.
+   - End this step by saving the JSON and providing a shell command or script instruction to regenerate `RESEARCH_PLAN_PITCH_DECK.html`.
 
 3. **Update the research plan**
    - Write a concise summary of the planned changes to `RESEARCH_PLAN.md` (drawn from the discussion log), ask for approval, then apply.
