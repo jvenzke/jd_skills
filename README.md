@@ -12,7 +12,24 @@ Some skills are inspired by Matt Pocock's [Skills for Real Engineers](https://gi
 ## General Skills
 
 - [`/grill-me`](grill-me/SKILL.md): Stress-test a plan or design with one question at a time until the agent and user share a clear understanding.
-- [`/caveman`](caveman/SKILL.md): Switch to ultra-compressed communication to reduce token usage.
+- [`/meta-review`](meta-review/SKILL.md): Review how skills performed in the current chat, propose compact improvements, and log approved recurring problems.
+
+## Research Agent Workflow (Last updated: 2026-04-30)
+
+1. [`/generate-research-project`](generate-research-project/SKILL.md): Start from a Jira ticket or linked README, optionally create a git branch, and build the project scaffold:
+   - `README.md`
+   - `RESEARCH_PLAN.md`
+   - `results/`
+   - `research_tasks/`
+2. [`/research-plan`](research-plan/SKILL.md): Interview the user and explore the codebase as needed to produce:
+   - `RESEARCH_PLAN.md`
+   - `RESEARCH_PLAN_PITCH_DECK.html`
+3. Repeat the research loop until the plan converges:
+   - [`/to-research-tasks`](to-research-tasks/SKILL.md): Convert the current plan and compressed workspace context into the smallest unblocked task set, usually one AFK-ready task and never more than three, including the review artifacts each task must preserve.
+   - [`/do-research`](do-research/SKILL.md): Execute one approved task in a scoped task folder, write modular analysis code, generate Plotly HTML review artifacts for `RESEARCH_REVIEW.html`, create PNGs only when Markdown logs or READMEs need inline static images, and log findings in `results_log_{idx}_{name}.md`.
+   - [`/review-research`](review-research/SKILL.md): Review the latest task results with the user, decide whether the work has converged, build or update `RESEARCH_REVIEW.html` from curated HTML-first review artifacts, compress completed work into `research_workspace/`, archive completed raw task materials, update the pitch deck, and update `RESEARCH_PLAN.md`.
+   - Optional [`/commit-research`](commit-research/SKILL.md): Stage only the minimal reviewable and reproducible research files after review checkpoints. Do not commit unless explicitly asked.
+4. [`/summarize-research`](summarize-research/SKILL.md): Build the final production handoff in `/results`, including the executive summary, production-ready SQL/Python snippets, final assets, presentation webpage, and project README updates.
 
 ## Development Workflow (Last updated: 2026-04-30; Currently untested)
 
@@ -34,20 +51,3 @@ Use this workflow to review GitHub PRs across fresh chats without losing context
 Approved comments are staged locally until `/submit-pr-review`; they should become GitHub inline review comments, not a summary-only PR comment. Jira ticket discovery checks the PR branch name first, then title, body, and commits. Unresolved human review prompts are carried forward across chats and are not posted unless they become actionable comments.
 
 The workflow also tracks changed-line review coverage in `COVERAGE.md`. `/submit-pr-review` reports what percent of changed lines were presented to the human reviewer, what percent were reviewed only by the agent, and any unreviewed remainder. Agent-covered lines are grouped by why they were not shown, such as peripheral change, covered by tests/CI, matching an inspected pattern, duplicate mechanical change, static-review-only, or stale/superseded context.
-
-## Research Agent Workflow (Last updated: 2026-04-30)
-
-1. [`/generate-research-project`](generate-research-project/SKILL.md): Start from a Jira ticket or linked README, optionally create a git branch, and build the project scaffold:
-   - `README.md`
-   - `RESEARCH_PLAN.md`
-   - `results/`
-   - `research_tasks/`
-2. [`/research-plan`](research-plan/SKILL.md): Interview the user and explore the codebase as needed to produce:
-   - `RESEARCH_PLAN.md`
-   - `RESEARCH_PLAN_PITCH_DECK.html`
-3. Repeat the research loop until the plan converges:
-   - [`/to-research-tasks`](to-research-tasks/SKILL.md): Convert the current plan and compressed workspace context into the smallest unblocked task set, usually one AFK-ready task and never more than three, including the review artifacts each task must preserve.
-   - [`/do-research`](do-research/SKILL.md): Execute one approved task in a scoped task folder, write modular analysis code, generate Plotly HTML review artifacts for `RESEARCH_REVIEW.html`, create PNGs only when Markdown logs or READMEs need inline static images, and log findings in `results_log_{idx}_{name}.md`.
-   - [`/review-research`](review-research/SKILL.md): Review the latest task results with the user, decide whether the work has converged, build or update `RESEARCH_REVIEW.html` from curated HTML-first review artifacts, compress completed work into `research_workspace/`, archive completed raw task materials, update the pitch deck, and update `RESEARCH_PLAN.md`.
-   - Optional [`/commit-research`](commit-research/SKILL.md): Stage only the minimal reviewable and reproducible research files after review checkpoints. Do not commit unless explicitly asked.
-4. [`/summarize-research`](summarize-research/SKILL.md): Build the final production handoff in `/results`, including the executive summary, production-ready SQL/Python snippets, final assets, presentation webpage, and project README updates.
