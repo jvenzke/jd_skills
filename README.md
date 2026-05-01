@@ -14,7 +14,7 @@ Some skills are inspired by Matt Pocock's [Skills for Real Engineers](https://gi
 - [`/grill-me`](grill-me/SKILL.md): Stress-test a plan or design with one question at a time until the agent and user share a clear understanding.
 - [`/caveman`](caveman/SKILL.md): Switch to ultra-compressed communication to reduce token usage.
 
-## Development Workflow (Last updated: 2026-04-30)
+## Development Workflow (Last updated: 2026-04-30; Currently untested)
 
 1. [`/grill-me`](grill-me/SKILL.md): Resolve the design tree for a problem or project.
 2. [`/to-prd`](to-prd/SKILL.md): Turn the current conversation and codebase understanding into a PRD under `.working_items/`.
