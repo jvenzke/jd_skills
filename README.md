@@ -22,7 +22,7 @@ The [`/meta-review`](meta-review/SKILL.md) skill is the source of truth for what
 - Don't repeat yourself. If two skills share the same interview, decision tree, or output format, reference the canonical skill instead of duplicating it.
 - Be terse. Every bullet should carry weight; cut narration, restatement, and obvious commentary. Compress before adding.
 - Gate irreversible work behind explicit user approval (file moves, deletions, commits, pushes, schema changes, network calls).
-- Use a consistent shape: short intent statement, numbered workflow, small set of rules, and an explicit out-of-scope or exit section when useful. [`review-research`](review-research/SKILL.md) is the reference for multi-step skills; [`grill-me`](grill-me/SKILL.md) is the reference for single-purpose skills.
+- Use a consistent shape: short intent statement, numbered workflow, small set of rules, and an explicit out-of-scope or exit section when useful. [`publish-research`](publish-research/SKILL.md) is the reference for multi-step skills; [`grill-me`](grill-me/SKILL.md) is the reference for single-purpose skills.
 - Set `disable-model-invocation: true` for skills that should only be invoked explicitly by the user (see [`meta-review`](meta-review/SKILL.md)).
 
 ### Developing a Workflow
@@ -39,6 +39,10 @@ The [`/meta-review`](meta-review/SKILL.md) skill is the source of truth for what
 - [`/grill-me`](grill-me/SKILL.md): Stress-test a plan or design with one question at a time until the agent and user share a clear understanding.
 - [`/meta-review`](meta-review/SKILL.md): Review how skills performed in the current chat, propose compact improvements, and log approved recurring problems.
 
+## Shared Specs
+
+- [`research-portal`](research-portal/SKILL.md): Rendering spec for every static HTML surface produced by the research workflow (pitch deck, `RESEARCH_REVIEW.html`, leaf review artifacts, final presentation page). Defines the three-tier hierarchy, shared `:root` theme, tile/section components, dual-mode data-loading template, and the no-orphan-HTML hard rule. Referenced by `/research-plan`, `/do-research`, `/to-research-tasks`, `/compress-research`, `/publish-research`, `/summarize-research`, and `/commit-research` instead of being duplicated inline.
+
 ## Research Agent Workflow (Last updated: 2026-05-01)
 
 1. [`/generate-research-project`](generate-research-project/SKILL.md): Start from a Jira ticket or linked README, optionally create a git branch, and build the project scaffold:
@@ -51,7 +55,7 @@ The [`/meta-review`](meta-review/SKILL.md) skill is the source of truth for what
    - `RESEARCH_PLAN_PITCH_DECK.html`
 3. Repeat the research loop until the plan converges:
    - [`/to-research-tasks`](to-research-tasks/SKILL.md): Convert the current plan and compressed workspace context into the smallest unblocked task set, usually one AFK-ready task and never more than three, including the review artifacts each task must preserve.
-   - [`/do-research`](do-research/SKILL.md): Execute one approved task in a scoped task folder, write modular analysis code, generate Plotly HTML review artifacts for `RESEARCH_REVIEW.html`, create PNGs only when Markdown logs or READMEs need inline static images, and log findings in `results_log_{idx}_{name}.md`.
+   - [`/do-research`](do-research/SKILL.md): Execute one approved task in a scoped task folder, write modular analysis code, generate Plotly HTML review artifacts (Tier-3 leaf views per [`research-portal`](research-portal/SKILL.md)) for `RESEARCH_REVIEW.html`, create PNGs only when Markdown logs or READMEs need inline static images, and log findings in `results_log_{idx}_{name}.md`.
    - [`/compress-research`](compress-research/SKILL.md): Review the latest task results with the user, capture the alignment discussion in `research_workspace/discussion_log.md`, and compress completed work into `research_workspace/` and `research_tasks/archive/`. Does not edit the review surfaces.
    - [`/publish-research`](publish-research/SKILL.md): Read `discussion_log.md`, update `RESEARCH_REVIEW.html`, `RESEARCH_PLAN_PITCH_DECK.html`, and `RESEARCH_PLAN.md` to reflect the captured decisions, then clear the discussion log so the next review cycle starts fresh. Replaces the publication half of the deprecated `/review-research` skill.
    - Optional [`/commit-research`](commit-research/SKILL.md): Stage only the minimal reviewable and reproducible research files after review checkpoints. Do not commit unless explicitly asked.

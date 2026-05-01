@@ -41,14 +41,16 @@ Use the todo feature to track the workflow before starting. Create one todo for 
 
 6. **Build Presentation Webpage**
    - Create a static webpage in `/results` that can be used as a presentation for the data science group.
+   - Follow the Tier-1 final-handoff variant in [`research-portal`](../research-portal/SKILL.md): shared `:root` theme, `.intro` card, narrative-led with `<h2>` per major finding, inline plots, links into `/results/assets/` and `research_workspace/artifacts/` for provenance.
    - Outline the work completed, major findings, business or analytical impact, key visuals, limitations, and recommended next steps.
    - Design it as a clear presentation artifact, not a raw research log.
    - Link the webpage from `/results/README.md`.
 
 7. **Clean Up Human Review Page**
    - Locate `RESEARCH_REVIEW.html` in the research project working folder if it exists.
-   - If it exists, clean it up as a reviewer-facing companion to the final package: remove stale task tiles, fix broken relative links, group related task tiles into clear sections, clarify section summaries and dependency relationships, and point curated artifacts to `research_workspace/artifacts/` or `/results/assets` as appropriate.
+   - If it exists, clean it up as a reviewer-facing companion to the final package per the Tier-1 review-index conventions in [`research-portal`](../research-portal/SKILL.md): remove stale task tiles, fix broken relative links, group related task tiles into clear Tier-2 sections, clarify section summaries and dependency relationships, and point curated artifacts to `research_workspace/artifacts/` or `/results/assets` as appropriate.
    - Prefer linking or embedding curated `.html` artifacts for reviewable charts; keep `.png` references only for Markdown/static-preview needs or browser fallbacks.
+   - Run the reachability audit from `research-portal` to catch orphaned Tier-3 leaves left behind by removed tiles; either re-link them or move to `research_tasks/archive/`.
    - Preserve its purpose as an interactive review surface for task-level evidence. Do not turn it into the final presentation webpage.
    - If no `RESEARCH_REVIEW.html` exists, do not create one unless the user asks; note that no human review page was available to clean up.
 

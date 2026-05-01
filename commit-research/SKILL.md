@@ -33,7 +33,7 @@ Your goal is to stage the minimal set of files needed for another person to unde
    - `results/**`
    - Any linked assets referenced from research logs or result summaries.
 3. Read relevant markdown files to identify which generated files are referenced as evidence.
-4. For visual artifacts, stage HTML charts needed by `RESEARCH_REVIEW.html` or final presentation pages, and stage images only when they are referenced by a Markdown result log, final README, executive summary, or explicit user request.
+4. For visual artifacts, stage HTML charts needed by `RESEARCH_REVIEW.html` or final presentation pages, and stage images only when they are referenced by a Markdown result log, final README, executive summary, or explicit user request. Apply the no-orphan-HTML rule from [`research-portal`](../research-portal/SKILL.md): if a `.html` file is not reachable from the project entry page in ≤2 clicks, do not stage it — either link it first, or treat it as draft/scratch and exclude.
 
 ## Stage By Default
 

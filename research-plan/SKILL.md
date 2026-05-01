@@ -16,7 +16,7 @@ Your goal is to build a `RESEARCH_PLAN.md` that can be handed off to a junior da
 - **Output:** Once the interview is complete, create both files in the working folder of the project:
     1. `RESEARCH_PLAN.md` - a rigorous handoff plan for a junior data scientist.
     2. `RESEARCH_PLAN_PITCH_DECK.html` - a standalone static HTML pitch deck for a data science group meeting.
-- **Pitch deck requirements:** The HTML must be self-contained and open directly in a browser without a build step or external dependencies. Make it presentation-ready with slide-like sections, minimal inline CSS, and clear speaker-friendly framing. Include:
+- **Pitch deck requirements:** Follow the Tier-1 deck variant in [`research-portal`](../research-portal/SKILL.md) — shared `:root` theme, `.intro` card, slide-like `<h2>` sections separated by horizontal rules, no tile grid, prints clean, self-contained (no build step, no external dependencies). Slide content must include:
     1. Title, owner, date, and one-sentence thesis.
     2. Problem and motivation.
     3. Proposed research question or hypothesis.

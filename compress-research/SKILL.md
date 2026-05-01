@@ -11,7 +11,7 @@ You are a Principal Investigator. Analyze the latest task results to update the 
 - **Pivot Logic:** If results are inconclusive, analyze "Why" and propose new experimental unknowns in the discussion log.
 - **Independent next steps:** If multiple proposed next steps are completely independent, capture all of them; do not force a single sequence.
 - **Step tracking:** Use the todo feature to track all three task steps and complete them in order.
-- **No publication side effects:** Do not edit `RESEARCH_PLAN.md`, `RESEARCH_REVIEW.html`, or `RESEARCH_PLAN_PITCH_DECK.html` here. Capture the changes the discussion implies, but defer the edits to /publish-research.
+- **No publication side effects:** Do not edit `RESEARCH_PLAN.md`, `RESEARCH_REVIEW.html`, or `RESEARCH_PLAN_PITCH_DECK.html` here. Capture the changes the discussion implies, but defer the edits to /publish-research, which applies them per the [`research-portal`](../research-portal/SKILL.md) rendering spec.
 
 ### Discussion Log Contract
 

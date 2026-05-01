@@ -23,7 +23,7 @@ You are a Research Architect. Your task is to analyze the `RESEARCH_PLAN.md` and
 - **Task Location:** Tasks should go in `research_tasks/` and be named `task_{idx}_{name}.md`, replacing `idx` with a zero-padded task number denoting the order of completion and `name` with the task name.
 - **Logging for task:** Include in the task markdown that the logs should be written to a file with this naming convention: `results_log_{idx}_{name}.md`
 - **Review Artifacts:** Include task instructions to preserve artifacts needed by `RESEARCH_REVIEW.html`: an artifact manifest, representative CSV/JSON samples, schema or data dictionary notes, final SQL, final Python, standalone Plotly HTML for reviewable charts, PNG previews only when needed by Markdown files or static preview, and concise descriptions of how each artifact should be reviewed.
-- **Review Grouping Metadata:** Include a short review metadata block in each task with the intended review section, related task ids or expected dependencies, linked unknown/hypothesis, task tile title, and the one-sentence reason this task belongs in that section.
+- **Review Grouping Metadata:** Include a short review metadata block in each task with the intended review section, related task ids or expected dependencies, linked unknown/hypothesis, task tile title, and the one-sentence reason this task belongs in that section. The review section name should map to a Tier-2 section in the [`research-portal`](../research-portal/SKILL.md) Tier-1 review index, and the task tile title is what `/publish-research` will use as the `.tile-title` when creating the tile.
 
 ### Out of Scope:
 - Do not complete any research tasks.
