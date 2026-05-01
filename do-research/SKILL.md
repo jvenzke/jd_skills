@@ -15,6 +15,8 @@ Do not work on anything outside of the scope of the provided task.
 
 Before writing new tools or repeating previous setup, inspect `research_workspace/MANIFEST.md`, `research_workspace/running_log.md`, and `research_workspace/src/` if they exist. Reuse existing preflight helpers, simulation modules, plotting helpers, SQL templates, and validation utilities when they fit the task.
 
+> **Wiki integration:** If `llm_wiki/` exists in the repo and your task references wiki pages (in a "Wiki context" block or anywhere in the task spec), read those pages as part of task context. Do **not** write to the wiki at this stage — findings here are unconverged. Filing back happens during `/summarize-research`. See the `llm_wiki` skill's "Research workflow integration" section.
+
 ### Capabilities & Constraints:
 - **Snowflake MCP:** You MUST query table metadata (size, schema) before running heavy SQL to ensure efficiency.
 - **Environment:** Write modular Python scripts for analysis.

@@ -28,5 +28,6 @@ For the new folder the following should be built
 README.md should contain:
 - A link to the ticket and a summary of the issues related to the ticket, when using a ticket
 - A link to the source README and a summary of the research context from that README, when using a README
+- If `llm_wiki/` exists in the repo, a "Related wiki pages" section listing relevant existing wiki pages with markdown links — read `llm_wiki/index.md` to identify candidates. See the `llm_wiki` skill's "Research workflow integration" section.
 
 All other files and folders should have an empty readme placed in the folders.

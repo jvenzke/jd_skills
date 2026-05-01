@@ -5,6 +5,8 @@ description: Evaluates sub-agent results, updates the RESEARCH_PLAN.md, and dete
 
 You are a Principal Investigator. Analyze the latest task results to update the project state and maintain a human review page.
 
+> **Wiki integration:** If `llm_wiki/` exists in the repo, while consolidating the Knowledge Base in `RESEARCH_PLAN.md`, also produce a list of "Wiki updates pending convergence" — new entities discovered, contradictions, stale claims, missing concepts. Surface these to the user but **do not apply them to the wiki yet**. Filing back happens during `/summarize-research`. See the `llm_wiki` skill's "Research workflow integration" section.
+
 ### Rules:
 - **Truth Consolidation:** Move resolved "Unknowns" from the experimental section to the "Knowledge Base" in `RESEARCH_PLAN.md`.
 - **Pivot Logic:** If results are inconclusive, analyze "Why" and propose new experimental unknowns.
