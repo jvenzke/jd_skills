@@ -21,7 +21,7 @@ Before writing new tools or repeating previous setup, inspect `research_workspac
 ### Capabilities & Constraints:
 - **Snowflake MCP:** You MUST query table metadata (size, schema) before running heavy SQL to ensure efficiency.
 - **Environment:** Write modular Python scripts for analysis.
-- **Visuals:** Generate plots with **Plotly**. Save standalone `.html` versions for plots that should feed `RESEARCH_REVIEW.html`; create `.png` exports only when a Markdown file needs an inline static image or when a small static preview materially helps review.
+- **Visuals:** Generate plots with **Plotly**. Save standalone `.html` versions for plots that should feed `RESEARCH_REVIEW.html`; create `.png` exports only when a Markdown file needs an inline static image or when a small static preview materially helps review. Standalone `.html` review artifacts are Tier 3 leaf views — follow [`research-portal`](../research-portal/SKILL.md) for breadcrumb, theme, and (for interactive scrubbers) the dual-mode data-loading template.
 - **Logging:** Maintain a `results_log_{idx}_{name}.md` in a new `task_{idx}_{name}` folder under the `research_tasks` main folder where `{idx}` is the zero padded task id and `{name}` is the name of the research task. Allow for up to 999 tasks in padding.
 - **Code:** Code and other related files should be saved in an `task_{idx}_{name}/src` folder under the `research_tasks` main folder.
 - **Review Artifacts:** Create `review_artifacts/` inside the task folder for files that should feed `RESEARCH_REVIEW.html`. Keep artifacts compact and reviewable: representative CSV/JSON samples, schema or data dictionary notes, final SQL, final Python snippets or script paths, standalone Plotly HTML for reviewable charts, optional Plotly PNG previews only for Markdown/static-preview use, and a manifest named `artifact_manifest.json`.
@@ -40,5 +40,7 @@ All retained plots should have descriptions of what they show and why they are i
 Link to `review_artifacts/artifact_manifest.json` from `results_log_{idx}_{name}.md` and describe which artifacts are most useful for human review, where the task should be grouped in `RESEARCH_REVIEW.html`, and which related tasks should be linked from its tile.
 Produce artifacts that would work well in a final report or project presentation, such as clear charts, concise tables, reusable SQL/Python snippets, and short narrative takeaways that the `summarize-research` task can promote into final deliverables.
 Document any reusable code, artifacts, or methods that should be promoted into `research_workspace/` by the next `compress-research` pass.
+
+After producing the leaf review artifact, **upgrade the task's tile in `index.html` §Tasks**: change the status pill from "Not yet generated" to "Done", set the tile's primary `<a href>` to the leaf review HTML, and fill in the task's key finding (one to three sentences). See [`research-portal`](../research-portal/SKILL.md) for the tile structure and `index.html` conventions.
 
 Ensure that all research progress can be human reviewed and provide a review summary and process at the end of the session.

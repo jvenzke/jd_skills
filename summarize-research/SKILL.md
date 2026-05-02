@@ -41,14 +41,16 @@ Use the todo feature to track the workflow before starting. Create one todo for 
 
 6. **Build Presentation Webpage**
    - Create a static webpage in `/results` that can be used as a presentation for the data science group.
+   - Follow the Tier-1 final-handoff variant in [`research-portal`](../research-portal/SKILL.md): shared `:root` theme, `.intro` card, narrative-led with `<h2>` per major finding, inline plots, links into `/results/assets/` and `research_workspace/artifacts/` for provenance.
    - Outline the work completed, major findings, business or analytical impact, key visuals, limitations, and recommended next steps.
    - Design it as a clear presentation artifact, not a raw research log.
    - Link the webpage from `/results/README.md`.
 
 7. **Clean Up Human Review Page**
    - Locate `RESEARCH_REVIEW.html` in the research project working folder if it exists.
-   - If it exists, clean it up as a reviewer-facing companion to the final package: remove stale task tiles, fix broken relative links, group related task tiles into clear sections, clarify section summaries and dependency relationships, and point curated artifacts to `research_workspace/artifacts/` or `/results/assets` as appropriate.
+   - If it exists, clean it up as a reviewer-facing companion to the final package per the Tier-1 review-index conventions in [`research-portal`](../research-portal/SKILL.md): remove stale task tiles, fix broken relative links, group related task tiles into clear Tier-2 sections, clarify section summaries and dependency relationships, and point curated artifacts to `research_workspace/artifacts/` or `/results/assets` as appropriate.
    - Prefer linking or embedding curated `.html` artifacts for reviewable charts; keep `.png` references only for Markdown/static-preview needs or browser fallbacks.
+   - Run the reachability audit from `research-portal` to catch orphaned Tier-3 leaves left behind by removed tiles; either re-link them or move to `research_tasks/archive/`.
    - Preserve its purpose as an interactive review surface for task-level evidence. Do not turn it into the final presentation webpage.
    - If no `RESEARCH_REVIEW.html` exists, do not create one unless the user asks; note that no human review page was available to clean up.
 
@@ -56,15 +58,17 @@ Use the todo feature to track the workflow before starting. Create one todo for 
    - Write `/results/README.md` with the executive summary, final methodology, production snippets, visual asset links, and reproduction notes.
    - Keep the README focused on the final answer rather than the full exploration history.
 
-9. **Update Project README**
+9. **Update Project README and Index**
    - Add a quick summary of work completed, results, and links to important handoff materials in the main `README.md` for the research project.
    - Link to `/results`, `/research_workspace`, and `RESEARCH_REVIEW.html` as needed.
+   - Update `index.html`'s §Review section to link the final presentation page at `/results/<presentation>.html`. `index.html` is the persistent project entry; the presentation is the final-handoff surface linked from it. See [`research-portal`](../research-portal/SKILL.md).
 
 10. **File Findings into the Wiki** (only if `llm_wiki/` exists in the repo)
-   - Invoke the `llm_wiki` skill's Ingest workflow on the converged findings. Specifically:
+   - **Begin by reading `llm_wiki/skills/llm_wiki/SKILL.md` in full** — it is the operational manual for the wiki maintainer role. Apply its `Workflows > Ingest` and `Research workflow integration > Write stage` as the source of truth; the bullets below are an outline / memory aid, not a substitute. Re-read it on each summarize pass — it may have evolved since the last run.
+   - Specifically the wiki skill's Ingest workflow requires:
      - Decide which `llm_wiki/<project>/` folder the findings belong to.
      - Create or update wiki pages for new entities, concepts, and analyses surfaced by the research. Follow the wiki's frontmatter and link-style conventions.
-     - Add cross-references from related existing pages.
+     - Add cross-references from related existing pages — bidirectional by default (if your new page links to an existing page, the existing page should usually link back). Run the candidate-cross-reference sweep described in the wiki skill before declaring the ingest done.
      - Update `llm_wiki/index.md` with new/changed pages.
      - Append `## [YYYY-MM-DD] ingest | <Research Title>` to `llm_wiki/log.md` with a brief note of pages touched.
    - Run **both wiki linters** — both must report zero errors before this step is complete:
