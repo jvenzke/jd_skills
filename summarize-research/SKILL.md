@@ -64,10 +64,11 @@ Use the todo feature to track the workflow before starting. Create one todo for 
    - Update `index.html`'s §Review section to link the final presentation page at `/results/<presentation>.html`. `index.html` is the persistent project entry; the presentation is the final-handoff surface linked from it. See [`research-portal`](../research-portal/SKILL.md).
 
 10. **File Findings into the Wiki** (only if `llm_wiki/` exists in the repo)
-   - Invoke the `llm_wiki` skill's Ingest workflow on the converged findings. Specifically:
+   - **Begin by reading `llm_wiki/skills/llm_wiki/SKILL.md` in full** — it is the operational manual for the wiki maintainer role. Apply its `Workflows > Ingest` and `Research workflow integration > Write stage` as the source of truth; the bullets below are an outline / memory aid, not a substitute. Re-read it on each summarize pass — it may have evolved since the last run.
+   - Specifically the wiki skill's Ingest workflow requires:
      - Decide which `llm_wiki/<project>/` folder the findings belong to.
      - Create or update wiki pages for new entities, concepts, and analyses surfaced by the research. Follow the wiki's frontmatter and link-style conventions.
-     - Add cross-references from related existing pages.
+     - Add cross-references from related existing pages — bidirectional by default (if your new page links to an existing page, the existing page should usually link back). Run the candidate-cross-reference sweep described in the wiki skill before declaring the ingest done.
      - Update `llm_wiki/index.md` with new/changed pages.
      - Append `## [YYYY-MM-DD] ingest | <Research Title>` to `llm_wiki/log.md` with a brief note of pages touched.
    - Run **both wiki linters** — both must report zero errors before this step is complete:
