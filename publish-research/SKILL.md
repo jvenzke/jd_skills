@@ -32,7 +32,8 @@ These rules apply to both `RESEARCH_REVIEW.html` (Step 1) and `RESEARCH_PLAN_PIT
    - Apply the `Decisions captured for /publish-research` items by updating the JSON state.
    - Organize similar tasks into sections in the JSON by research question, hypothesis, or data source.
    - Add a tile object per reviewed task showing task id/name, status, key finding, artifact links, etc.
-   - End this step by saving the JSON and providing a shell command or script instruction to regenerate `RESEARCH_REVIEW.html`.
+   - Add a `status_update` field to the JSON state containing "recently finished" and "up next" items so it is updated for a human to quickly review and understand what was recently finished and what is up next in the research path.
+   - End this step by saving the JSON and providing a shell command or script instruction to regenerate `RESEARCH_REVIEW.html` (if HTML generation is enabled in `research_workspace/config.md`).
 
 2. **Update the pitch deck state**
    - Locate `research_workspace/pitch_deck_state.json`. If it does not exist, create it.
@@ -49,6 +50,8 @@ These rules apply to both `RESEARCH_REVIEW.html` (Step 1) and `RESEARCH_PLAN_PIT
 4. **Reset the discussion log**
    - Overwrite `research_workspace/discussion_log.md` with an empty template containing only the section headings from the Discussion Log Contract in `/compress-research`, plus a one-line note `Cleared on YYYY-MM-DD by /publish-research after publication of session <session id or date>`.
    - This is the only file that should be reset by this skill; do not touch `running_log.md`, `MANIFEST.md`, or archived task folders.
+   - Extract and present the critical parts of the updated `RESEARCH_PLAN.md` directly in the chat so the user can quickly read and understand what will happen next in the process without opening the file.
+   - After presenting these critical snippets, summarize what sections were left out of the chat (e.g., "table definitions 100 lines of file") and why. Finally, report the percentage of the file's rows that were presented to the user in the chat relative to the total rows in the file.
    - End this step by reporting that the discussion log is reset and the next review cycle can start with a fresh `/compress-research` run.
 
 ### Out of Scope:

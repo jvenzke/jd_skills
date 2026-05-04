@@ -41,12 +41,16 @@ The [`/meta-review`](meta-review/SKILL.md) skill is the source of truth for what
 - [`/grill-me`](grill-me/SKILL.md): Stress-test a plan or design with one question at a time until the agent and user share a clear understanding.
 - [`/meta-review`](meta-review/SKILL.md): Review how skills performed in the current chat, propose compact improvements, and log approved recurring problems.
 
-## Research Agent Workflow (Last updated: 2026-05-01)
+- [`/toggle-html`](toggle-html/SKILL.md): Toggle the generation of HTML review surfaces (RESEARCH_REVIEW.html and RESEARCH_PLAN_PITCH_DECK.html) on or off.
 
-> **Token Optimization Rules:** This workflow aggressively minimizes context bloat:
+## Research Agent Workflow (Last updated: 2026-05-04)
+
+> **Token Optimization & Review Rules:** This workflow aggressively minimizes context bloat and keeps the user informed:
 > - HTML review surfaces are generated from `review_state.json` and `pitch_deck_state.json` via local scripts; the LLM does not write HTML directly.
 > - The `running_log.md` is periodically compressed into `core_context.md` to keep context dense.
 > - Raw data artifacts (CSV/JSON rows) are excluded from the LLM context; agents only read summary stats (`df.describe()`) and schemas.
+> - Agents provide an in-chat summary of what context was read vs omitted (with percentage of lines reviewed) during planning and review steps.
+> - HTML generation is optional and can be toggled at any time using the `/toggle-html` skill.
 
 1. [`/generate-research-project`](generate-research-project/SKILL.md): Start from a Jira ticket or linked README, optionally create a git branch, and build the project scaffold:
    - `README.md`
