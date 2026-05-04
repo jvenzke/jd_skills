@@ -29,9 +29,11 @@ Show the slice queue and recommend which slices to walk first. You MUST stop her
 
 ## Review Each Slice
 
+CRITICAL: You MUST walk through slices STRICTLY one at a time. Do not proceed to the next slice until the user approves the current one.
+
 For each slice:
 
-- show concise code references and a 2-sentence role summary
+- show exact code references and a 2-sentence role summary
 - inspect surrounding code and local patterns
 - compare against PR/ticket intent and test evidence
 - identify actionable findings
