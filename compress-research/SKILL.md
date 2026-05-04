@@ -51,7 +51,7 @@ Keep `research_workspace/discussion_log.md` as the running record of the current
    - Leave original artifacts with archived task folders and link both curated and original paths from `running_log.md`.
    - Extract reusable operational code into `research_workspace/src/` only when clearly reusable; leave one-off EDA, failed experiment code, task-specific notebooks, and hard-coded scripts in the archived task folder.
    - End this step with a short summary of what moved, what was consolidated, and what reusable assets now exist.
-   - Extract and present the critical parts of the `RESEARCH_PLAN.md` and `running_log.md` directly in the chat so the user can quickly read and understand what will happen next in the process without opening the files.
+   - Extract and present the critical parts of the `RESEARCH_PLAN.md`, `running_log.md`, and `discussion_log.md` directly in the chat so the user can quickly read and understand what will happen next in the process without opening the files.
    - After presenting these critical snippets, summarize what sections were left out of the chat (e.g., "table definitions 100 lines of file") and why. Finally, report the percentage of the files' rows that were presented to the user in the chat relative to the total rows in the files.
    - Tell the user the next step is `/publish-research`, which will read `discussion_log.md`, update the review HTML, pitch deck, and research plan, and then clear the discussion log.
 
