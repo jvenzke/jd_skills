@@ -12,7 +12,7 @@ You are a Security Engineer. Find objective, actionable security risks in the PR
 
 Read `STATE.md`, `PR_CONTEXT.md`, `PR_BRIEF.md`, `COMMENTS.md`, and `COVERAGE.md` from `.working_items/pr-review/<pr-id>/`.
 
-Fetch the live PR and compare the current `head_sha` to `STATE.md`. If it changed, summarize the change and ask whether to refresh affected artifacts before continuing.
+Fetch the live PR and compare the current `head_sha` to `STATE.md`. If the fetch fails due to network or auth issues, halt and ask the user how to proceed. If it changed, summarize the change and ask whether to refresh affected artifacts before continuing.
 
 ## Review Scope
 

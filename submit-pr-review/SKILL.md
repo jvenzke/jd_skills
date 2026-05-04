@@ -24,7 +24,7 @@ Read all artifacts from `.working_items/pr-review/<pr-id>/`:
 
 Fetch the live PR and compare the current `head_sha` to `STATE.md`.
 
-If the PR changed, summarize the difference and ask whether to refresh/re-anchor before submitting.
+If the fetch fails due to network or auth issues, halt and ask the user how to proceed. If the PR changed, summarize the difference and ask whether to refresh/re-anchor before submitting.
 
 ## Validate Comments
 
@@ -65,7 +65,7 @@ Use the coverage summary in `SUBMISSION.md` so the user has a durable record of 
 
 ## Submission
 
-Create one GitHub review containing all validated inline comments. Ask the user to confirm before calling GitHub write operations.
+Create one GitHub review containing all validated inline comments. Ask the user to confirm before calling GitHub write operations. If there are zero comments to submit, you may skip the GitHub submission and approval step, but you must still present the final coverage summary.
 
 Default review event:
 

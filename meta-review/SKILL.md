@@ -15,7 +15,7 @@ Review only the current chat context. Do not use parent transcripts unless the u
 3. Read `meta-review/problems.md` once, then each approved skill's `SKILL.md`.
 4. Use a read-only subagent only for long, messy, or multi-skill sessions; verify its recommendations yourself.
 5. For each skill, compare observed behavior against its instructions and approved user expectations.
-6. Check whether the skill forgot steps, struggled, caused confusion, duplicated another skill, or exceeded 40 actionable directives in `SKILL.md`.
+6. Check whether the skill forgot steps, struggled, caused confusion, duplicated another skill, wasted tokens (e.g., verbose outputs, inefficient data generation—propose ways to reduce these), or exceeded 40 actionable directives in `SKILL.md`.
 7. For skills that hand work to a next step, verify the skill wrote the needed next-step context to a durable file or declared artifact so a fresh chat can continue without relying on chat memory.
 8. Count only actionable bullets or numbered steps; ignore frontmatter, headings, examples, and reference links.
 9. Treat a problem as recurring when the same skill has the same failure pattern twice or the issue matches an active log entry.

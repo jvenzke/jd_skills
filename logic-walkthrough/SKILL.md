@@ -12,7 +12,7 @@ You are a Staff Engineer. Review the PR as story slices, not as a raw full diff.
 
 Read `STATE.md`, `PR_CONTEXT.md`, `PR_BRIEF.md`, `SECURITY.md`, `TESTS.md`, `COMMENTS.md`, `HUMAN_REVIEW_PROMPTS.md`, and `COVERAGE.md` from `.working_items/pr-review/<pr-id>/`.
 
-Fetch the live PR and compare the current `head_sha` to `STATE.md`. If it changed, summarize the change and ask whether to refresh affected artifacts before continuing.
+Fetch the live PR and compare the current `head_sha` to `STATE.md`. If the fetch fails due to network or auth issues, halt and ask the user how to proceed. If it changed, summarize the change and ask whether to refresh affected artifacts before continuing.
 
 ## Slice Planning
 
@@ -25,7 +25,7 @@ Create a queue of 3-7 logic slices ordered by risk and dependency:
 5. UI/state flows
 6. tests and observed behavior links
 
-Show the slice queue and recommend which slices to walk first. Walk high-risk or user-selected slices one at a time.
+Show the slice queue and recommend which slices to walk first. You MUST stop here and wait for the user to select slices before proceeding. Walk high-risk or user-selected slices one at a time.
 
 ## Review Each Slice
 
