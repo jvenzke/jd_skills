@@ -46,7 +46,7 @@ Use read-only specialist subagents for complex slices, then verify their finding
 
 ### Proposed Inline Comments
 
-Use for actionable, code-anchored feedback the PR author can resolve. Append to `COMMENTS.md` with source phase `logic-walkthrough`.
+Use for actionable, code-anchored feedback the PR author can resolve. Keep proposed inline comments terse and direct. State the issue and the fix without over-explaining. Append to `COMMENTS.md` with source phase `logic-walkthrough`.
 
 ### Human Review Prompts
 
@@ -70,7 +70,7 @@ Ask human review prompts in focused batches when they block understanding of an 
 
 Stage approved comments locally in `COMMENTS.md`. Do not post to GitHub.
 
-Mark any changed lines shown in walkthrough slices, inline comment approvals, or human review prompts as `human_presented`.
+Mark changed lines as `human_presented` ONLY if the actual code diff was explicitly printed in the chat UI. Merely referencing a line number does not count.
 
 Mark changed lines reviewed by the agent but not shown as `agent_reviewed_not_shown` with a reason group:
 
@@ -80,5 +80,7 @@ Mark changed lines reviewed by the agent but not shown as `agent_reviewed_not_sh
 - `duplicate_or_mechanical`
 - `peripheral_change`
 - `superseded_or_unchanged_context`
+
+When asking for user approval, explicitly state the line count of the logic presented vs the logic the agent reviewed but did not present.
 
 End by updating `LOGIC_WALKTHROUGH.md`, `COVERAGE.md`, and `NEXT_CHAT_PROMPT.md`.
