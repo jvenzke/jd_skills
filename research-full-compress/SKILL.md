@@ -1,5 +1,5 @@
 ---
-name: research-full-compress
+name: compress-research
 description: Reviews the latest research-task results with the user, captures the alignment discussion to a discussion log, and compresses completed work into the research workspace. Hand off to /publish-research when convergence is good enough to update review surfaces.
 disable-model-invocation: true
 ---

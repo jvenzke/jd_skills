@@ -1,5 +1,5 @@
 ---
-name: pr-review-logic-walkthrough
+name: logic-walkthrough
 description: Guides a risk-based PR logic review using story slices, proposed inline comments, and human review prompts for unclear business logic. Use after security and test review or when reviewing PR behavior.
 disable-model-invocation: true
 ---

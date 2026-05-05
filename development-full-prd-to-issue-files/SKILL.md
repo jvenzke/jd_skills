@@ -1,5 +1,5 @@
 ---
-name: development-full-prd-to-issue-files
+name: prd-to-issue-files
 description: Breaks a linked PRD markdown file into vertical-slice issue markdown files in a sibling folder. Use when the user wants to turn a PRD into local issue .md files or implementation plans.
 disable-model-invocation: true
 ---

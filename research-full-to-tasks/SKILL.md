@@ -1,5 +1,5 @@
 ---
-name: research-full-to-tasks
+name: to-research-tasks
 description: Translates a high-level RESEARCH_PLAN.md into atomic, AFK-compatible tasks for a sub-agent.
 disable-model-invocation: true
 ---

@@ -1,5 +1,5 @@
 ---
-name: research-full-generate-project
+name: generate-research-project
 description: Read a ticket or linked README, optionally create a new working git branch, set up the folder structure for the research, and write a README.md about the project
 disable-model-invocation: true
 ---

@@ -1,5 +1,5 @@
 ---
-name: pr-review-submit
+name: submit-pr-review
 description: Validates locally approved PR review comments and submits them as GitHub inline review comments. Use at the end of the PR review workflow after comments have been approved across phases.
 disable-model-invocation: true
 ---

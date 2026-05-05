@@ -1,5 +1,5 @@
 ---
-name: development-full-tdd
+name: dev-tdd
 description: Implement a task using test-driven development (red-green-refactor loop) via a subagent. Summarize changes and commit after user approval. Use when the user wants to implement an issue file or task.
 disable-model-invocation: true
 ---

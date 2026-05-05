@@ -1,5 +1,5 @@
 ---
-name: research-full-publish
+name: publish-research
 description: Publishes the synthesized findings from /compress-research into the three review surfaces (RESEARCH_REVIEW.html, RESEARCH_PLAN_PITCH_DECK.html, RESEARCH_PLAN.md), then clears the discussion log so the next review session starts fresh. Run after /compress-research.
 disable-model-invocation: true
 ---

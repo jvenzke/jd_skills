@@ -1,5 +1,5 @@
 ---
-name: research-full-plan
+name: research-plan
 description: Interview the user to turn a vague research idea into a rigorous, falsifiable plan. Categorizes unknowns into feasibility, experimental, and out-of-scope.
 disable-model-invocation: true
 ---

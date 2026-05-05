@@ -1,5 +1,5 @@
 ---
-name: development-light-do
+name: do-light-dev
 description: Execute the steps in LIGHT_DEV_PLAN.md for a hotfix or small task. Includes writing tests whenever possible.
 disable-model-invocation: true
 ---

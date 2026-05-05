@@ -1,5 +1,5 @@
 ---
-name: development-light-plan
+name: plan-light-dev
 description: Plan a small implementation task or hotfix. Reads the request, explores the codebase, aligns on scope, and creates a LIGHT_DEV_PLAN.md.
 disable-model-invocation: true
 ---

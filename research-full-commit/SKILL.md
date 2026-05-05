@@ -1,5 +1,5 @@
 ---
-name: research-full-commit
+name: commit-research
 description: Stage only the research files that are needed to review or reproduce a research project, including HTML review artifacts and Markdown-required PNGs while avoiding git bloat.
 disable-model-invocation: true
 ---

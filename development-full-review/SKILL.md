@@ -1,5 +1,5 @@
 ---
-name: development-full-review
+name: dev-review
 description: Perform a compressed review of all changes made during the development cycle, validate against the PRD, and prepare a PR. Use when all tasks for a feature are complete.
 disable-model-invocation: true
 ---

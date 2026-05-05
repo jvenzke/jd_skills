@@ -1,5 +1,5 @@
 ---
-name: research-full-do
+name: do-research
 description: The execution engine for the sub-agent. Uses Snowflake MCP and Python to answer a specific research task and log results.
 disable-model-invocation: true
 ---

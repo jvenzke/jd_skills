@@ -1,5 +1,5 @@
 ---
-name: general-toggle-html
+name: toggle-html
 description: Toggle the generation of HTML review surfaces (RESEARCH_REVIEW.html and RESEARCH_PLAN_PITCH_DECK.html) on or off.
 disable-model-invocation: true
 ---

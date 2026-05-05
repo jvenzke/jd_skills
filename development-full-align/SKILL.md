@@ -1,5 +1,5 @@
 ---
-name: development-full-align
+name: dev-align
 description: Read a ticket or research output, explore the codebase, and grill the user to align on the task scope. Creates a git branch. Use when starting development on a new ticket, feature, or research output.
 disable-model-invocation: true
 ---

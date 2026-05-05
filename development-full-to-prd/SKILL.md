@@ -1,5 +1,5 @@
 ---
-name: development-full-to-prd
+name: to-prd
 description: Turns conversation context and codebase understanding into a PRD written under .working_items/ at the git repo root. Use when the user wants a PRD from the current chat, to capture requirements locally, or mentions to-prd / product requirements.
 disable-model-invocation: true
 ---

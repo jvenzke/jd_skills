@@ -1,5 +1,5 @@
 ---
-name: pr-review-meta
+name: meta-review
 description: Review how skills performed in the current chat, identify missed instructions or bloat, propose compact improvements, and log approved recurring problems. Use at the end of a chat session where one or more skills were used.
 disable-model-invocation: true
 ---

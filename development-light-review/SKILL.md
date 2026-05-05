@@ -1,5 +1,5 @@
 ---
-name: development-light-review
+name: review-light-dev
 description: Review completed light development work against LIGHT_DEV_PLAN.md and prepare a Pull Request.
 disable-model-invocation: true
 ---

@@ -1,5 +1,5 @@
 ---
-name: research-full-summarize
+name: summarize-research
 description: Compiles all research logs into a production-ready /results folder with an executive summary and optimized implementation code.
 disable-model-invocation: true
 ---
