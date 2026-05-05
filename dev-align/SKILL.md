@@ -19,7 +19,6 @@ Take an incoming ticket (via Jira URL, local markdown file, or pasted text) or r
 2. **Explore the codebase**:
    - Search the codebase to understand where this feature or fix will live.
    - Ground all discussions in the existing system architecture, patterns, and constraints.
-   - Suggest improvements to the codebase as needed to support Do not repeat yourself (DRY) and orthoginality during the development process
 
 3. **Grill the user**:
    - Interview the user relentlessly about every aspect of the plan until reaching a shared understanding.
