@@ -70,11 +70,13 @@ The [`/meta-review`](meta-review/SKILL.md) skill is the source of truth for what
 
 > The single `/review-research` skill has been split into `/compress-research` (review/discuss/compress) and `/publish-research` (update review HTML, pitch deck, research plan, then reset the discussion log). The old `/review-research` slug is kept as a thin stub that redirects to the two replacements.
 
-## Development Workflow (Last updated: 2026-04-30; Currently untested)
+## Development Workflow (Last updated: 2026-05-05)
 
-1. [`/grill-me`](grill-me/SKILL.md): Resolve the design tree for a problem or project.
-2. [`/to-prd`](to-prd/SKILL.md): Turn the current conversation and codebase understanding into a PRD under `.working_items/`.
-3. [`/prd-to-issue-files`](prd-to-issue-files/SKILL.md): Break an approved PRD into ordered, vertical-slice issue markdown files.
+1. [`/dev-align`](dev-align/SKILL.md): Read the incoming ticket or doc, explore the codebase, grill the user to align on scope, and create a git branch.
+2. [`/to-prd`](to-prd/SKILL.md): Turn the aligned plan into a PRD with a vertical-slice task breakdown (AFK/HITL) under `.working_items/`.
+3. [`/prd-to-issue-files`](prd-to-issue-files/SKILL.md): Extract each task from the PRD into its own implementation plan document.
+4. [`/dev-tdd`](dev-tdd/SKILL.md): Implement a task using a strict red-green-refactor loop, summarizing changes and committing after approval.
+5. [`/dev-review`](dev-review/SKILL.md): Perform a compressed review of the work, summarize coverage, and prepare/open a Pull Request.
 
 ## Light Research Workflow (Last updated: 2026-05-05)
 
