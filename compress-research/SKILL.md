@@ -28,8 +28,7 @@ Keep `research_workspace/discussion_log.md` as the running record of the current
    - Review the linked research logs, prioritizing the `results_log_{idx}_{name}.md` file(s), task artifact manifests, and task review artifacts provided. Enforce a **metadata-only** approach: read only summary statistics and schema descriptions; do not read raw data rows (CSV/JSON) into context to minimize token usage.
    - Provide a clear, short summary of the methods used and results of the experiment.
    - Include things learned, new questions, blind spots, and other interesting notes.
-   - Pause and allow the user to ask questions about the results before moving on.
-   - Avoid the question UI tool for this step.
+   - Invite optional clarification questions after the Step 1 summary. **Immediate alignment:** When the user attaches specific task/results logs to `/compress-research`, states they want to align without extra dwell time on methods/results, or replies “continue” to proceed after the summary, you may begin Step 2 in the same turn. **Do not use the question UI tool in Step 1** (reserve it for Step 2 and the Step 3 compression approval gate).
    - Do not update `RESEARCH_PLAN.md`, `RESEARCH_REVIEW.html`, or the pitch deck during this step.
 
 2. **Discuss alignment with the research plan and persist the discussion log**
@@ -42,7 +41,7 @@ Keep `research_workspace/discussion_log.md` as the running record of the current
    - End this step with a short summary that points the user at `research_workspace/discussion_log.md` and lists the captured `Decisions captured for /publish-research` bullets.
 
 3. **Compress the research into the research workspace**
-   - Write a concise summary of the planned compression work and ask for approval before editing files.
+   - Write a concise summary of the planned compression work (archive paths, curated copies under `research_workspace/`, `running_log.md` / `MANIFEST.md` updates). **Approval gate:** Obtain confirmation with **one AskQuestion** whose options reflect approve vs revise scope before editing compression-related files. Do **not** treat a vague chat `"continue"` as approval unless it explicitly refers to that compression summary in the **immediately preceding** assistant message (then treat as approval).
    - After approval, compress the workspace.
    - Create or update `research_workspace/running_log.md`, `research_workspace/MANIFEST.md`, `research_workspace/src/` when reusable code exists, `research_workspace/artifacts/` for curated key artifacts, and `research_tasks/archive/` for completed raw task folders and completed task markdown files.
    - Preserve detailed provenance in `research_workspace/running_log.md`: paths tried, wins, failures, methods, implementation details, artifacts, raw evidence locations, reusable code, unresolved risks, and open questions. Cross-reference the relevant sections of `discussion_log.md` rather than duplicating them. To prevent unbounded token growth, periodically compress older sections of `running_log.md` into a dense `core_context.md` (or merge into `MANIFEST.md`), keeping only recent iterations active.

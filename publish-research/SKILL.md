@@ -52,7 +52,10 @@ These rules apply to both `RESEARCH_REVIEW.html` (Step 1) and `RESEARCH_PLAN_PIT
    - This is the only file that should be reset by this skill; do not touch `running_log.md`, `MANIFEST.md`, or archived task folders.
    - Extract and present the critical parts of the updated `RESEARCH_PLAN.md` directly in the chat so the user can quickly read and understand what will happen next in the process without opening the file.
    - After presenting these critical snippets, summarize what sections were left out of the chat (e.g., "table definitions 100 lines of file") and why. Finally, report the percentage of the file's rows that were presented to the user in the chat relative to the total rows in the file.
-   - End this step by reporting that the discussion log is reset and the next review cycle can start with a fresh `/compress-research` run.
+   - **Closing hints (required):** After the above, add a short bullet list of **optional next commands for the user** — **do not run or implement them inside `/publish-research`** (see [Out of Scope](#out-of-scope)). Tailor hints to what `Research_plan.md` and the pitch deck still imply as open work. Typical patterns:
+     - **`/summarize-research`** or **`/summarize-light-research`** — when the user wants a readable digest or stakeholder summary without starting a full compression pass.
+     - **`/to-research-tasks`** — when the user wants to translate plan deltas into concrete task specs; this skill does **not** author tasks here.
+     - Mention other workspace research skills only when clearly relevant (e.g. `/do-research` after tasks exist).
 
 ### Out of Scope:
 No new research tasks should be generated or executed. Only `RESEARCH_PLAN.md`, `RESEARCH_PLAN_PITCH_DECK.html`, `RESEARCH_REVIEW.html`, and `research_workspace/discussion_log.md` should change here.

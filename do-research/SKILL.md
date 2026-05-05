@@ -35,7 +35,7 @@ Before writing new tools or repeating previous setup, inspect `research_workspac
 - If work should be promoted, moved, or reused elsewhere, document that recommendation for the review process instead of performing the move.
 
 ### Required Output:
-At the end of the task, summarize findings, provide the final SQL/Python snippets, link the review-ready `.html` artifacts, and embed `.png` plots in `results_log_{idx}_{name}.md` only when Markdown needs inline static images.
+At the end of the task, summarize findings, provide the final SQL/Python snippets or links to task-local SQL/Python files when the scripts are long, link the review-ready `.html` artifacts, and embed `.png` plots in `results_log_{idx}_{name}.md` only when Markdown needs inline static images. Include short snippets only for compact critical fragments that materially help review.
 All retained plots should have descriptions of what they show and why they are important to the research; use HTML links for interactive review and PNG embeds only for Markdown readability.
 Link to `review_artifacts/artifact_manifest.json` from `results_log_{idx}_{name}.md` and describe which artifacts are most useful for human review, where the task should be grouped in `RESEARCH_REVIEW.html`, and which related tasks should be linked from its tile.
 Produce artifacts that would work well in a final report or project presentation, such as clear charts, concise tables, reusable SQL/Python snippets, and short narrative takeaways that the `summarize-research` task can promote into final deliverables.
