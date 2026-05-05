@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Cursor Skills for Data Science/Data Engineering</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --bg-color: #1e1e2e;
+      --text-color: #d4d4d4;
+      --heading-color: #9cdcfe;
+      --accent-color: #569cd6;
+      --card-bg: #252538;
+      --border-color: #3e3e42;
+      --code-bg: #1a1a24;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      color: var(--text-color);
+      background-color: var(--bg-color);
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    h1, h2, h3 {
+      color: var(--heading-color);
+      font-weight: 600;
+      margin-top: 2em;
+      margin-bottom: 0.5em;
+    }
+
+    h1 {
+      font-size: 2.5em;
+      border-bottom: 2px solid var(--accent-color);
+      padding-bottom: 10px;
+      margin-top: 0;
+    }
+
+    h2 {
+      font-size: 1.8em;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 8px;
+    }
+
+    h3 {
+      font-size: 1.3em;
+      color: var(--accent-color);
+    }
+
+    p {
+      margin-bottom: 1.2em;
+    }
+
+    ul {
+      margin-bottom: 1.5em;
+      padding-left: 20px;
+    }
+
+    li {
+      margin-bottom: 0.5em;
+    }
+
+    strong {
+      color: #c586c0;
+    }
+
+    code {
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+      background-color: var(--code-bg);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.9em;
+      color: #ce9178;
+    }
+
+    pre {
+      background-color: var(--code-bg);
+      padding: 20px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      overflow-x: auto;
+    }
+
+    pre code {
+      background-color: transparent;
+      padding: 0;
+      color: inherit;
+      border-radius: 0;
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 25px;
+      margin-bottom: 30px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .card h2 {
+      margin-top: 0;
+      border-bottom: none;
+    }
+
+    .subtitle {
+      font-size: 1.2em;
+      color: #858585;
+      margin-bottom: 40px;
+    }
+
+    .section-break {
+      margin: 60px 0;
+      border: 0;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--border-color), transparent);
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Cursor Skills for Data Engineering</h1>
+  <p class="subtitle">
+    Standardizing workflows, context sharing, and reducing friction<br>
+    <a href="https://github.com/jvenzke/jd_skills" style="color: var(--accent-color); text-decoration: none; font-size: 0.9em; margin-top: 10px; display: inline-block;">GitHub with skills discussed</a>
+  </p>
+
+  <div class="card">
+    <h2>Agenda</h2>
+    <ul>
+      <li>Introduction to Cursor Skills</li>
+      <li>Overview of Available Workflows</li>
+      <li>Practical Guidelines for LLMs in DE</li>
+      <li>Demo: Light Research Workflow</li>
+    </ul>
+  </div>
+
+  <hr class="section-break">
+
+  <h2>Introduction</h2>
+  
+  <div class="card">
+    <h3>Why Build AI Workflows?</h3>
+    <ul>
+      <li><strong>Aim for 2-3x Speed:</strong> A well-designed AI workflow accelerates planning and implementation, significantly speeding up your day-to-day work.</li>
+      <li><strong>Keep Context &lt; 100K Tokens:</strong> Model performance degrades with overly large contexts. Keep context tight and focused.</li>
+      <li><strong>Iterate and Adapt:</strong> These workflows aren't static. Improve and adjust them over time to perfectly meet your specific needs.</li>
+    </ul>
+  </div>
+
+  <h3>What are Cursor Skills?</h3>
+  <p>Skills enforce <strong>consistency</strong> when interacting with the agent. By defining operating procedures in Markdown, you guide the AI to follow predictable steps and write artifacts to disk.</p>
+
+  <ul>
+    <li><strong>Reduce boilerplate:</strong> Use structured workflows to handle repetitive data pipeline setup.</li>
+    <li><strong>Structured prototyping:</strong> Keep the AI focused on one task at a time when building Streamlit apps, Snowflake queries, etc.</li>
+    <li><strong>Manage context:</strong> Automatically have the agent rely on generated markdown artifacts (e.g. <code>LIGHT_DEV_PLAN.md</code>) instead of trying to remember the whole chat.</li>
+  </ul>
+
+  <pre><code>---
+name: do-light-dev
+description: Execute the steps in LIGHT_DEV_PLAN.md for a hotfix or small task.
+disable-model-invocation: true
+---
+
+# Do Light Development
+
+1. **Read the Plan**: Read the `LIGHT_DEV_PLAN.md` file...
+2. **Execute**: Implement the next planned step(s)...
+3. **Write Tests**: Write tests for the changes you make...
+4. **Update the Plan**: Check off completed items...
+5. **Next Step**: Prompt the user to run `/review-light-dev`...</code></pre>
+  
+  <hr class="section-break">
+
+  <h2>The Engineer's Responsibility</h2>
+  <p>AI is an accelerator, not an autopilot. Your role shifts from typing every line to orchestrating the work.</p>
+  
+  <div class="card">
+    <h3 style="color: #ff9d00; text-align: center; margin-top: 0; margin-bottom: 20px; font-size: 1.6em; border: none;">You are the Owner of the Work</h3>
+    <ul>
+      <li><strong>Accelerate, don't delegate:</strong> Use AI to drastically speed up planning and implementation, but remember that you remain the architect, engineer, scientist, and reviewer of the work.</li>
+      <li><strong>Read the code:</strong> If the AI generates code that will live in production, you must read and understand it. Treat the AI like a junior developer submitting a PR.</li>
+      <li><strong>QA everything:</strong> Rigorously test and review all outputs to ensure the agent actually accomplished what you asked for without introducing regressions.</li>
+      <li><strong>Iterate, don't fix:</strong> If the agent makes a mistake, iterate on the plan, not the code. The agent should be able to fix its own mistakes.</li>
+      <li><strong>Customize the workflow:</strong> My workflow maybe different than how you work. Iterate on the workflow to make it work for you.</li>
+    </ul>
+  </div>
+
+  <hr class="section-break">
+
+  <h2>Workflow Overview</h2>
+
+  <div class="card">
+    <h3>Research</h3>
+    <ul>
+      <li><strong>Light Research:</strong> Short research tasks and POCs with a tightly limited scope.</li>
+      <li><strong>Research Agent:</strong> Multi-step loop for research tasks with many unknowns that may take multiple days to finish.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>Development</h3>
+    <ul>
+      <li><strong>Light Dev:</strong> Plan-then-execute loop for well-scoped hotfixes and small tasks.</li>
+      <li><strong>Full Dev:</strong> Artifact-driven process for major features and refactors (PRD → issue files → TDD). Supports parallel execution for very large changes.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>Review & General</h3>
+    <ul>
+      <li><strong>PR Review:</strong> First-pass agent review for test coverage and basic logic.</li>
+      <li><strong>General Skills:</strong>
+        <ul>
+          <li><code>/grill-me</code> forces the agent to ask questions and clarify plans.</li>
+          <li><code>/meta-review</code> evaluates and improves your skills over time.</li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <hr class="section-break">
+
+  <h2>Working Effectively with AI</h2>
+
+  <h3>1. Manage Context Size</h3>
+  <ul>
+    <li><strong>Keep it lean:</strong> Dumping raw CSVs into chat degrades agent performance.</li>
+    <li><strong>Summarize data:</strong> Use <code>df.describe()</code> or schema definitions instead.</li>
+  </ul>
+
+  <h3>2. Explicit Handoffs</h3>
+  <ul>
+    <li><strong>Write to files:</strong> Save plans and intermediate results to disk.</li>
+    <li><strong>Don't rely on chat memory:</strong> A new session should be able to resume work from saved artifacts.</li>
+  </ul>
+
+  <h3>3. Leverage MCPs (Model Context Protocol)</h3>
+  <ul>
+    <li><strong>Extend agent capabilities:</strong> MCPs allow the agent to securely interact with external tools, databases, and APIs without you writing boilerplate code.</li>
+    <li><strong>Keep context fresh:</strong> Instead of pasting static data, let the agent pull live context exactly when it needs it.</li>
+    <li><strong>Limit active MCPs:</strong> Only enable the MCPs you actively use. Having too many enabled will cause context bloat at the start of every chat.</li>
+  </ul>
+
+  <h3>4. Snowflake Guidelines</h3>
+  <ul>
+    <li><strong>Use the MCP:</strong> Look up schemas and pull small samples (&lt; 50 rows).</li>
+    <li><strong>Check sizes:</strong> Verify table sizes before querying to avoid timeouts.</li>
+    <li><strong>Local processing:</strong> Use the Python connector for full datasets.</li>
+  </ul>
+
+  <hr class="section-break">
+
+  <h2>Demo: Light Research Workflow</h2>
+
+  <h3>The Goal</h3>
+  <ul>
+    <li>Pull the California Housing dataset.</li>
+    <li>Test multiple prediction methods.</li>
+    <li>Perform hyperparameter tuning.</li>
+    <li>Rank models and report sensitivity.</li>
+  </ul>
+
+  <h3>The Prompt</h3>
+  <pre><code># California Housing
+
+I would like to build a predictor for the California Housing dataset available via sklearn 
+
+Basic goal
+- Develop a tool to pull the dataset and make predictions
+- Try out a handful of methods
+- Do hyperparameter tuning
+- Provide a best solution for this dataset 
+- Report the results as a ranking</code></pre>
+
+  <br>
+  <h2 style="text-align: center; color: var(--accent-color); margin-top: 60px;">Questions? Let's run the demo!</h2>
+
+  <hr class="section-break">
+
+  <h2>Resources</h2>
+  <div class="card">
+    <ul>
+      <li><strong>These Skills:</strong> <a href="https://github.com/jvenzke/jd_skills" style="color: var(--accent-color); text-decoration: none;">GitHub - jd_skills</a></li>
+      <li><strong>Inspiration:</strong> <a href="https://github.com/mattpocock/skills" style="color: var(--accent-color); text-decoration: none;">Matt Pocock's Skills for Real Engineers</a></li>
+      <li><strong>Video:</strong> <a href="https://youtu.be/v4F1gFy-hqg" style="color: var(--accent-color); text-decoration: none;">Talk on AI development & good coding practices</a></li>
+      <li><strong>Video:</strong> <a href="https://youtu.be/-QFHIoCo-Ko" style="color: var(--accent-color); text-decoration: none;">Longer walkthrough of Cursor skills</a></li>
+    </ul>
+  </div>
+
+</body>
+</html>
