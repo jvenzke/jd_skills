@@ -78,6 +78,14 @@ The [`/meta-review`](meta-review/SKILL.md) skill is the source of truth for what
 4. [`/dev-tdd`](dev-tdd/SKILL.md): Implement a task using a strict red-green-refactor loop, summarizing changes and committing after approval.
 5. [`/dev-review`](dev-review/SKILL.md): Perform a compressed review of the work, summarize coverage, and prepare/open a Pull Request.
 
+## Light Development Workflow (Last updated: 2026-05-05)
+
+Use this workflow for hotfixes and small implementation tasks that are well-scoped and do not require large rewrites or multiple parallel agents.
+
+1. [`/plan-light-dev`](plan-light-dev/SKILL.md): Read the ticket or request, explore the codebase, align on scope, and create a single `LIGHT_DEV_PLAN.md` tracking document.
+2. [`/do-light-dev`](do-light-dev/SKILL.md): Execute the tasks in `LIGHT_DEV_PLAN.md` flexibly, writing tests whenever possible to prevent future regressions.
+3. [`/review-light-dev`](review-light-dev/SKILL.md): Review the completed work against the plan, summarize coverage, and prepare/open a Pull Request.
+
 ## Light Research Workflow (Last updated: 2026-05-05)
 
 Use this workflow for quick checks, prediction methods, or small investigations in a user-provided directory without the heavy lift of the full research loop.
