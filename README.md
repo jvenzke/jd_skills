@@ -86,13 +86,13 @@ Use this workflow for hotfixes and small implementation tasks that are well-scop
 2. [`/do-light-dev`](do-light-dev/SKILL.md): Execute the tasks in `LIGHT_DEV_PLAN.md` flexibly, writing tests whenever possible to prevent future regressions.
 3. [`/review-light-dev`](review-light-dev/SKILL.md): Review the completed work against the plan, summarize coverage, and prepare/open a Pull Request.
 
-## Light Research Workflow (Last updated: 2026-05-05)
+## Light Research Workflow (Last updated: 2026-05-06)
 
-Use this workflow for quick checks, prediction methods, or small investigations in a user-provided directory without the heavy lift of the full research loop.
+Use this workflow to take an **idea end-to-end** to a **minimal prototype** (proof of approach) with a **fast** plan → do → plan loop—not broad exploratory research. Planning starts with **light alignment vs full grill-me**; execution adds **verification canvases and reproducible SQL** when the step is data-backed.
 
-1. [`/plan-light-research`](plan-light-research/SKILL.md): Interview the user to plan the next step and update the "Status/Next Steps" section of the main output document.
-2. [`/do-light-research`](do-light-research/SKILL.md): Execute the planned step, generate small artifacts, update the main document, and prompt for the next action.
-3. [`/summarize-light-research`](summarize-light-research/SKILL.md): Compile the findings into a handoff document for another team or agent.
+1. [`/plan-light-research`](plan-light-research/SKILL.md): Plan one **small, time-bounded** next step; update the "Status/Next Steps" section of the main output document.
+2. [`/do-light-research`](do-light-research/SKILL.md): Execute the step, add artifacts and (when applicable) a **canvas** with plots and SQL for human verification, update the main document, and prompt for the next action.
+3. [`/summarize-light-research`](summarize-light-research/SKILL.md): Compile findings into a handoff document, including pointers to verification artifacts.
 
 ## PR Review Workflow (Last updated: 2026-05-04)
 
