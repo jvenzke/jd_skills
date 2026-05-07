@@ -43,48 +43,6 @@ The [`/meta-review`](meta-review/SKILL.md) skill is the source of truth for what
 
 - [`/toggle-html`](toggle-html/SKILL.md): Toggle the generation of HTML review surfaces (RESEARCH_REVIEW.html and RESEARCH_PLAN_PITCH_DECK.html) on or off.
 
-## Research Agent Workflow (Last updated: 2026-05-04)
-
-> **Token Optimization & Review Rules:** This workflow aggressively minimizes context bloat and keeps the user informed:
-> - HTML review surfaces are generated from `review_state.json` and `pitch_deck_state.json` via local scripts; the LLM does not write HTML directly.
-> - The `running_log.md` is periodically compressed into `core_context.md` to keep context dense.
-> - Raw data artifacts (CSV/JSON rows) are excluded from the LLM context; agents only read summary stats (`df.describe()`) and schemas.
-> - Agents provide an in-chat summary of what context was read vs omitted (with percentage of lines reviewed) during planning and review steps.
-> - HTML generation is optional and can be toggled at any time using the `/toggle-html` skill.
-
-1. [`/generate-research-project`](generate-research-project/SKILL.md): Start from a Jira ticket or linked README, optionally create a git branch, and build the project scaffold:
-   - `README.md`
-   - `RESEARCH_PLAN.md`
-   - `results/`
-   - `research_tasks/`
-2. [`/research-plan`](research-plan/SKILL.md): Interview the user and explore the codebase as needed to produce:
-   - `RESEARCH_PLAN.md`
-   - `RESEARCH_PLAN_PITCH_DECK.html`
-3. Repeat the research loop until the plan converges:
-   - [`/to-research-tasks`](to-research-tasks/SKILL.md): Convert the current plan and compressed workspace context into the smallest unblocked task set, usually one AFK-ready task and never more than three, including the review artifacts each task must preserve.
-   - [`/do-research`](do-research/SKILL.md): Execute one approved task in a scoped task folder, write modular analysis code, generate Plotly HTML review artifacts for `RESEARCH_REVIEW.html`, create PNGs only when Markdown logs or READMEs need inline static images, and log findings in `results_log_{idx}_{name}.md`.
-   - [`/compress-research`](compress-research/SKILL.md): Review the latest task results with the user, capture the alignment discussion in `research_workspace/discussion_log.md`, and compress completed work into `research_workspace/` and `research_tasks/archive/`. Does not edit the review surfaces.
-   - [`/publish-research`](publish-research/SKILL.md): Read `discussion_log.md`, update `RESEARCH_REVIEW.html`, `RESEARCH_PLAN_PITCH_DECK.html`, and `RESEARCH_PLAN.md` to reflect the captured decisions, then clear the discussion log so the next review cycle starts fresh. Replaces the publication half of the deprecated `/review-research` skill.
-   - Optional [`/commit-research`](commit-research/SKILL.md): Stage only the minimal reviewable and reproducible research files after review checkpoints. Do not commit unless explicitly asked.
-4. [`/summarize-research`](summarize-research/SKILL.md): Build the final production handoff in `/results`, including the executive summary, production-ready SQL/Python snippets, final assets, presentation webpage, and project README updates.
-
-> The single `/review-research` skill has been split into `/compress-research` (review/discuss/compress) and `/publish-research` (update review HTML, pitch deck, research plan, then reset the discussion log). The old `/review-research` slug is kept as a thin stub that redirects to the two replacements.
-
-## Development Workflow (Last updated: 2026-05-05)
-
-1. [`/dev-align`](dev-align/SKILL.md): Read the incoming ticket or doc, explore the codebase, grill the user to align on scope, and create a git branch.
-2. [`/to-prd`](to-prd/SKILL.md): Turn the aligned plan into a PRD with a vertical-slice task breakdown (AFK/HITL) under `.working_items/`.
-3. [`/prd-to-issue-files`](prd-to-issue-files/SKILL.md): Extract each task from the PRD into its own implementation plan document.
-4. [`/dev-tdd`](dev-tdd/SKILL.md): Implement a task using a strict red-green-refactor loop, summarizing changes and committing after approval.
-5. [`/dev-review`](dev-review/SKILL.md): Perform a compressed review of the work, summarize coverage, and prepare/open a Pull Request.
-
-## Light Development Workflow (Last updated: 2026-05-05)
-
-Use this workflow for hotfixes and small implementation tasks that are well-scoped and do not require large rewrites or multiple parallel agents.
-
-1. [`/plan-light-dev`](plan-light-dev/SKILL.md): Read the ticket or request, explore the codebase, align on scope, and create a single `LIGHT_DEV_PLAN.md` tracking document.
-2. [`/do-light-dev`](do-light-dev/SKILL.md): Execute the tasks in `LIGHT_DEV_PLAN.md` flexibly, writing tests whenever possible to prevent future regressions.
-3. [`/review-light-dev`](review-light-dev/SKILL.md): Review the completed work against the plan, summarize coverage, and prepare/open a Pull Request.
 
 ## Light Research Workflow (Last updated: 2026-05-06)
 
@@ -93,6 +51,15 @@ Use this workflow to take an **idea end-to-end** to a **minimal prototype** (pro
 1. [`/plan-light-research`](plan-light-research/SKILL.md): Plan one **small, time-bounded** next step; update the "Status/Next Steps" section of the main output document.
 2. [`/do-light-research`](do-light-research/SKILL.md): Execute the step, add artifacts and (when applicable) a **canvas** with plots and SQL for human verification, update the main document, and prompt for the next action.
 3. [`/summarize-light-research`](summarize-light-research/SKILL.md): Compile findings into a handoff document, including pointers to verification artifacts.
+
+## Linear Research Workflow (Last updated: 2026-05-07)
+
+**Artifact chain:** `r-setup` creates the project **`README.md`** (stub), **`input_plan.md`**, **`research_plan.md`**, **`research_log.md`**, **`next_step.md`**, and **`src/`**. **`r-plan`** and **`r-do`** update those files across iterations. **`r-summarize`** closes out by **writing the full results into the project `README.md`** (new sections: outcomes, findings, artifacts & verification, implementation handoff, open questions).
+
+1. [`/r-setup`](r-setup/SKILL.md): Pull a Jira ticket (optional), set up base folders, and ask the user to update **`input_plan.md`**, then continue with **`r-plan`**.
+2. [`/r-plan`](r-plan/SKILL.md): Review **`input_plan.md`**, define the **next** research step only, maintain **`research_plan.md`**, **`research_log.md`**, and **`next_step.md`** (handoff to **`r-do`** or **`r-summarize`** when done).
+3. [`/r-do`](r-do/SKILL.md): Execute atomic tasks from **`next_step.md`**; add plots, reproducible Python/SQL, and verification **canvases**; append **`research_log.md`**; checkpoint after each task (handoff back to **`r-plan`** or forward to **`r-summarize`**).
+4. [`/r-summarize`](r-summarize/SKILL.md): Read all planning and execution artifacts; **extend the project `README.md`** with summarized findings and verification pointers.
 
 ## PR Review Workflow (Last updated: 2026-05-04)
 
@@ -108,3 +75,23 @@ Use this workflow to review GitHub PRs across fresh chats without losing context
 Approved comments are staged locally until `/submit-pr-review`; they should become GitHub inline review comments, not a summary-only PR comment. Jira ticket discovery checks the PR branch name first, then title, body, and commits. Unresolved human review prompts are carried forward across chats and are not posted unless they become actionable comments.
 
 The workflow also tracks changed-line review coverage in `COVERAGE.md`. `/submit-pr-review` reports what percent of changed lines were presented to the human reviewer, what percent were reviewed only by the agent, and any unreviewed remainder. Agent-covered lines are grouped by why they were not shown, such as peripheral change, covered by tests/CI, matching an inspected pattern, duplicate mechanical change, static-review-only, or stale/superseded context.
+
+## Development Workflow (Last updated: 2026-05-05, Untested)
+
+1. [`/dev-align`](dev-align/SKILL.md): Read the incoming ticket or doc, explore the codebase, grill the user to align on scope, and create a git branch.
+2. [`/to-prd`](to-prd/SKILL.md): Turn the aligned plan into a PRD with a vertical-slice task breakdown (AFK/HITL) under `.working_items/`.
+3. [`/prd-to-issue-files`](prd-to-issue-files/SKILL.md): Extract each task from the PRD into its own implementation plan document.
+4. [`/dev-tdd`](dev-tdd/SKILL.md): Implement a task using a strict red-green-refactor loop, summarizing changes and committing after approval.
+5. [`/dev-review`](dev-review/SKILL.md): Perform a compressed review of the work, summarize coverage, and prepare/open a Pull Request.
+
+## Light Development Workflow (Last updated: 2026-05-05, Untested)
+
+Use this workflow for hotfixes and small implementation tasks that are well-scoped and do not require large rewrites or multiple parallel agents.
+
+1. [`/plan-light-dev`](plan-light-dev/SKILL.md): Read the ticket or request, explore the codebase, align on scope, and create a single `LIGHT_DEV_PLAN.md` tracking document.
+2. [`/do-light-dev`](do-light-dev/SKILL.md): Execute the tasks in `LIGHT_DEV_PLAN.md` flexibly, writing tests whenever possible to prevent future regressions.
+3. [`/review-light-dev`](review-light-dev/SKILL.md): Review the completed work against the plan, summarize coverage, and prepare/open a Pull Request.
+
+## Depricated (see depricated folder)
+
+ - Research Agent Workflow (Last updated: 2026-05-07)
