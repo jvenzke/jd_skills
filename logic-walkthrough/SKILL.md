@@ -64,7 +64,7 @@ Do not post human review prompts to GitHub unless the user's answer reveals an a
 
 ## User Approval
 
-Show proposed inline comments as a numbered list with file/line, severity, confidence, and exact wording. Let the user approve all, reject all, or select specific numbers.
+Show proposed inline comments as a numbered list with file/line, severity, confidence, and the verbatim comment body that will be posted to GitHub (including any code blocks, quoted code, or diffs). Summarized rationale is in addition to, never in place of, the verbatim text. Let the user approve all, reject all, or select specific numbers.
 
 Ask human review prompts in focused batches when they block understanding of an important slice. Record answers verbatim.
 
