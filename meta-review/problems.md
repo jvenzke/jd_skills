@@ -10,4 +10,4 @@ Keep entries compact. Store only critical details needed to spot repeated skill 
 
 ## Resolved
 
-- 2026-05-08 | skill: logic-walkthrough | fixed: tightened "exact wording" directive at the user-approval gate to require the verbatim PR-comment body (including code blocks/quoted code) alongside summary, so the user no longer has to ask "show me the actual comment text" to see what would post | commit: 4802109 logic-walkthrough: require verbatim comment body at approval gate | compressed: 0 entries
+- 2026-05-08 | skill: logic-walkthrough | fixed: tightened "exact wording" directive at the user-approval gate to require the verbatim PR-comment body (including code blocks/quoted code) alongside summary, so the user no longer has to ask "show me the actual comment text" to see what would post | commit: 3b2743e logic-walkthrough: require verbatim comment body at approval gate | compressed: 0 entries
