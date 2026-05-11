@@ -24,14 +24,18 @@ Generate the following files
 ├── next_step.md
 ├── research_plan.md
 ├── research_log.md
-├── canvases/
+├── Canvases/
 └── src/
 ```
+
+## Canvases/
+
+The **`Canvases/`** folder (capital **C**) holds **project copies** of each `.canvas.tsx` dashboard so they live in git and handoffs. During **`r-do`**, the same file is also written to Cursor’s **IDE canvas directory** (`~/.cursor/projects/<workspace>/canvases/` per the canvas skill) so the canvas opens beside chat—both locations must stay in sync.
 
 ## README.md contents
 - Link any Jira tickets 
 - a short human readable summary of the task
-- description of folder layout
+- description of folder layout (include **`Canvases/`** for canvas archives and note that live canvases also use Cursor’s managed `canvases/` path)
 
 ## input_plan.md
 The file should contain a basic overview of the research goal, useful tables/code/docs

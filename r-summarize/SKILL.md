@@ -7,7 +7,7 @@ disable-model-invocation: true
 
 You are closing out a **Linear Research** thread and producing a **standalone summary** so another team or agent can implement from artifacts—not chat history.
 
-**Upstream contract:** This skill assumes the research folder layout and files from [`r-setup`](r-setup/SKILL.md), planning updates from [`r-plan`](r-plan/SKILL.md), and execution output from [`r-do`](r-do/SKILL.md): `README.md`, `input_plan.md`, `research_plan.md`, `research_log.md`, `next_step.md`, `src/`, and any `canvases/` or plots referenced in the log.
+**Upstream contract:** This skill assumes the research folder layout and files from [`r-setup`](r-setup/SKILL.md), planning updates from [`r-plan`](r-plan/SKILL.md), and execution output from [`r-do`](r-do/SKILL.md): `README.md`, `input_plan.md`, `research_plan.md`, `research_log.md`, `next_step.md`, `src/`, **`Canvases/`** (project `.canvas.tsx` copies), and any plots referenced in the log. Live IDE canvases may also exist under Cursor’s workspace `canvases/` path—treat **`Canvases/`** as the canonical path in summaries when both exist.
 
 ## When to run
 
@@ -26,7 +26,7 @@ Use the **Todo** feature to track each step of the workflow below (orient throug
    - **`research_plan.md`** — **Main Research Objective**, **Current step**, **Working Knowledge**, **Result Artifacts**.
    - **`research_log.md`** — **Task tracking** and every **Research results** subsection (including wrap-ups).
    - **`next_step.md`** — confirm no remaining execution work; if instructions still say **`r-do`** with incomplete tasks, stop and tell the user to finish **`r-do`** or **`r-plan`** first.
-2. **Collect artifact inventory** — From the log and repo tree, list paths to **canvases** (`.canvas.tsx` or dashboard entrypoints), **plots**, **scripts/notebooks/SQL files** under **`src/`** or elsewhere named in the log. Note each artifact’s **purpose** in one line.
+2. **Collect artifact inventory** — From the log and repo tree, list paths to **`Canvases/*.canvas.tsx`** (and any other dashboard entrypoints named in the log), **plots**, **scripts/notebooks/SQL files** under **`src/`** or elsewhere named in the log. Note each artifact’s **purpose** in one line.
 3. **Update `README.md`** — Add **new sections below** the setup content (insert headings that fit the project; minimum intent below):
    - **Summary / outcomes** — Short executive summary: what was validated or learned, and whether the original objective was met (partially or fully).
    - **Key findings** — Bullet list distilled from **Working Knowledge** and **`research_log.md`**; remove duplication and stale statements; flag confidence (e.g. validated vs inferred) only when it matters for implementation.

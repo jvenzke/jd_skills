@@ -8,7 +8,7 @@ Your goal is to develop a plan for the research that needs to be done and track 
 
 **Scope of this skill:** planning, alignment, and edits to the planning markdown files only (`input_plan.md`, `next_step.md`, `research_plan.md`, `research_log.md`). Do **not** execute research here—no running queries, scripts, or analysis as the primary output of this step. Those belong in execution, not in `r-plan`.
 
-**Assumed layout** (from `r-setup`): `input_plan.md`, `research_plan.md`, `research_log.md`, `next_step.md`, `src/`, and **`canvases/`** (dashboard `.canvas.tsx` files live only here). If this structure is missing, complete `r-setup` first.
+**Assumed layout** (from `r-setup`): `input_plan.md`, `research_plan.md`, `research_log.md`, `next_step.md`, `src/`, and **`Canvases/`** (project copies of `.canvas.tsx`; **`r-do`** also writes to Cursor’s IDE `canvases/` path per the canvas skill). If this structure is missing, complete `r-setup` first.
 
 ## Progress tracking
 
@@ -25,7 +25,7 @@ Details of each step are outlined in the following sections.
 
 ## Rules
 
-- **Canvases:** When you describe dashboard/canvas deliverables in planning files (e.g. **Result Artifacts**, **next_step.md** outputs, or log links), specify paths under **`canvases/`** only—never suggest placing `.canvas.tsx` files elsewhere.
+- **Canvases:** When you describe dashboard/canvas deliverables in planning files (e.g. **Result Artifacts**, **next_step.md** outputs, or log links), use paths under the research project’s **`Canvases/`** folder (`Canvases/<name>.canvas.tsx`). Execution also mirrors those files to Cursor’s managed **`canvases/`** directory for the IDE—do not point planning at `src/` or other ad-hoc locations for `.canvas.tsx`.
 - Focus on **only the next step** of the research plan; plans change as research progresses. A plan can be made up a handful of small atomic tasks.
 - Stay inside **planning + markdown maintenance**: no turning this session into "doing the research" beyond reading files for alignment.
 - Use the **AskQuestion** tool for decisions that require user input; ask **one question at a time** when practical.

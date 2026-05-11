@@ -117,6 +117,40 @@
       height: 1px;
       background: linear-gradient(to right, transparent, var(--border-color), transparent);
     }
+
+    .context-zone-bar {
+      display: flex;
+      width: 100%;
+      max-width: 440px;
+      margin-top: 12px;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+      font-size: 0.88em;
+      font-weight: 600;
+      text-align: center;
+      line-height: 1.25;
+      min-height: 46px;
+      box-sizing: border-box;
+    }
+
+    .context-zone-bar .context-zone {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 10px;
+      color: #f3f3f3;
+    }
+
+    .context-zone-bar .context-zone--dumb {
+      flex: 2;
+      background: #9e2a2a;
+    }
+
+    .context-zone-bar .context-zone--smart {
+      flex: 1;
+      background: #2d7d46;
+    }
   </style>
 </head>
 <body>
@@ -130,10 +164,15 @@
   <div class="card">
     <h2>Agenda</h2>
     <ul>
-      <li>Introduction to Cursor Skills</li>
-      <li>Overview of Available Workflows</li>
-      <li>Practical Guidelines for LLMs in DE</li>
-      <li>Demo: Light Research Workflow</li>
+      <li><strong>Introduction</strong> — Why build workflows; what Cursor skills are (including a grill-me example)</li>
+      <li><strong>The engineer’s responsibility</strong> — Owning quality, plans, and outcomes</li>
+      <li><strong>Human in the loop</strong> — Token efficiency and when to use workflows</li>
+      <li><strong>Cursor tools &amp; features</strong> — Tools, rules, skills, MCPs, and subagents</li>
+      <li><strong>Workflow overview</strong> — Research, development, PR review, planning &amp; token habits</li>
+      <li><strong>Working effectively with AI</strong> — Context, model choice, large data, MCPs, Snowflake</li>
+      <li><strong>Demo</strong> — Linear research workflow</li>
+      <li><strong>Discussion</strong> — Q&amp;A and open topics</li>
+      <li><strong>Resources</strong> — Links and further reading</li>
     </ul>
   </div>
 
@@ -145,13 +184,20 @@
     <h3>Why Build AI Workflows?</h3>
     <ul>
       <li><strong>Aim for 2-3x Speed (from manual):</strong> A well-designed AI workflow accelerates planning and implementation, significantly speeding up your day-to-day work.</li>
-      <li><strong>Keep Context &lt; 100K Tokens:</strong> Model performance degrades with overly large contexts. Keep context tight and focused.</li>
+      <li><strong>Keep Context &lt; 100K Tokens:</strong> Model performance degrades with overly large contexts. Keep context tight and focused.
+        <div class="context-zone-bar" role="img" aria-label="Context size metaphor: left third smart zone in green, right two thirds dumb zone in red">
+          <span class="context-zone context-zone--smart">Smart zone</span>
+          <span class="context-zone context-zone--dumb">Dumb zone</span>
+        </div>
+      </li>
       <li><strong>Iterate and Adapt:</strong> These workflows aren't static. Improve and adjust them over time to perfectly meet your specific needs.</li>
     </ul>
   </div>
 
   <h3>What are Cursor Skills?</h3>
   <p>Skills enforce <strong>consistency</strong> when interacting with the agent. By defining operating procedures in Markdown, you guide the AI to follow predictable steps and write artifacts to disk.</p>
+
+  <p><strong>Invocation:</strong> Skills can be triggered <strong>manually</strong> (for example slash commands like <code>/grill-me</code>) or <strong>automatically</strong> by the agent when your request matches a skill’s description.</p>
 
   <ul>
     <li><strong>Reduce boilerplate:</strong> Use structured workflows to handle repetitive data pipeline setup.</li>
@@ -160,18 +206,17 @@
   </ul>
 
   <pre><code>---
-name: do-light-dev
-description: Execute the steps in LIGHT_DEV_PLAN.md for a hotfix or small task.
+name: grill-me
+description: Interview the user relentlessly about a plan or design until reaching shared understanding, resolving each branch of the decision tree. Use when user wants to stress-test a plan, get grilled on their design, or mentions "grill me".
 disable-model-invocation: true
 ---
 
-# Do Light Development
-
-1. **Read the Plan**: Read the `LIGHT_DEV_PLAN.md` file...
-2. **Execute**: Implement the next planned step(s)...
-3. **Write Tests**: Write tests for the changes you make...
-4. **Update the Plan**: Check off completed items...
-5. **Next Step**: Prompt the user to run `/review-light-dev`...</code></pre>
+Interview me relentlessly about every aspect of this plan until we reach a shared understanding. 
+Walk down each branch of the design tree, resolving dependencies between decisions one-by-one. 
+For each question, provide your recommended answer.
+Ask the questions one at a time. 
+Use the question tool in the UI to get answers from the users.
+If a question can be answered by exploring the codebase, explore the codebase instead.</code></pre>
   
   <hr class="section-break">
 
@@ -191,13 +236,42 @@ disable-model-invocation: true
 
   <hr class="section-break">
 
+  <h2>Human in the Loop</h2>
+  <div class="card">
+    <h3>Token Efficiency & Spend</h3>
+    <ul>
+      <li><strong>Efficiency:</strong> Human-in-the-loop development using tools like <code>/grill-me</code> is significantly more token efficient for larger tasks than letting an agent run autonomously for long periods.</li>
+      <li><strong>Strategic Usage:</strong> Limit automated workflow usage to light tasks or tasks you run in parallel. Avoid unneeded spend on large, poorly-defined tasks.</li>
+      <li><strong>Stay Engaged:</strong> Use the agent to accelerate your thinking, not replace it. Frequent alignment prevents the agent from going down expensive rabbit holes.</li>
+    </ul>
+  </div>
+
+  <hr class="section-break">
+
+  <h2>Cursor Tools & Features</h2>
+  <div class="card">
+    <h3>Tools, Rules, Skills &amp; MCPs</h3>
+    <ul>
+      <li><strong>AskQuestion Tool:</strong> Ask the agent to use the <code>AskQuestion</code> tool when it needs clarification. This provides a structured way to provide feedback.</li>
+      <li><strong>Canvases & Notebooks:</strong> Use Cursor Canvases or Jupyter Notebooks for interactive graphics, plots, and data exploration.</li>
+      <li><strong>TODO List:</strong> Ask the agent to maintain a <code>TODO</code> list to ensure it follows every step of a complex workflow without skipping.</li>
+      <li><strong>Semantic Search:</strong> Use <code>SemanticSearch</code> for broad codebase exploration and finding relevant logic by meaning rather than just keywords.</li>
+      <li><strong>Rules:</strong> Persistent guidance you want applied in (almost) every chat—coding standards, repo conventions, safety rails. Keep the rule set small and focused; overly long rules add context cost on every session.</li>
+      <li><strong>Skills:</strong> Procedures you invoke on demand—manually or when a situation matches—often as slash commands. They can encode multi-phase plans (plan → do → review) without loading that bulk into every conversation.</li>
+      <li><strong>MCPs (Model Context Protocol):</strong> Connect the agent to external systems—databases, APIs, ticketing, docs—via MCP servers you enable in Cursor. Lets the agent call approved tools and pull live context instead of pasting everything into chat.</li>
+      <li><strong>Subagents:</strong> Use the <code>Task</code> tool to launch subagents for deep-dive explorations or parallel tasks. You can specify a specific model for a subagent to optimize for speed or reasoning.</li>
+    </ul>
+  </div>
+
+  <hr class="section-break">
+
   <h2>Workflow Overview</h2>
 
   <div class="card">
     <h3>Research</h3>
     <ul>
-      <li><strong>Light Research:</strong> Short research tasks and POCs with a tightly limited scope.</li>
-      <li><strong>Research Agent:</strong> Multi-step loop for research tasks with many unknowns that may take multiple days to finish.</li>
+      <li><strong>Light Research:</strong> Plan-then-execute loop for taking an idea end-to-end to a minimal prototype with fast iterations.</li>
+      <li><strong>Linear Research:</strong> Focused on detailed user input plans and iteration to drive research toward specific outcomes.</li>
     </ul>
   </div>
 
@@ -205,20 +279,28 @@ disable-model-invocation: true
     <h3>Development</h3>
     <ul>
       <li><strong>Light Dev:</strong> Plan-then-execute loop for well-scoped hotfixes and small tasks.</li>
-      <li><strong>Full Dev:</strong> Artifact-driven process for major features and refactors (PRD → issue files → TDD). Supports parallel execution for very large changes.</li>
+      <li><strong>Full Dev:</strong> Artifact-driven process (PRD → issue files → TDD) for major features and refactors. Supports parallel execution.</li>
     </ul>
   </div>
 
   <div class="card">
     <h3>Review & General</h3>
     <ul>
-      <li><strong>PR Review:</strong> First-pass agent review for test coverage and basic logic.</li>
+      <li><strong>PR Review:</strong> Multi-phase review workflow (brief → security → tests → logic) for thorough GitHub PR analysis.</li>
       <li><strong>General Skills:</strong>
         <ul>
-          <li><code>/grill-me</code> forces the agent to ask questions and clarify plans.</li>
-          <li><code>/meta-review</code> evaluates and improves your skills over time.</li>
+          <li><code>/grill-me</code>: Relentless interviewing to reach shared understanding.</li>
+          <li><code>/meta-review</code>: Self-evaluation of skill performance to drive continuous improvement.</li>
         </ul>
       </li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>Planning & Token Management</h3>
+    <ul>
+      <li><strong>Plan Quality:</strong> The agent is only as good as the plan you provide. Be detailed with your asks and proactive in redirecting the agent during reviews.</li>
+      <li><strong>Token Awareness:</strong> Be mindful of token usage; large tasks can consume significant resources. Use concise context and clear handoffs.</li>
     </ul>
   </div>
 
@@ -226,35 +308,43 @@ disable-model-invocation: true
 
   <h2>Working Effectively with AI</h2>
 
-  <h3>1. Manage Context Size</h3>
+  <h3>1. Manage Context &amp; Large Data</h3>
   <ul>
-    <li><strong>Keep it lean:</strong> Dumping raw CSVs into chat degrades agent performance.</li>
-    <li><strong>Summarize data:</strong> Use <code>df.describe()</code> or schema definitions instead.</li>
+    <li><strong>Keep it lean:</strong> Dumping raw CSVs or large HTML files into chat degrades agent performance and consumes excessive tokens.</li>
+    <li><strong>Summarize and sample:</strong> Use <code>df.describe()</code>, schema definitions, or head/tail samples instead of full files.</li>
+    <li><strong>Route bulk through Python:</strong> Have the agent use Python to write large generated outputs and to consume large query/CSV results from disk—rather than reading or pasting them through the chat.</li>
+    <li><strong>Subagents for exploration:</strong> Use subagents for broad codebase search or running tests so they return a concise summary instead of flooding your chat with full tool output.</li>
   </ul>
 
-  <h3>2. Explicit Handoffs</h3>
+  <h3>2. Model Selection</h3>
+  <ul>
+    <li><strong>Start with Auto:</strong> Use Cursor’s Auto model selection until you hit quality gaps, stubborn bugs, or tasks that clearly need more reasoning.</li>
+    <li><strong>Upgrade when needed:</strong> Switch to a stronger or specialized model only when Auto isn’t enough—saves cost and keeps defaults simple.</li>
+  </ul>
+
+  <h3>3. Explicit Handoffs</h3>
   <ul>
     <li><strong>Write to files:</strong> Save plans and intermediate results to disk.</li>
-    <li><strong>Don't rely on chat memory:</strong> A new session should be able to resume work from saved artifacts.</li>
+    <li><strong>Don't rely on chat memory:</strong> A new session should be able to resume work from saved artifacts (e.g. <code>LIGHT_DEV_PLAN.md</code>).</li>
   </ul>
 
-  <h3>3. Leverage MCPs (Model Context Protocol)</h3>
+  <h3>4. Leverage MCPs (Model Context Protocol)</h3>
   <ul>
     <li><strong>Extend agent capabilities:</strong> MCPs allow the agent to securely interact with external tools, databases, and APIs without you writing boilerplate code.</li>
     <li><strong>Keep context fresh:</strong> Instead of pasting static data, let the agent pull live context exactly when it needs it.</li>
     <li><strong>Limit active MCPs:</strong> Only enable the MCPs you actively use. Having too many enabled will cause context bloat at the start of every chat.</li>
   </ul>
 
-  <h3>4. Snowflake Guidelines</h3>
+  <h3>5. Snowflake Guidelines</h3>
   <ul>
     <li><strong>Use the MCP:</strong> Look up schemas and pull small samples (&lt; 50 rows).</li>
     <li><strong>Check sizes:</strong> Verify table sizes before querying to avoid timeouts.</li>
-    <li><strong>Local processing:</strong> Use the Python connector for full datasets.</li>
+    <li><strong>Full results:</strong> Same bulk-data rule as above—use the Python connector to land full datasets in files and analyze there, not through chat.</li>
   </ul>
 
   <hr class="section-break">
 
-  <h2>Demo: Light Research Workflow</h2>
+  <h2>Demo: Linear Research Workflow</h2>
 
   <h3>The Goal</h3>
   <ul>
@@ -275,6 +365,15 @@ Basic goal
 - Do hyperparameter tuning
 - Provide a best solution for this dataset 
 - Report the results as a ranking</code></pre>
+
+  <h3>Skill calls</h3>
+  <p>Run the <strong>linear research</strong> skills in order; repeat <code>/r-plan</code> → <code>/r-do</code> until the work is done, then close out.</p>
+  <ol>
+    <li><code>/r-setup</code> — Create the research project layout and stubs (<code>input_plan.md</code>, <code>research_plan.md</code>, <code>research_log.md</code>, <code>next_step.md</code>, <code>Canvases/</code>, <code>src/</code>). Fill in <code>input_plan.md</code> with your goals (e.g. the California Housing prompt above), then continue.</li>
+    <li><code>/r-plan</code> — From <code>input_plan.md</code>, define the <strong>next</strong> research step only and update planning artifacts / <code>next_step.md</code>.</li>
+    <li><code>/r-do</code> — Execute what’s in <code>next_step.md</code> (code, plots, verification canvases). Save each <code>.canvas.tsx</code> under <code>Canvases/</code> in the project **and** the Cursor IDE <code>canvases/</code> path so it opens beside chat. Loops back to <code>/r-plan</code> for the next slice, or forward when ready to summarize.</li>
+    <li><code>/r-summarize</code> — Consolidate outcomes into the project <code>README.md</code> with findings, artifacts, and handoff notes.</li>
+  </ol>
 
   <br>
   <h2 style="text-align: center; color: var(--accent-color); margin-top: 60px;">Questions? Let's run the demo!</h2>
