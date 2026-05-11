@@ -12,7 +12,7 @@ You are a Staff Engineer. Review the PR as story slices, not as a raw full diff.
 
 Read `STATE.md`, `PR_CONTEXT.md`, `PR_BRIEF.md`, `SECURITY.md`, `TESTS.md`, `COMMENTS.md`, `HUMAN_REVIEW_PROMPTS.md`, and `COVERAGE.md` from `.working_items/pr-review/<pr-id>/`.
 
-Fetch the live PR and compare the current `head_sha` to `STATE.md`. If it changed, summarize the change and ask whether to refresh affected artifacts before continuing.
+Fetch the live PR and compare the current `head_sha` to `STATE.md`. If the fetch fails due to network or auth issues, halt and ask the user how to proceed. If it changed, summarize the change and ask whether to refresh affected artifacts before continuing.
 
 ## Slice Planning
 
@@ -25,13 +25,15 @@ Create a queue of 3-7 logic slices ordered by risk and dependency:
 5. UI/state flows
 6. tests and observed behavior links
 
-Show the slice queue and recommend which slices to walk first. Walk high-risk or user-selected slices one at a time.
+Show the slice queue and recommend which slices to walk first. You MUST stop here and wait for the user to select slices before proceeding. Walk high-risk or user-selected slices one at a time.
 
 ## Review Each Slice
 
+CRITICAL: You MUST walk through slices STRICTLY one at a time. Do not proceed to the next slice until the user approves the current one.
+
 For each slice:
 
-- show concise code references and a 2-sentence role summary
+- show exact code references and a 2-sentence role summary
 - inspect surrounding code and local patterns
 - compare against PR/ticket intent and test evidence
 - identify actionable findings
@@ -44,7 +46,7 @@ Use read-only specialist subagents for complex slices, then verify their finding
 
 ### Proposed Inline Comments
 
-Use for actionable, code-anchored feedback the PR author can resolve. Append to `COMMENTS.md` with source phase `logic-walkthrough`.
+Use for actionable, code-anchored feedback the PR author can resolve. Keep proposed inline comments terse and direct. State the issue and the fix without over-explaining. Append to `COMMENTS.md` with source phase `logic-walkthrough`.
 
 ### Human Review Prompts
 
@@ -62,13 +64,13 @@ Do not post human review prompts to GitHub unless the user's answer reveals an a
 
 ## User Approval
 
-Show proposed inline comments as a numbered list with file/line, severity, confidence, and exact wording. Let the user approve all, reject all, or select specific numbers.
+Show proposed inline comments as a numbered list with file/line, severity, confidence, and the verbatim comment body that will be posted to GitHub (including any code blocks, quoted code, or diffs). Summarized rationale is in addition to, never in place of, the verbatim text. Let the user approve all, reject all, or select specific numbers.
 
 Ask human review prompts in focused batches when they block understanding of an important slice. Record answers verbatim.
 
 Stage approved comments locally in `COMMENTS.md`. Do not post to GitHub.
 
-Mark any changed lines shown in walkthrough slices, inline comment approvals, or human review prompts as `human_presented`.
+Mark changed lines as `human_presented` ONLY if the actual code diff was explicitly printed in the chat UI. Merely referencing a line number does not count.
 
 Mark changed lines reviewed by the agent but not shown as `agent_reviewed_not_shown` with a reason group:
 
@@ -78,5 +80,7 @@ Mark changed lines reviewed by the agent but not shown as `agent_reviewed_not_sh
 - `duplicate_or_mechanical`
 - `peripheral_change`
 - `superseded_or_unchanged_context`
+
+When asking for user approval, explicitly state the line count of the logic presented vs the logic the agent reviewed but did not present.
 
 End by updating `LOGIC_WALKTHROUGH.md`, `COVERAGE.md`, and `NEXT_CHAT_PROMPT.md`.

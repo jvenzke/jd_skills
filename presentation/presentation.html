@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Cursor Skills for Engineering and Research</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --bg-color: #1e1e2e;
+      --text-color: #d4d4d4;
+      --heading-color: #9cdcfe;
+      --accent-color: #569cd6;
+      --card-bg: #252538;
+      --border-color: #3e3e42;
+      --code-bg: #1a1a24;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      color: var(--text-color);
+      background-color: var(--bg-color);
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    h1, h2, h3 {
+      color: var(--heading-color);
+      font-weight: 600;
+      margin-top: 2em;
+      margin-bottom: 0.5em;
+    }
+
+    h1 {
+      font-size: 2.5em;
+      border-bottom: 2px solid var(--accent-color);
+      padding-bottom: 10px;
+      margin-top: 0;
+    }
+
+    h2 {
+      font-size: 1.8em;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 8px;
+    }
+
+    h3 {
+      font-size: 1.3em;
+      color: var(--accent-color);
+    }
+
+    p {
+      margin-bottom: 1.2em;
+    }
+
+    ul {
+      margin-bottom: 1.5em;
+      padding-left: 20px;
+    }
+
+    li {
+      margin-bottom: 0.5em;
+    }
+
+    strong {
+      color: #c586c0;
+    }
+
+    code {
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+      background-color: var(--code-bg);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.9em;
+      color: #ce9178;
+    }
+
+    pre {
+      background-color: var(--code-bg);
+      padding: 20px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      overflow-x: auto;
+    }
+
+    pre code {
+      background-color: transparent;
+      padding: 0;
+      color: inherit;
+      border-radius: 0;
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 25px;
+      margin-bottom: 30px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .card h2 {
+      margin-top: 0;
+      border-bottom: none;
+    }
+
+    .subtitle {
+      font-size: 1.2em;
+      color: #858585;
+      margin-bottom: 40px;
+    }
+
+    .section-break {
+      margin: 60px 0;
+      border: 0;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--border-color), transparent);
+    }
+
+    .context-zone-bar {
+      display: flex;
+      width: 100%;
+      max-width: 440px;
+      margin-top: 12px;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+      font-size: 0.88em;
+      font-weight: 600;
+      text-align: center;
+      line-height: 1.25;
+      min-height: 46px;
+      box-sizing: border-box;
+    }
+
+    .context-zone-bar .context-zone {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 10px;
+      color: #f3f3f3;
+    }
+
+    .context-zone-bar .context-zone--dumb {
+      flex: 2;
+      background: #9e2a2a;
+    }
+
+    .context-zone-bar .context-zone--smart {
+      flex: 1;
+      background: #2d7d46;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Cursor Skills for Engineering and Research</h1>
+  <p class="subtitle">
+    Standardizing workflows, context sharing, and reducing friction<br>
+    <a href="https://github.com/jvenzke/jd_skills" style="color: var(--accent-color); text-decoration: none; font-size: 0.9em; margin-top: 10px; display: inline-block;">GitHub with skills discussed</a>
+  </p>
+
+  <div class="card">
+    <h2>Agenda</h2>
+    <ul>
+      <li><strong>Introduction</strong> — Why build workflows; what Cursor skills are (including a grill-me example)</li>
+      <li><strong>The engineer’s responsibility</strong> — Owning quality, plans, and outcomes</li>
+      <li><strong>Human in the loop</strong> — Token efficiency and when to use workflows</li>
+      <li><strong>Cursor tools &amp; features</strong> — Tools, rules, skills, MCPs, and subagents</li>
+      <li><strong>Workflow overview</strong> — Research, development, PR review, planning &amp; token habits</li>
+      <li><strong>Working effectively with AI</strong> — Context, model choice, large data, MCPs, Snowflake</li>
+      <li><strong>Demo</strong> — Linear research workflow</li>
+      <li><strong>Discussion</strong> — Q&amp;A and open topics</li>
+      <li><strong>Resources</strong> — Links and further reading</li>
+    </ul>
+  </div>
+
+  <hr class="section-break">
+
+  <h2>Introduction</h2>
+  
+  <div class="card">
+    <h3>Why Build AI Workflows?</h3>
+    <ul>
+      <li><strong>Aim for 2-3x Speed (from manual):</strong> A well-designed AI workflow accelerates planning and implementation, significantly speeding up your day-to-day work.</li>
+      <li><strong>Keep Context &lt; 100K Tokens:</strong> Model performance degrades with overly large contexts. Keep context tight and focused.
+        <div class="context-zone-bar" role="img" aria-label="Context size metaphor: left third smart zone in green, right two thirds dumb zone in red">
+          <span class="context-zone context-zone--smart">Smart zone</span>
+          <span class="context-zone context-zone--dumb">Dumb zone</span>
+        </div>
+      </li>
+      <li><strong>Iterate and Adapt:</strong> These workflows aren't static. Improve and adjust them over time to perfectly meet your specific needs.</li>
+    </ul>
+  </div>
+
+  <h3>What are Cursor Skills?</h3>
+  <p>Skills enforce <strong>consistency</strong> when interacting with the agent. By defining operating procedures in Markdown, you guide the AI to follow predictable steps and write artifacts to disk.</p>
+
+  <p><strong>Invocation:</strong> Skills can be triggered <strong>manually</strong> (for example slash commands like <code>/grill-me</code>) or <strong>automatically</strong> by the agent when your request matches a skill’s description.</p>
+
+  <ul>
+    <li><strong>Reduce boilerplate:</strong> Use structured workflows to handle repetitive data pipeline setup.</li>
+    <li><strong>Structured prototyping:</strong> Keep the AI focused on one task at a time when building Streamlit apps, Snowflake queries, etc.</li>
+    <li><strong>Manage context:</strong> Automatically have the agent rely on generated markdown artifacts (e.g. <code>LIGHT_DEV_PLAN.md</code>) instead of trying to remember the whole chat.</li>
+  </ul>
+
+  <pre><code>---
+name: grill-me
+description: Interview the user relentlessly about a plan or design until reaching shared understanding, resolving each branch of the decision tree. Use when user wants to stress-test a plan, get grilled on their design, or mentions "grill me".
+disable-model-invocation: true
+---
+
+Interview me relentlessly about every aspect of this plan until we reach a shared understanding. 
+Walk down each branch of the design tree, resolving dependencies between decisions one-by-one. 
+For each question, provide your recommended answer.
+Ask the questions one at a time. 
+Use the question tool in the UI to get answers from the users.
+If a question can be answered by exploring the codebase, explore the codebase instead.</code></pre>
+  
+  <hr class="section-break">
+
+  <h2>The Engineer's Responsibility</h2>
+  <p>AI is an accelerator, not an autopilot. Your role shifts from typing every line to orchestrating the work.</p>
+  
+  <div class="card">
+    <h3 style="color: #ff9d00; text-align: center; margin-top: 0; margin-bottom: 20px; font-size: 1.6em; border: none;">You are the Owner of the Work</h3>
+    <ul>
+      <li><strong>Accelerate, don't delegate:</strong> Use AI to drastically speed up planning and implementation, but remember that you remain the architect, engineer, scientist, and reviewer of the work.</li>
+      <li><strong>Read the code:</strong> If the AI generates code that will live in production, you must read and understand it. Treat the AI like a junior developer submitting a PR.</li>
+      <li><strong>QA everything:</strong> Rigorously test and review all outputs to ensure the agent actually accomplished what you asked for without introducing regressions.</li>
+      <li><strong>Iterate, don't fix:</strong> If the agent makes a mistake, iterate on the plan, not the code. The agent should be able to fix its own mistakes.</li>
+      <li><strong>Customize the workflow:</strong> My workflow maybe different than how you work. Iterate on the workflow to make it work for you.</li>
+    </ul>
+  </div>
+
+  <hr class="section-break">
+
+  <h2>Human in the Loop</h2>
+  <div class="card">
+    <h3>Token Efficiency & Spend</h3>
+    <ul>
+      <li><strong>Efficiency:</strong> Human-in-the-loop development using tools like <code>/grill-me</code> is significantly more token efficient for larger tasks than letting an agent run autonomously for long periods.</li>
+      <li><strong>Strategic Usage:</strong> Limit automated workflow usage to light tasks or tasks you run in parallel. Avoid unneeded spend on large, poorly-defined tasks.</li>
+      <li><strong>Stay Engaged:</strong> Use the agent to accelerate your thinking, not replace it. Frequent alignment prevents the agent from going down expensive rabbit holes.</li>
+    </ul>
+  </div>
+
+  <hr class="section-break">
+
+  <h2>Cursor Tools & Features</h2>
+  <div class="card">
+    <h3>Tools, Rules, Skills &amp; MCPs</h3>
+    <ul>
+      <li><strong>AskQuestion Tool:</strong> Ask the agent to use the <code>AskQuestion</code> tool when it needs clarification. This provides a structured way to provide feedback.</li>
+      <li><strong>Canvases & Notebooks:</strong> Use Cursor Canvases or Jupyter Notebooks for interactive graphics, plots, and data exploration.</li>
+      <li><strong>TODO List:</strong> Ask the agent to maintain a <code>TODO</code> list to ensure it follows every step of a complex workflow without skipping.</li>
+      <li><strong>Semantic Search:</strong> Use <code>SemanticSearch</code> for broad codebase exploration and finding relevant logic by meaning rather than just keywords.</li>
+      <li><strong>Rules:</strong> Persistent guidance you want applied in (almost) every chat—coding standards, repo conventions, safety rails. Keep the rule set small and focused; overly long rules add context cost on every session.</li>
+      <li><strong>Skills:</strong> Procedures you invoke on demand—manually or when a situation matches—often as slash commands. They can encode multi-phase plans (plan → do → review) without loading that bulk into every conversation.</li>
+      <li><strong>MCPs (Model Context Protocol):</strong> Connect the agent to external systems—databases, APIs, ticketing, docs—via MCP servers you enable in Cursor. Lets the agent call approved tools and pull live context instead of pasting everything into chat.</li>
+      <li><strong>Subagents:</strong> Use the <code>Task</code> tool to launch subagents for deep-dive explorations or parallel tasks. You can specify a specific model for a subagent to optimize for speed or reasoning.</li>
+    </ul>
+  </div>
+
+  <hr class="section-break">
+
+  <h2>Workflow Overview</h2>
+
+  <div class="card">
+    <h3>Research</h3>
+    <ul>
+      <li><strong>Light Research:</strong> Plan-then-execute loop for taking an idea end-to-end to a minimal prototype with fast iterations.</li>
+      <li><strong>Linear Research:</strong> Focused on detailed user input plans and iteration to drive research toward specific outcomes.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>Development</h3>
+    <ul>
+      <li><strong>Light Dev:</strong> Plan-then-execute loop for well-scoped hotfixes and small tasks.</li>
+      <li><strong>Full Dev:</strong> Artifact-driven process (PRD → issue files → TDD) for major features and refactors. Supports parallel execution.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>Review & General</h3>
+    <ul>
+      <li><strong>PR Review:</strong> Multi-phase review workflow (brief → security → tests → logic) for thorough GitHub PR analysis.</li>
+      <li><strong>General Skills:</strong>
+        <ul>
+          <li><code>/grill-me</code>: Relentless interviewing to reach shared understanding.</li>
+          <li><code>/meta-review</code>: Self-evaluation of skill performance to drive continuous improvement.</li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>Planning & Token Management</h3>
+    <ul>
+      <li><strong>Plan Quality:</strong> The agent is only as good as the plan you provide. Be detailed with your asks and proactive in redirecting the agent during reviews.</li>
+      <li><strong>Token Awareness:</strong> Be mindful of token usage; large tasks can consume significant resources. Use concise context and clear handoffs.</li>
+    </ul>
+  </div>
+
+  <hr class="section-break">
+
+  <h2>Working Effectively with AI</h2>
+
+  <h3>1. Manage Context &amp; Large Data</h3>
+  <ul>
+    <li><strong>Keep it lean:</strong> Dumping raw CSVs or large HTML files into chat degrades agent performance and consumes excessive tokens.</li>
+    <li><strong>Summarize and sample:</strong> Use <code>df.describe()</code>, schema definitions, or head/tail samples instead of full files.</li>
+    <li><strong>Route bulk through Python:</strong> Have the agent use Python to write large generated outputs and to consume large query/CSV results from disk—rather than reading or pasting them through the chat.</li>
+    <li><strong>Subagents for exploration:</strong> Use subagents for broad codebase search or running tests so they return a concise summary instead of flooding your chat with full tool output.</li>
+  </ul>
+
+  <h3>2. Model Selection</h3>
+  <ul>
+    <li><strong>Start with Auto:</strong> Use Cursor’s Auto model selection until you hit quality gaps, stubborn bugs, or tasks that clearly need more reasoning.</li>
+    <li><strong>Upgrade when needed:</strong> Switch to a stronger or specialized model only when Auto isn’t enough—saves cost and keeps defaults simple.</li>
+  </ul>
+
+  <h3>3. Explicit Handoffs</h3>
+  <ul>
+    <li><strong>Write to files:</strong> Save plans and intermediate results to disk.</li>
+    <li><strong>Don't rely on chat memory:</strong> A new session should be able to resume work from saved artifacts (e.g. <code>LIGHT_DEV_PLAN.md</code>).</li>
+  </ul>
+
+  <h3>4. Leverage MCPs (Model Context Protocol)</h3>
+  <ul>
+    <li><strong>Extend agent capabilities:</strong> MCPs allow the agent to securely interact with external tools, databases, and APIs without you writing boilerplate code.</li>
+    <li><strong>Keep context fresh:</strong> Instead of pasting static data, let the agent pull live context exactly when it needs it.</li>
+    <li><strong>Limit active MCPs:</strong> Only enable the MCPs you actively use. Having too many enabled will cause context bloat at the start of every chat.</li>
+  </ul>
+
+  <h3>5. Snowflake Guidelines</h3>
+  <ul>
+    <li><strong>Use the MCP:</strong> Look up schemas and pull small samples (&lt; 50 rows).</li>
+    <li><strong>Check sizes:</strong> Verify table sizes before querying to avoid timeouts.</li>
+    <li><strong>Full results:</strong> Same bulk-data rule as above—use the Python connector to land full datasets in files and analyze there, not through chat.</li>
+  </ul>
+
+  <hr class="section-break">
+
+  <h2>Demo: Linear Research Workflow</h2>
+
+  <h3>The Goal</h3>
+  <ul>
+    <li>Pull the California Housing dataset.</li>
+    <li>Test multiple prediction methods.</li>
+    <li>Perform hyperparameter tuning.</li>
+    <li>Rank models and report sensitivity.</li>
+  </ul>
+
+  <h3>The Prompt</h3>
+  <pre><code># California Housing
+
+I would like to build a predictor for the California Housing dataset available via sklearn 
+
+Basic goal
+- Develop a tool to pull the dataset and make predictions
+- Try out a handful of methods
+- Do hyperparameter tuning
+- Provide a best solution for this dataset 
+- Report the results as a ranking</code></pre>
+
+  <h3>Skill calls</h3>
+  <p>Run the <strong>linear research</strong> skills in order; repeat <code>/r-plan</code> → <code>/r-do</code> until the work is done, then close out.</p>
+  <ol>
+    <li><code>/r-setup</code> — Create the research project layout and stubs (<code>input_plan.md</code>, <code>research_plan.md</code>, <code>research_log.md</code>, <code>next_step.md</code>, <code>Canvases/</code>, <code>src/</code>). Fill in <code>input_plan.md</code> with your goals (e.g. the California Housing prompt above), then continue.</li>
+    <li><code>/r-plan</code> — From <code>input_plan.md</code>, define the <strong>next</strong> research step only and update planning artifacts / <code>next_step.md</code>.</li>
+    <li><code>/r-do</code> — Execute what’s in <code>next_step.md</code> (code, plots, verification canvases). Save each <code>.canvas.tsx</code> under <code>Canvases/</code> in the project **and** the Cursor IDE <code>canvases/</code> path so it opens beside chat. Loops back to <code>/r-plan</code> for the next slice, or forward when ready to summarize.</li>
+    <li><code>/r-summarize</code> — Consolidate outcomes into the project <code>README.md</code> with findings, artifacts, and handoff notes.</li>
+  </ol>
+
+  <br>
+  <h2 style="text-align: center; color: var(--accent-color); margin-top: 60px;">Questions? Let's run the demo!</h2>
+
+  <hr class="section-break">
+
+  <h2>Resources</h2>
+  <div class="card">
+    <ul>
+      <li><strong>These Skills:</strong> <a href="https://github.com/jvenzke/jd_skills" style="color: var(--accent-color); text-decoration: none;">GitHub - jd_skills</a></li>
+      <li><strong>Inspiration:</strong> <a href="https://github.com/mattpocock/skills" style="color: var(--accent-color); text-decoration: none;">Matt Pocock's Skills for Real Engineers</a></li>
+      <li><strong>Video:</strong> <a href="https://youtu.be/v4F1gFy-hqg" style="color: var(--accent-color); text-decoration: none;">Talk on AI development & good coding practices</a></li>
+      <li><strong>Video:</strong> <a href="https://youtu.be/-QFHIoCo-Ko" style="color: var(--accent-color); text-decoration: none;">Longer walkthrough of Cursor skills</a></li>
+    </ul>
+  </div>
+
+</body>
+</html>

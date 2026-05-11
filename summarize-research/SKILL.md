@@ -1,87 +1,37 @@
 ---
 name: summarize-research
-description: Compiles all research logs into a production-ready /results folder with an executive summary and optimized implementation code.
+description: Compiles research into a production-ready results/ package with executive summary, final assets, presentation, and implementation code.
 disable-model-invocation: true
 ---
 
-You are a Lead Data Scientist preparing a production hand-off. Your goal is to compress the entire research journey into a clean, actionable package.
+You are a Lead Data Scientist preparing a production handoff. Compress the full research journey into a clean, actionable package for stakeholders and engineers.
 
-> **Wiki integration:** If `llm_wiki/` exists in the repo, the converged research findings must be filed back into the wiki as part of this workflow (Step 10 below). Follow the `llm_wiki` skill's "Research workflow integration" section. Both wiki linters must pass before summarize is declared complete.
+Use todos before starting: one todo per numbered step below, exactly one `in_progress`, complete each step before starting the next. Do not skip or reorder unless the user explicitly asks.
 
-### Required Workflow:
+1. **Inspect inputs and align.** If `research_workspace/` exists, primary inputs are `research_workspace/MANIFEST.md`, `running_log.md`, `src/`, and `artifacts/`; use `research_tasks/archive/` only for raw evidence/provenance. Read `Research_plan.md` when provided.
 
-Use the todo feature to track the workflow before starting. Create one todo for each step below, keep exactly one step `in_progress`, and mark each step `completed` before starting the next one. Do not skip or reorder steps unless the user explicitly asks.
+2. **Do not bulk-copy history.** Final results should contain only the winning logic, final findings, and curated assets; leave EDA, dead ends, failed experiments, raw task folders, and redundant artifacts in the archive/workspace.
 
-1. **Inspect Handoff Inputs**
-   - If `research_workspace/` exists, use `research_workspace/MANIFEST.md`, `research_workspace/running_log.md`, `research_workspace/src/`, and `research_workspace/artifacts/` as the primary research handoff inputs.
-   - Use `research_tasks/archive/` only for raw evidence and deeper provenance.
-   - Do not copy every archived artifact into final results.
-   - Interview me relentlessly about every aspect of the handoff plan until we reach a shared understanding. Walk down each branch of the research tree, resolving dependencies between decisions one-by-one. For each question, provide your recommended answer.
-   - Ask the questions one at a time. Use the question tool in the UI to get answers from the user.
-   - If a question can be answered by exploring the codebase, explore the codebase instead.
-   - Do not move on to step 2 until we are aligned.
+3. **Interview gate.** Until handoff scope is aligned, ask one question at a time with the UI question tool and include your recommended answer. Explore the repo instead of asking when exploration answers the question. Do not move past Step 3 until aligned.
 
-2. **Create Results Structure**
-   - Create a `/results` directory.
-   - Create `/results/assets` for final visual assets.
+4. **Pre-aligned exception.** If the user supplies a converged `Research_plan.md` (or equivalent), `research_workspace/`, and asks to compile now, state the assumed handoff scope and continue unless a blocker remains.
 
-3. **Synthesize Executive Summary**
-   - Write a high-level summary for non-technical stakeholders.
-   - Focus on business impact, final conclusions, and confidence level.
+5. **Create structure.** Create `results/` and `results/assets/`.
 
-4. **Extract Production Logic**
-   - Extract and document ONLY the winning SQL and Python logic.
-   - Remove all EDA, dead ends, and failed experiment code.
-   - Optimize the handoff code for clarity and reproducibility.
+6. **Executive summary.** Write stakeholder-facing conclusions focused on business impact, final decisions, confidence, and remaining rollout risks.
 
-5. **Collate Final Assets**
-   - Copy final interactive `.html` visualizations and other presentation-ready assets into `/results/assets`.
-   - Copy `.png` visualizations only when they are needed for Markdown files, static previews, or final handoff contexts that cannot render HTML.
-   - Link each retained visualization from `/results/README.md`, using HTML links for interactive artifacts and PNG embeds only when Markdown needs an inline image.
+7. **Production logic.** Add `results/production_sql.md` and `results/production_python.py` (or repo-preferred names) containing only winning/reusable implementation logic. Indexing canonical source files with short critical excerpts is acceptable; avoid copying exploratory SQL wholesale.
 
-6. **Build Presentation Webpage**
-   - Create a static webpage in `/results` that can be used as a presentation for the data science group.
-   - Outline the work completed, major findings, business or analytical impact, key visuals, limitations, and recommended next steps.
-   - Design it as a clear presentation artifact, not a raw research log.
-   - Link the webpage from `/results/README.md`.
+8. **Assets.** Copy final interactive `.html` and other presentation-ready artifacts into `results/assets/`. Copy `.png` only when Markdown/static preview needs inline images or HTML cannot render. Link every retained asset from `results/README.md`.
 
-7. **Clean Up Human Review Page**
-   - Locate `RESEARCH_REVIEW.html` in the research project working folder if it exists.
-   - If it exists, clean it up as a reviewer-facing companion to the final package: remove stale task tiles, fix broken relative links, group related task tiles into clear sections, clarify section summaries and dependency relationships, and point curated artifacts to `research_workspace/artifacts/` or `/results/assets` as appropriate.
-   - Prefer linking or embedding curated `.html` artifacts for reviewable charts; keep `.png` references only for Markdown/static-preview needs or browser fallbacks.
-   - Preserve its purpose as an interactive review surface for task-level evidence. Do not turn it into the final presentation webpage.
-   - If no `RESEARCH_REVIEW.html` exists, do not create one unless the user asks; note that no human review page was available to clean up.
+9. **Presentation webpage.** Create a static `results/presentation.html` for the data science group: work completed, findings, impact, key visuals, limitations, and next steps. Make it a polished presentation artifact, not a raw research log, and link it from `results/README.md`.
 
-8. **Write Final Research README**
-   - Write `/results/README.md` with the executive summary, final methodology, production snippets, visual asset links, and reproduction notes.
-   - Keep the README focused on the final answer rather than the full exploration history.
+10. **Human review page.** If `RESEARCH_REVIEW.html` exists, clean it as a reviewer-facing companion: remove stale tiles, fix relative links, group sections, clarify summaries/dependencies, and point curated evidence to `research_workspace/artifacts/` or `results/assets/`. Do not turn it into the presentation page. If absent, do not create it unless asked.
 
-9. **Update Project README**
-   - Add a quick summary of work completed, results, and links to important handoff materials in the main `README.md` for the research project.
-   - Link to `/results`, `/research_workspace`, and `RESEARCH_REVIEW.html` as needed.
+11. **Final README.** Write `results/README.md` with executive summary, final methodology, production snippets, asset links, reproduction notes, and final directory structure. Keep it about the final answer, not the whole exploration history.
 
-10. **File Findings into the Wiki** (only if `llm_wiki/` exists in the repo)
-   - Invoke the `llm_wiki` skill's Ingest workflow on the converged findings. Specifically:
-     - Decide which `llm_wiki/<project>/` folder the findings belong to.
-     - Create or update wiki pages for new entities, concepts, and analyses surfaced by the research. Follow the wiki's frontmatter and link-style conventions.
-     - Add cross-references from related existing pages.
-     - Update `llm_wiki/index.md` with new/changed pages.
-     - Append `## [YYYY-MM-DD] ingest | <Research Title>` to `llm_wiki/log.md` with a brief note of pages touched.
-   - Run **both wiki linters** — both must report zero errors before this step is complete:
-     ```sh
-     python3 llm_wiki/skills/llm_wiki/lint_links.py
-     python3 llm_wiki/skills/llm_wiki/lint_frontmatter.py
-     ```
-   - If either linter fails, fix the issue and re-run. Do not proceed to step 11 with linter errors.
-   - End this step with a short summary of which wiki pages were created/updated.
+12. **Project README.** Update the research project `README.md` with a short summary and links to `results/`, `research_workspace/`, and `RESEARCH_REVIEW.html` when present.
 
-11. **Review Final Package**
-   - Verify all todos are complete.
-   - Confirm `/results/README.md` links resolve.
-   - Confirm the static presentation webpage exists and is linked.
-   - If `RESEARCH_REVIEW.html` exists, confirm its main section links, task tile links, and curated artifact links resolve.
-   - If `llm_wiki/` exists, confirm both wiki linters pass.
-   - Present the final directory structure for review.
+13. **Wiki conditional.** If `llm_wiki/` exists, invoke the `llm_wiki` research ingest workflow: create/update relevant wiki pages, cross-links, index, and log entry. Both linters must pass before closing: `python3 llm_wiki/skills/llm_wiki/lint_links.py` and `python3 llm_wiki/skills/llm_wiki/lint_frontmatter.py`.
 
-Compile all findings now and present the final directory structure for review.
-
+14. **Review package.** Verify todos are complete; spot-check `results/README.md` links, `presentation.html`, review-page links, curated artifact links, and wiki linters if applicable. End with the final directory structure and note anything not verified.

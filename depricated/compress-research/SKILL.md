@@ -25,11 +25,10 @@ Keep `research_workspace/discussion_log.md` as the running record of the current
 ### Task:
 
 1. **Review the research logs**
-   - Review the linked research logs, prioritizing the `results_log_{idx}_{name}.md` file(s), task artifact manifests, and task review artifacts provided.
+   - Review the linked research logs, prioritizing the `results_log_{idx}_{name}.md` file(s), task artifact manifests, and task review artifacts provided. Enforce a **metadata-only** approach: read only summary statistics and schema descriptions; do not read raw data rows (CSV/JSON) into context to minimize token usage.
    - Provide a clear, short summary of the methods used and results of the experiment.
    - Include things learned, new questions, blind spots, and other interesting notes.
-   - Pause and allow the user to ask questions about the results before moving on.
-   - Avoid the question UI tool for this step.
+   - Invite optional clarification questions after the Step 1 summary. **Immediate alignment:** When the user attaches specific task/results logs to `/compress-research`, states they want to align without extra dwell time on methods/results, or replies “continue” to proceed after the summary, you may begin Step 2 in the same turn. **Do not use the question UI tool in Step 1** (reserve it for Step 2 and the Step 3 compression approval gate).
    - Do not update `RESEARCH_PLAN.md`, `RESEARCH_REVIEW.html`, or the pitch deck during this step.
 
 2. **Discuss alignment with the research plan and persist the discussion log**
@@ -42,15 +41,18 @@ Keep `research_workspace/discussion_log.md` as the running record of the current
    - End this step with a short summary that points the user at `research_workspace/discussion_log.md` and lists the captured `Decisions captured for /publish-research` bullets.
 
 3. **Compress the research into the research workspace**
-   - Write a concise summary of the planned compression work and ask for approval before editing files.
+   - Write a concise summary of the planned compression work (archive paths, curated copies under `research_workspace/`, `running_log.md` / `MANIFEST.md` updates). **Approval gate:** Obtain confirmation with **one AskQuestion** whose options reflect approve vs revise scope before editing compression-related files. Do **not** treat a vague chat `"continue"` as approval unless it explicitly refers to that compression summary in the **immediately preceding** assistant message (then treat as approval).
    - After approval, compress the workspace.
    - Create or update `research_workspace/running_log.md`, `research_workspace/MANIFEST.md`, `research_workspace/src/` when reusable code exists, `research_workspace/artifacts/` for curated key artifacts, and `research_tasks/archive/` for completed raw task folders and completed task markdown files.
-   - Preserve detailed provenance in `research_workspace/running_log.md`: paths tried, wins, failures, methods, implementation details, artifacts, raw evidence locations, reusable code, unresolved risks, and open questions. Cross-reference the relevant sections of `discussion_log.md` rather than duplicating them.
+   - Preserve detailed provenance in `research_workspace/running_log.md`: paths tried, wins, failures, methods, implementation details, artifacts, raw evidence locations, reusable code, unresolved risks, and open questions. Cross-reference the relevant sections of `discussion_log.md` rather than duplicating them. To prevent unbounded token growth, periodically compress older sections of `running_log.md` into a dense `core_context.md` (or merge into `MANIFEST.md`), keeping only recent iterations active.
    - Archive completed task folders from `research_tasks/task_*` and completed task definition files from `research_tasks/task*.md`; do not archive pending or incomplete work unless the user approves. Use the `mv` command line interface so files are moved intact instead of being rewritten or manually copied.
    - Copy review-ready artifacts to `research_workspace/artifacts/`: representative CSV/JSON samples, schema/metadata files, standalone plot HTML files, PNG previews only when required for Markdown/static-preview use, data dictionaries, query files, and artifact manifests.
    - Leave original artifacts with archived task folders and link both curated and original paths from `running_log.md`.
    - Extract reusable operational code into `research_workspace/src/` only when clearly reusable; leave one-off EDA, failed experiment code, task-specific notebooks, and hard-coded scripts in the archived task folder.
-   - End this step with a short summary of what moved, what was consolidated, and what reusable assets now exist. Tell the user the next step is `/publish-research`, which will read `discussion_log.md`, update the review HTML, pitch deck, and research plan, and then clear the discussion log.
+   - End this step with a short summary of what moved, what was consolidated, and what reusable assets now exist.
+   - Extract and present the critical parts of the `RESEARCH_PLAN.md`, `running_log.md`, and `discussion_log.md` directly in the chat so the user can quickly read and understand what will happen next in the process without opening the files.
+   - After presenting these critical snippets, summarize what sections were left out of the chat (e.g., "table definitions 100 lines of file") and why. Finally, report the percentage of the files' rows that were presented to the user in the chat relative to the total rows in the files.
+   - Tell the user the next step is `/publish-research`, which will read `discussion_log.md`, update the review HTML, pitch deck, and research plan, and then clear the discussion log.
 
 ### Out of Scope:
 No new research tasks should be generated or executed. Only compression-related files under `research_workspace/`, `research_tasks/archive/`, and the `discussion_log.md` should change here.
