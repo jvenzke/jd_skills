@@ -43,7 +43,7 @@ Details of each step are outlined in the following sections.
 
 - Review the **Working Knowledge** section of `research_plan.md`.
 - For conflicting or incorrect results versus the most recent research:
-  - Ask targeted follow-ups until there is a shared understanding (use **AskQuestion** one question at a time).
+  - Ask targeted follow-ups until there is a shared understanding (Ask question in chat one question at a time).
   - Walk through each branch of the reasoning to see why there was a misunderstanding and what should change.
 - Propose an update to **Working Knowledge** to remove stale/add new knowledge, get user approval, then edit `research_plan.md`.
 
@@ -54,7 +54,7 @@ Details of each step are outlined in the following sections.
 - Review the plan in `input_plan.md`.
 - Confirm the next planned step is correct before proceeding; allow the user to change course.
 - Align on scope for that step:
-  - Ask questions one at a time using **AskQuestion**; when helpful, give your recommended answer.
+  - Ask questions one at a time in the chat; when helpful, give your recommended answer.
   - Resolve dependencies between decisions one-by-one until the scope is clear.
   - If a question can be answered by exploring the codebase, explore it and summarize findings 
   - Never guess what is meant by a statement. Confirm anything that is unclear.
