@@ -95,7 +95,6 @@ last_error: null
   - A 1-2 sentence overview.
   - A numbered list of completed logical steps.
   - A relative link to the walkthrough file.
-- Commit only `implementation_plan_{task}.md` and `walkthrough_{task}.md` (with codebase changes) to Git, keeping `tasks_{task}.md` local.
 
 #### Walkthrough Template `.working_items/walkthrough_{task}.md`
 ```markdown
