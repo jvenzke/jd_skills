@@ -33,6 +33,7 @@ Generate the following files
 The **`Canvases/`** folder (capital **C**) holds **project copies** of each `.canvas.tsx` dashboard so they live in git and handoffs. During **`r-do`**, the same file is also written to Cursor’s **IDE canvas directory** (`~/.cursor/projects/<workspace>/canvases/` per the canvas skill) so the canvas opens beside chat—both locations must stay in sync.
 
 ## README.md contents
+- **CRITICAL**: If a `README.md` or `readme.md` already exists, integrate its original content (especially SQL, logs, or problem descriptions) into the new structure; do not overwrite it.
 - Link any Jira tickets 
 - a short human readable summary of the task
 - description of folder layout (include **`Canvases/`** for canvas archives and note that live canvases also use Cursor’s managed `canvases/` path)
@@ -43,7 +44,7 @@ The file should contain a basic overview of the research goal, useful tables/cod
 Populate the following with the information you gained from the ticket, initial prompt and other similar research in the code base 
 - `{title}`
 - `{summary of goal}`
-- `{initial plan}` (multiple lines allowed) 
+- `{initial plan}` (multiple lines allowed). **Note**: Use sub-bullets for tasks that should be performed together within a single research step.
 - `{path/to/code}` (multiple lines allowed)
 - `{db.schema.table}` (multiple lines allowed)
 - `{path/to/doc}` (multiple lines allowed)

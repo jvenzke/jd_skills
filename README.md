@@ -52,14 +52,15 @@ Use this workflow to take an **idea end-to-end** to a **minimal prototype** (pro
 2. [`/do-light-research`](do-light-research/SKILL.md): Execute the step, add artifacts and (when applicable) a **canvas** with plots and SQL for human verification, update the main document, and prompt for the next action.
 3. [`/summarize-light-research`](summarize-light-research/SKILL.md): Compile findings into a handoff document, including pointers to verification artifacts.
 
-## Linear Research Workflow (Last updated: 2026-05-07)
+## Linear Research Workflow (Last updated: 2026-05-21)
 
-**Artifact chain:** `r-setup` creates the project **`README.md`** (stub), **`input_plan.md`**, **`research_plan.md`**, **`research_log.md`**, **`next_step.md`**, **`Canvases/`**, and **`src/`**. Canvas dashboards are saved under **`Canvases/<name>.canvas.tsx`** for git/handoff **and** mirrored to Cursor’s IDE **`canvases/`** path so they open beside chat (see canvas skill). **`r-plan`** and **`r-do`** update those files across iterations. **`r-summarize`** closes out by **writing the full results into the project `README.md`** (new sections: outcomes, findings, artifacts & verification, implementation handoff, open questions).
+**Artifact chain:** `r-setup` creates the project **`README.md`** (stub), **`input_plan.md`**, **`research_plan.md`**, **`research_log.md`**, **`next_step.md`**, **`Canvases/`**, and **`src/`**. Canvas dashboards are saved under **`Canvases/<name>.canvas.tsx`** for git/handoff **and** mirrored to Cursor’s IDE **`canvases/`** path so they open beside chat (see canvas skill). **`r-plan`**, **`r-do`**, and **`r-extend`** update those files across iterations. **`r-summarize`** closes out by **writing the full results into the project `README.md`** (new sections: outcomes, findings, artifacts & verification, implementation handoff, open questions).
 
 1. [`/r-setup`](r-setup/SKILL.md): Pull a Jira ticket (optional), set up base folders, and ask the user to update **`input_plan.md`**, then continue with **`r-plan`**.
 2. [`/r-plan`](r-plan/SKILL.md): Review **`input_plan.md`**, define the **next** research step only, maintain **`research_plan.md`**, **`research_log.md`**, and **`next_step.md`** (handoff to **`r-do`** or **`r-summarize`** when done).
 3. [`/r-do`](r-do/SKILL.md): Execute atomic tasks from **`next_step.md`**; add plots, reproducible Python/SQL, and verification canvases (**`Canvases/<name>.canvas.tsx`** in the research folder **and** the matching file under Cursor’s IDE **`canvases/`** path per the canvas skill); append **`research_log.md`**; checkpoint after each task (handoff back to **`r-plan`** or forward to **`r-summarize`**).
-4. [`/r-summarize`](r-summarize/SKILL.md): Read all planning and execution artifacts; **extend the project `README.md`** with summarized findings and verification pointers.
+4. [`/r-extend`](r-extend/SKILL.md): Refine and extend the research plan in `input_plan.md` by grilling the user on proposed next steps, aligning on details, and updating `input_plan.md`. Use this after completing a research step in `r-do` and before starting the next step in `r-plan` when you need to align on new steps or modify the existing research plan.
+5. [`/r-summarize`](r-summarize/SKILL.md): Read all planning and execution artifacts; **extend the project `README.md`** with summarized findings and verification pointers.
 
 ## PR Review Workflow (Last updated: 2026-05-04)
 
