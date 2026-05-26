@@ -13,13 +13,29 @@ Simulates the workflow used by the antigravity development cycle of code researc
 
 Detailed steps in following sections
 
-1. **Review request**: Understand the user's request. Standardize a unique `{task}` slug as a lowercase kebab-case identifier (e.g., `fix-auth-bug`). Create the parent directory `.working_items/` if it does not exist.
+1. **Review request**: Understand the user's request.
+   - **For New Tasks**: Standardize a unique `{task}` slug as a lowercase kebab-case identifier (e.g., `fix-auth-bug`). Create the parent directory `.working_items/` if it does not exist.
+   - **For Existing Tasks (Resuming in a New Chat)**: If the user provides a link to an existing `implementation_plan_{task}.md` or asks to resume an existing task:
+     1. Read `.working_items/implementation_plan_{task}.md` and `.working_items/tasks_{task}.md` to fully restore context.
+     2. Identify the current `phase` from the YAML frontmatter of `tasks_{task}.md`.
+     3. Skip already completed phases and immediately resume the work from the current phase (e.g., `implementation` or `verification`), summarizing the current state in chat.
 2. **Research codebase**: Find relevant files, trace logical flows, and understand the scope of changes.
 3. **Develop an implementation plan**: Write the plan to `.working_items/implementation_plan_{task}.md` and create a companion task tracking checklist at `.working_items/tasks_{task}.md`.
-4. **User review**: Ask the user to review the plan. Repeat steps 1-3 if revisions are requested. Pause and wait for an explicit **APPROVED** sign-off from the user before proceeding.
+4. **User review**: Ask the user to review the plan. Repeat steps 1-3 if revisions are requested. Pause and wait for an explicit **APPROVED** sign-off from the user before proceeding. (Skip this if resuming an already approved task).
 5. **Implementation**: Execute the steps directly in the main chat. Update the checkbox items in `.working_items/tasks_{task}.md` as each sub-task is completed.
 6. **Verification**: Compile, lint, and run the automated verification checks. Log attempts and errors in the `tasks_{task}.md` YAML block. Repeat until all automated verification checks pass.
 7. **Review changes**: Write a walkthrough to `.working_items/walkthrough_{task}.md` and summarize the changes in the chat. Commit only the plan and walkthrough files to Git.
+
+---
+
+## Resuming an Existing Task in a New Chat
+
+If a task is being resumed in a new chat session, or if the user links/references an existing implementation plan:
+- **Do not restart the planning or research phases.**
+- Immediately read the existing `.working_items/implementation_plan_{task}.md` and `.working_items/tasks_{task}.md` using the Read tool.
+- Parse the YAML frontmatter of `tasks_{task}.md` to determine the current `phase` and approval status (`approved: true`).
+- If `approved: true`, skip the User Review phase entirely and resume execution in the current phase (`implementation` or `verification`).
+- Post a message in the chat referencing the linked plan, listing the remaining checklist items, and explaining where the work is resuming.
 
 ---
 
@@ -34,7 +50,19 @@ Detailed steps in following sections
 
 Using the templates below, write the implementation plan and the task list to `.working_items/`. Keep documentation concise and highly structured.
 
-### Template: `implementation_plan_{task}.md`
+### implementation plan file template
+Here is the needed info:
+- `{title}`: title of the task
+- `{summary}`: Summary of the requested change
+- `{risk notes}`: Any breaking changes, security issues, or other major/blocking problems
+- `{important notes}`: Changes in how logic works that may impact other parts of the code or users understanding of how the program worked before
+- `{questions}`: Any open questions that require clarifications from the user. Provide options/recommended answers
+- `{change description}`: A change of what parts of the code base will be impacted. Include relevant files and logic changes in them. Note exact functions when needed for clarity. Break into logical sections and use bullet points.
+- `{automated verification plan}`: Include the plan of what the agent will do to ensure the changes were done correctly. This can include compiling/running the code, running test sweet, ...
+- `{manual verification plan}`: What manual steps the user should do to test and varify all the changes made.
+
+
+Template `implementation_plan_{task}.md`
 ```markdown
 # Implementation Plan: {title}
 
@@ -131,6 +159,16 @@ last_error: null
 - Commit `implementation_plan_{task}.md` and `walkthrough_{task}.md` to Git (along with any codebase modifications), leaving `tasks_{task}.md` local.
 
 ### Walkthrough file template
+Here is the needed info for the `.working_items/walkthrough_{task}.md` file:
+- `{title}`: title of the task
+- `{summary}`: Summary of the completed change
+- `{risk notes}`: Any breaking changes, security issues, or other major/blocking problems found
+- `{important notes}`: Changes in how logic works that may impact other parts of the code or users understanding of how the program worked before
+- `{code changes}`: A change of what parts of the code base will be impacted. Include relevant files and logic changes in them. Break into logical sections and use bullet points. Assume the user can review the exact code elsewhere. 
+- `{automated verification results}`: What varification steps were done on the most recent version of the code and the results of each step
+- `{manual verification plan}`: What manual steps the user should do to test and varify all the changes made.
+
+Template for `.working_items/walkthrough_{task}.md`
 ```markdown
 # Walkthrough: {title}
 
