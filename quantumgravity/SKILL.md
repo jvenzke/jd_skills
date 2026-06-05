@@ -1,5 +1,5 @@
 ---
-name: antigravity-workflow
+name: quantumgravity
 description: Simulate the workflow used by antigravity with high emphasis on concise, terse, non-verbose deliverables using Cursor Canvas
 disable-model-invocation: true
 ---
@@ -53,8 +53,268 @@ import {
   BarChart,
   useCanvasState,
   useHostTheme,
-  TodoItem
+  TodoItem,
+  Code
 } from "cursor/canvas";
+
+interface CommentableSectionProps {
+  stateKey: string;
+  title: string;
+  children: React.ReactNode;
+}
+
+function CommentableSection({ stateKey, title, children }: CommentableSectionProps) {
+  const theme = useHostTheme();
+  const [comment, setComment] = useCanvasState<string>(stateKey, "");
+  const [isCollapsed, setIsCollapsed] = useCanvasState<boolean>(stateKey + "_collapsed", false);
+  
+  const [isHovered, setIsHovered] = React.useState(false);
+  const [showOverlay, setShowOverlay] = React.useState(false);
+  const [tempComment, setTempComment] = React.useState("");
+
+  const handleOpenOverlay = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setTempComment(comment);
+    setShowOverlay(true);
+  };
+
+  const handleSave = () => {
+    setComment(tempComment);
+    setIsCollapsed(false);
+    setShowOverlay(false);
+  };
+
+  const handleCancel = () => {
+    setShowOverlay(false);
+  };
+
+  const toggleCollapse = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsCollapsed(!isCollapsed);
+  };
+
+  const handleSectionClick = (e: React.MouseEvent) => {
+    const target = e.target as HTMLElement;
+    const isInteractive = target.closest("button, input, textarea, a, [role='button'], label, svg");
+    if (!isInteractive) {
+      handleOpenOverlay(e);
+    }
+  };
+
+  return (
+    <div 
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onClick={handleSectionClick}
+      style={{ 
+        position: "relative", 
+        border: isHovered ? `1px solid ${theme.border?.normal || "rgba(255,255,255,0.15)"}` : "1px solid transparent",
+        borderRadius: 8,
+        padding: 4,
+        backgroundColor: isHovered ? (theme.bg?.sidebar || "rgba(255, 255, 255, 0.02)") : "transparent",
+        transition: "all 0.2s ease-in-out",
+        cursor: "pointer"
+      }}
+    >
+      {(isHovered || comment) && (
+        <button
+          onClick={handleOpenOverlay}
+          style={{
+            position: "absolute",
+            top: 8,
+            right: 8,
+            zIndex: 10,
+            background: comment ? "#3b82f6" : (theme.bg?.sidebar || "rgba(0,0,0,0.3)"),
+            border: `1px solid ${comment ? "#2563eb" : (theme.border?.normal || "rgba(255,255,255,0.2)")}`,
+            borderRadius: "50%",
+            width: 28,
+            height: 28,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+            fontSize: 14,
+            boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
+            color: "#fff",
+            transition: "all 0.15s ease",
+          }}
+          title={comment ? "Edit comment" : "Add comment"}
+        >
+          💬
+        </button>
+      )}
+
+      {children}
+
+      {comment && (
+        <div 
+          onClick={(e) => e.stopPropagation()}
+          style={{ 
+            marginTop: 8, 
+            padding: "10px 14px", 
+            background: theme.bg?.sidebar || "rgba(0,0,0,0.2)", 
+            borderRadius: 6, 
+            borderLeft: `3px solid #3b82f6`,
+            display: "flex",
+            flexDirection: "column",
+            gap: 6,
+            cursor: "default"
+          }}
+        >
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span style={{ fontSize: 11, fontWeight: 600, color: theme.text?.secondary || "#888", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+              💬 Feedback on {title}
+            </span>
+            <div style={{ display: "flex", gap: 12 }}>
+              <button 
+                onClick={handleOpenOverlay}
+                style={{ 
+                  background: "none", 
+                  border: "none", 
+                  color: "#3b82f6", 
+                  cursor: "pointer", 
+                  fontSize: 12,
+                  padding: 0,
+                  fontWeight: 500
+                }}
+              >
+                Edit
+              </button>
+              <button 
+                onClick={toggleCollapse}
+                style={{ 
+                  background: "none", 
+                  border: "none", 
+                  color: theme.text?.secondary || "#888", 
+                  cursor: "pointer", 
+                  fontSize: 12,
+                  padding: 0,
+                  fontWeight: 500
+                }}
+              >
+                {isCollapsed ? "Expand" : "Collapse"}
+              </button>
+            </div>
+          </div>
+          {!isCollapsed && (
+            <div style={{ fontSize: 13, color: theme.text?.primary || "#ccc", whiteSpace: "pre-wrap", lineHeight: "1.4" }}>
+              {comment}
+            </div>
+          )}
+        </div>
+      )}
+
+      {showOverlay && (
+        <div 
+          onClick={handleCancel}
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.6)",
+            backdropFilter: "blur(2px)",
+            zIndex: 1000,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "default"
+          }}
+        >
+          <div 
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: theme.bg?.editor || "#1e1e1e",
+              border: `1px solid ${theme.border?.normal || "rgba(255,255,255,0.1)"}`,
+              borderRadius: 8,
+              padding: 20,
+              width: "90%",
+              maxWidth: 450,
+              boxShadow: "0 10px 25px rgba(0, 0, 0, 0.5)",
+              display: "flex",
+              flexDirection: "column",
+              gap: 16,
+            }}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <span style={{ margin: 0, fontSize: 16, fontWeight: 600, color: theme.text?.primary }}>
+                Add Feedback: {title}
+              </span>
+              <button 
+                onClick={handleCancel}
+                style={{ 
+                  background: "none", 
+                  border: "none", 
+                  color: theme.text?.secondary || "#888", 
+                  cursor: "pointer", 
+                  fontSize: 20,
+                  padding: 0,
+                  lineHeight: 1
+                }}
+              >
+                &times;
+              </button>
+            </div>
+            
+            <textarea
+              value={tempComment}
+              onChange={(e) => setTempComment(e.target.value)}
+              placeholder={`Provide feedback or suggestions for this section...`}
+              rows={4}
+              autoFocus
+              style={{
+                width: "100%",
+                padding: 10,
+                borderRadius: 6,
+                backgroundColor: theme.bg?.sidebar || "rgba(0,0,0,0.2)",
+                color: theme.text?.primary,
+                border: `1px solid ${theme.border?.normal || "rgba(255,255,255,0.15)"}`,
+                fontSize: 13,
+                fontFamily: "inherit",
+                resize: "vertical",
+                outline: "none",
+              }}
+            />
+
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: 10 }}>
+              <button 
+                onClick={handleCancel}
+                style={{
+                  padding: "6px 14px",
+                  borderRadius: 6,
+                  border: `1px solid ${theme.border?.normal || "rgba(255,255,255,0.15)"}`,
+                  background: "transparent",
+                  color: theme.text?.primary,
+                  cursor: "pointer",
+                  fontSize: 13,
+                  fontWeight: 500,
+                }}
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={handleSave}
+                style={{
+                  padding: "6px 14px",
+                  borderRadius: 6,
+                  border: "none",
+                  background: "#3b82f6",
+                  color: "#fff",
+                  cursor: "pointer",
+                  fontSize: 13,
+                  fontWeight: 500,
+                }}
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function TaskWorkspace() {
   const theme = useHostTheme();
@@ -75,10 +335,6 @@ export default function TaskWorkspace() {
   
   // Free text answer state
   const [otherFreeText, setFreeText] = useCanvasState<string>("otherFreeText", "");
-
-  // Inline comments/feedback on specific sections/bullet points
-  const [feedbackSummary, setFeedbackSummary] = useCanvasState<string>("feedbackSummary", "");
-  const [feedbackProposedChanges, setFeedbackProposedChanges] = useCanvasState<string>("feedbackProposedChanges", "");
 
   const handleTodoClick = (clickedTodo: TodoItem) => {
     setTodos(prev => prev.map(t => {
@@ -127,16 +383,11 @@ export default function TaskWorkspace() {
         <Stack gap={16}>
           <H2>Implementation Plan: {title}</H2>
           
-          <Stack gap={8}>
-            <Text>{summary}</Text>
-            {/* Inline comment field for Paragraph/Summary Section */}
-            <TextArea 
-              value={feedbackSummary} 
-              onChange={setFeedbackSummary} 
-              placeholder="Add inline feedback or corrections on the summary paragraph..." 
-              rows={2}
-            />
-          </Stack>
+          <CommentableSection stateKey="feedbackSummary" title="Summary">
+            <Stack gap={8}>
+              <Text>{summary}</Text>
+            </Stack>
+          </CommentableSection>
 
           <H3>User Review Required</H3>
 
@@ -187,24 +438,17 @@ export default function TaskWorkspace() {
             </CardBody>
           </Card>
 
-          <Card>
-            <CardHeader>Proposed Changes</CardHeader>
-            <CardBody>
-              <Stack gap={12}>
+          <CommentableSection stateKey="feedbackProposedChanges" title="Proposed Changes">
+            <Card>
+              <CardHeader>Proposed Changes</CardHeader>
+              <CardBody>
                 <Stack gap={8}>
                   <Text>• <Code>src/utils.ts</Code>: Refactor helper logic to improve performance.</Text>
                   <Text>• <Code>src/index.ts</Code>: Integrate the updated helper functions.</Text>
                 </Stack>
-                {/* Inline comment field for Proposed Changes List */}
-                <TextArea 
-                  value={feedbackProposedChanges} 
-                  onChange={setFeedbackProposedChanges} 
-                  placeholder="Provide feedback on proposed changes, file targets, or logic details..." 
-                  rows={2}
-                />
-              </Stack>
-            </CardBody>
-          </Card>
+              </CardBody>
+            </Card>
+          </CommentableSection>
 
           <Card>
             <CardHeader>Verification Plan</CardHeader>
