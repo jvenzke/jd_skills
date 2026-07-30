@@ -43,6 +43,19 @@ The [`/meta-review`](meta-review/SKILL.md) skill is the source of truth for what
 
 - [`/toggle-html`](toggle-html/SKILL.md): Toggle the generation of HTML review surfaces (RESEARCH_REVIEW.html and RESEARCH_PLAN_PITCH_DECK.html) on or off.
 
+## Antigravity Workflows (Last updated: 2026-07-30)
+
+Single-skill research → plan → **APPROVED** → implement (subagent) → verify → walkthrough cycles. Artifacts live under `.working_items/` (except quantumgravity, which uses a Cursor Canvas). Pick by how much code quality and change size matter:
+
+| Skill | Use when | Diff from the others |
+| --- | --- | --- |
+| [`/r-antigravity`](r-antigravity/SKILL.md) | Research / exploratory work where speed and terse plans matter more than perfect diffs | One plan + one approval; no phase splitting or reuse-first rules |
+| [`/d-antigravity`](d-antigravity/SKILL.md) | Real development where bloat and large diffs are a problem | Prefer this over `r-antigravity` when change size and code quality matter: optional `phase_plan_{task}.md`, vertical slices (≤~3 files / ≤5 steps), reuse-first rules, per-phase approval, new chat for phase 2+ |
+| [`/quantumgravity`](quantumgravity/SKILL.md) | Same cycle as `r-antigravity`, but you want an interactive Canvas plan/tracker instead of Markdown files | Plan, checklist, verification, and walkthrough live in one Canvas workspace |
+
+**Shared cycle (r / d):** research → `implementation_plan_{task}.md` + `tasks_{task}.md` → user **APPROVED** → subagent implements (red-green-refactor) → automated verification (halt after 3 failures) → `walkthrough_{task}.md`.
+
+**`d-antigravity` extras:** when scope warrants it, write `phase_plan_{task}.md` first and get **APPROVED** on phases; each chat implements one phase only; resume by linking or naming the phase plan.
 
 ## Light Research Workflow (Last updated: 2026-05-06)
 
