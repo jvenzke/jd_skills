@@ -1,5 +1,5 @@
 ---
-name: antigravity-workflow
+name: r-antigravity
 description: Simulate the workflow used by antigravity with high emphasis on concise, terse, non-verbose deliverables
 disable-model-invocation: true
 ---
@@ -77,7 +77,9 @@ last_error: null
 - **DO NOT proceed to Implementation without explicit "APPROVED" sign-off.** Once approved, set `approved: true` and `phase: implementation` in the `tasks_{task}.md` frontmatter.
 
 ### 4. Implementation
-- Execute changes sequentially in the main chat.
+- Implement a specific task using a strict Red-Green-Refactor loop. To avoid cluttering the main thread, the actual coding and testing loop must be delegated to a subagent.
+- Use the `Task` tool (subagent) to perform the implementation.
+- Provide the subagent with the implementation plan file path
 - As each step completes, change `- [ ]` to `- [x]` in `.working_items/tasks_{task}.md`.
 - Maintain exact indentation/formatting; avoid placeholder code.
 
@@ -91,9 +93,10 @@ last_error: null
 ### 6. Review changes
 - Create `.working_items/walkthrough_{task}.md`.
 - Provide a very brief summary in the chat including:
-  - A 1-2 sentence overview.
-  - A numbered list of completed logical steps.
-  - A relative link to the walkthrough file.
+  - **Summary of Changes**: A 1-2 sentence high level overview.
+  - **Test Status**: Show the tests that were failing and now pass.
+  - **Code Overview**: A numbered list of completed logical steps.
+  - **User Review**: A relative link to the walkthrough file.
 
 #### Walkthrough Template `.working_items/walkthrough_{task}.md`
 ```markdown
