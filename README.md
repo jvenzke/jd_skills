@@ -50,12 +50,14 @@ Single-skill research → plan → **APPROVED** → implement (subagent) → ver
 | Skill | Use when | Diff from the others |
 | --- | --- | --- |
 | [`/r-antigravity`](r-antigravity/SKILL.md) | Research / exploratory work where speed and terse plans matter more than perfect diffs | One plan + one approval; no phase splitting or reuse-first rules |
-| [`/d-antigravity`](d-antigravity/SKILL.md) | Real development where bloat and large diffs are a problem | Prefer this over `r-antigravity` when change size and code quality matter: optional `phase_plan_{task}.md`, vertical slices (≤~3 files / ≤5 steps), reuse-first rules, per-phase approval, new chat for phase 2+ |
+| [`/d-antigravity`](d-antigravity/SKILL.md) | Real development where bloat and large diffs are a problem | Prefer this over `r-antigravity` when change size and code quality matter: optional phase plan, vertical slices (≤~3 files / ≤5 steps), reuse-first rules, per-phase approval + fresh `phase-{N}/` artifacts, new chat for phase 2+ |
 | [`/quantumgravity`](quantumgravity/SKILL.md) | Same cycle as `r-antigravity`, but you want an interactive Canvas plan/tracker instead of Markdown files | Plan, checklist, verification, and walkthrough live in one Canvas workspace |
 
-**Shared cycle (r / d):** research → `implementation_plan_{task}.md` + `tasks_{task}.md` → user **APPROVED** → subagent implements (red-green-refactor) → automated verification (halt after 3 failures) → `walkthrough_{task}.md`.
+**Shared cycle (r / d):** research → implementation plan + tasks → user **APPROVED** → subagent implements (red-green-refactor) → automated verification (halt after 3 failures) → walkthrough.
 
-**`d-antigravity` extras:** when scope warrants it, write `phase_plan_{task}.md` first and get **APPROVED** on phases; each chat implements one phase only; resume by linking or naming the phase plan.
+**`r-antigravity` artifacts:** `.working_items/implementation_plan_{task}.md`, `tasks_{task}.md`, `walkthrough_{task}.md`.
+
+**`d-antigravity` artifacts:** `.working_items/{task}/phase_plan.md` (optional) and per-phase `.working_items/{task}/phase-{N}/{implementation_plan,tasks,walkthrough}.md`. Each chat implements one phase only and must not overwrite prior phase folders; resume by linking or naming the phase plan.
 
 ## Light Research Workflow (Last updated: 2026-05-06)
 
