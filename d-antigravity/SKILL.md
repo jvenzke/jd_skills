@@ -10,9 +10,9 @@ disable-model-invocation: true
 
 # Antigravity workflow (development)
 
-Simulates the antigravity cycle — research, plan, approval, implement, review —
-with bounded vertical slices and a deep-module design posture. Prefer simple,
-stable interfaces that hide cohesive implementation complexity.
+Simulates the antigravity cycle — research, clarify, plan, approval, implement,
+review — with bounded vertical slices and a deep-module design posture. Prefer
+simple, stable interfaces that hide cohesive implementation complexity.
 
 ## Artifact layout
 
@@ -38,6 +38,7 @@ Apply in this order when they conflict:
 3. **Extend/reuse** sound existing code, but do not preserve shallow abstractions or misplaced responsibilities merely to minimize changes.
 4. Prefer **orthogonal boundaries** with low coupling. New or reshaped abstractions must be named in the approved plan.
 5. Keep changes within the approved vertical slice. Larger code changes are allowed when required to deepen a module; no unrelated cleanup.
+6. **Comments**: Limit comments to where the code is unclear. If the code can be understood directly, avoid writing a comment.
 
 ## Deep-module design standard
 
@@ -57,24 +58,35 @@ Treat a module as any file, class, object, package, service, or subsystem with a
 
 ### 1. Review request & Research
 - Standardize a unique `{task}` slug as a lowercase kebab-case identifier (e.g., `fix-auth-bug`). Create `.working_items/{task}/` if missing.
-- **Entry / resume (phase plan linked or exists)**: If the user links or names a `phase_plan.md` (or `phase_plan_{task}.md`), or one already exists under `.working_items/{task}/`:
-  1. Read `.working_items/{task}/phase_plan.md` and, for the next incomplete phase, any existing `phase-{N}/implementation_plan.md` and `phase-{N}/tasks.md`.
-  2. Find the next incomplete phase (`- [ ]` or `- [o]`). Treat `- [o]` as the current in-progress phase. Let `{N}` be that phase’s 1-based index.
-  3. Skip 2a/2b if `approved: true` in the phase plan frontmatter.
-  4. Post a concise chat summary: completed phases, next phase title, and where work resumes — then go to **2c** for that phase (**create or reuse** `phase-{N}/` artifacts for *this* phase only; do not reuse or overwrite other phase folders).
-- **Resuming mid-phase**: If `phase-{N}/tasks.md` exists with incomplete checklist items, skip completed steps and resume at the first unchecked item.
+- **Entry / resume (phase plan linked or exists)**: If the user links or names a phase plan, or `.working_items/{task}/phase_plan.md` already exists:
+  1. Canonical path is `.working_items/{task}/phase_plan.md`. If the user links `phase_plan_{task}.md` (or another name), copy/normalize it to that path before continuing.
+  2. Read `.working_items/{task}/phase_plan.md` and, for the next incomplete phase, any existing `phase-{N}/implementation_plan.md` and `phase-{N}/tasks.md`.
+  3. Find the next incomplete phase (`- [ ]` or `- [o]`). Treat `- [o]` as the current in-progress phase. Let `{N}` be that phase’s 1-based index.
+  4. Skip 3a/3b if `approved: true` in the phase plan frontmatter.
+  5. Post a concise chat summary: completed phases, next phase title, and where work resumes — then go to **2** (clarify) before planning that phase (**create or reuse** `phase-{N}/` artifacts for *this* phase only; do not reuse or overwrite other phase folders).
+- **Resuming mid-phase**: If `phase-{N}/tasks.md` exists with incomplete checklist items and `approved: true`, skip clarify/planning, resume at the first unchecked item, and continue Implementation/Verification as appropriate.
 - **No phase plan**: use `phase-1/` for all implementation artifacts.
 - **Research codebase**: Find relevant files, trace logical flows, and build a full understanding of the scope of changes, potential impacts, risks, and side-effects.
 - **Evaluate boundaries**: Identify the current public interface, complexity leaked to callers, duplicated orchestration, shallow wrappers, and invariants spread across modules. Determine which boundary should own that complexity.
 
-### 2a. Develop a phase plan (optional)
+### 2. Clarify requirements
+Interview the user about the request until reaching a shared understanding. Walk down each branch of the design tree, resolving dependencies between decisions one-by-one.
+
+- Focus on goals, constraints, boundary ownership, interface shape, risks, and trade-offs that affect the plan — not implementation trivia.
+- For each question, provide your recommended answer.
+- Ask the questions one at a time. Ask the questions directly in the chat and pause for the user's response.
+- If a question can be answered by exploring the codebase, explore the codebase instead.
+- **DO NOT proceed to phase plan or implementation plan until your clarifying questions are resolved**.
+- **Next step after clarify**: If `.working_items/{task}/phase_plan.md` exists with `approved: true`, proceed to **3c**. If a phase plan is needed but not yet approved, proceed to **3a**. If no phase plan is needed, skip to **3c**.
+
+### 3a. Develop a phase plan (optional)
 Create a phase plan when **any** of these apply:
 - More than **~3 files** are likely to change, **or**
 - Work crosses layers (e.g. DB + API + UI), **or**
 - A new module/package is required, **or**
 - It is unclear which existing code to extend.
 
-Otherwise skip to **2c** (use `phase-1/`). If no phase plan is used, only one **APPROVED** gate is required (step 3).
+Otherwise skip to **3c** (use `phase-1/`). If no phase plan is used, only one **APPROVED** gate is required (step 4).
 
 #### Phase size limits
 - Each phase is one **vertical slice** that can ship and verify on its own.
@@ -97,9 +109,9 @@ approved: false
 
 {summary - 1-2 sentences}
 
-### Open questions
+### Decisions from clarify
 
-1. {questions - brief list with options and recommended answer}
+1. {resolved decision - brief; include chosen option}
 
 ## Proposed phases
 
@@ -109,13 +121,13 @@ approved: false
    * Details about phase 2
 ```
 
-### 2b. Phase plan approval
+### 3b. Phase plan approval
 If a phase document is generated do the following. Otherwise skip to develop an implementation plan.
 - Provide a highly concise, high-level summary of proposed phases **(maximum 3-4 bullets total)** in the chat, followed by a relative link to `.working_items/{task}/phase_plan.md`.
 - Ask the user to reply with **APPROVED** to proceed. Repeat if revisions are requested.
 - **DO NOT proceed to Implementation plan without explicit "APPROVED" sign-off.** Once approved, set `approved: true` in the phase plan frontmatter.
 
-### 2c. Develop an implementation plan
+### 3c. Develop an implementation plan
 Determine `{N}` (next incomplete phase index, or `1` if no phase plan). Create directory `.working_items/{task}/phase-{N}/` if missing.
 
 **Always write fresh** `implementation_plan.md` and `tasks.md` into that phase folder. Do **not** overwrite or edit artifacts under other `phase-*` folders. If this phase folder already has incomplete work (resume mid-phase), keep existing files and continue; otherwise create new ones.
@@ -141,9 +153,9 @@ If a phase plan is being used, limit scope to phase `{N}` and change that phase�
 > 
 > 1. {important notes - terse list}
 
-### Open questions
+### Decisions from clarify
 
-1. {questions - brief list with options and recommended answer}
+1. {resolved decision - brief; include chosen option}
 
 ## Proposed changes
 
@@ -182,12 +194,12 @@ last_error: null
 - [ ] Step 2: {granular checklist step 2}
 ```
 
-### 3. User review
+### 4. User review
 - Provide a highly concise, high-level summary of proposed changes **(maximum 3-4 bullets total)** in the chat, followed by a relative link to `.working_items/{task}/phase-{N}/implementation_plan.md`.
 - Ask the user to reply with **APPROVED** to proceed. Repeat if revisions are requested.
 - **DO NOT proceed to Implementation without explicit "APPROVED" sign-off.** Once approved, set `approved: true` and `phase: implementation` in `phase-{N}/tasks.md` frontmatter.
 
-### 4. Implementation
+### 5. Implementation
 - Implement a specific task using a strict Red-Green-Refactor loop. To avoid cluttering the main thread, the actual coding and testing loop must be delegated to a subagent.
 - Use the `Task` tool (subagent) to perform the implementation.
 - **Subagent prompt MUST include** (verbatim constraints — do not omit):
@@ -195,15 +207,16 @@ last_error: null
   - The **Rules (priority order)** block from this skill
   - The **Deep-module design standard** block from this skill
   - Instruct: stay within the approved plan’s file list; do not start later phases; no new abstractions unless the plan names them
+  - Instruct: as each checklist step completes, the **subagent** must change `- [ ]` to `- [x]` in `.working_items/{task}/phase-{N}/tasks.md`
 - Instruct the subagent to follow the Red-Green-Refactor loop:
   - **RED**: Write ONE test against observable behavior at the intended module boundary. Avoid tests coupled to private implementation. Run the test command and verify it FAILS.
   - **GREEN**: Write the smallest coherent change that makes the test PASS while following the approved boundary design. Run the test command and verify it PASSES.
   - **REFACTOR**: Move complexity inward, simplify callers, remove obsolete shallow paths, and keep the public interface narrow. Ensure tests still pass.
 - Instruct the subagent to return a clean summary of changes and test results when finished.
-- As each step completes, change `- [ ]` to `- [x]` in `.working_items/{task}/phase-{N}/tasks.md`.
 - Maintain exact indentation/formatting; avoid placeholder code.
 
-### 5. Verification
+### 6. Verification
+- **Main agent** owns verification and review artifacts (not the implementation subagent).
 - Update `phase: verification` in `phase-{N}/tasks.md`.
 - Execute all automated verification checks.
 - Verify callers use the intended simple interface and do not depend on newly private implementation details.
@@ -213,8 +226,8 @@ last_error: null
 - **DO NOT proceed to review changes until all Automated Verification checks pass.**
 - If a phase plan is being used, change `- [o]` to `- [x]` in `phase_plan.md` for phase `{N}`.
 
-### 6. Review changes
-- Create `.working_items/{task}/phase-{N}/walkthrough.md` (new file for this phase; never overwrite another phase’s walkthrough).
+### 7. Review changes
+- **Main agent** creates `.working_items/{task}/phase-{N}/walkthrough.md` (new file for this phase; never overwrite another phase’s walkthrough).
 - Provide a very brief summary in the chat including:
   - **Summary of Changes**: A 1-2 sentence high level overview.
   - **Test Status**: Show the tests that were failing and now pass.

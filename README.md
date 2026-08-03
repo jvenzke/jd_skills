@@ -50,7 +50,7 @@ Single-skill research → plan → **APPROVED** → implement (subagent) → ver
 | Skill | Use when | Diff from the others |
 | --- | --- | --- |
 | [`/r-antigravity`](r-antigravity/SKILL.md) | Research / exploratory work where speed and terse plans matter more than perfect diffs | One plan + one approval; no phase splitting or reuse-first rules |
-| [`/d-antigravity`](d-antigravity/SKILL.md) | Real development where bloat and large diffs are a problem | Prefer this over `r-antigravity` when change size and code quality matter: optional phase plan, vertical slices (≤~3 files / ≤5 steps), reuse-first rules, per-phase approval + fresh `phase-{N}/` artifacts, new chat for phase 2+ |
+| [`/d-antigravity`](d-antigravity/SKILL.md) | Real development where bloat and large diffs are a problem | Prefer this over `r-antigravity` when change size and code quality matter: optional phase plan, vertical slices (≤5 steps; may touch >3 files when deepening one boundary), deep-module / reuse rules, per-phase approval + fresh `phase-{N}/` artifacts, new chat for phase 2+ |
 | [`/quantumgravity`](quantumgravity/SKILL.md) | Same cycle as `r-antigravity`, but you want an interactive Canvas plan/tracker instead of Markdown files | Plan, checklist, verification, and walkthrough live in one Canvas workspace |
 
 **Shared cycle (r / d):** research → implementation plan + tasks → user **APPROVED** → subagent implements (red-green-refactor) → automated verification (halt after 3 failures) → walkthrough.
