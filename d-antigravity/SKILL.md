@@ -75,7 +75,8 @@ Apply in this order when they conflict:
 3. **Extend/reuse** sound existing code, but do not preserve shallow abstractions or misplaced responsibilities merely to minimize changes.
 4. Prefer **orthogonal boundaries** with low coupling. New or reshaped abstractions must be named in the approved plan.
 5. Keep changes within the approved vertical slice. Larger code changes are allowed when required to deepen a module; no unrelated cleanup.
-6. **Comments**: Limit comments to where the code is unclear. If the code can be understood directly, avoid writing a comment.
+6. **Test restraint**: prefer high-signal contract tests over red/green volume; do not add tests merely to perform a loop. (Details: Verification plan + Implementation.)
+7. **Comments**: Limit comments to where the code is unclear. If the code can be understood directly, avoid writing a comment.
 
 ## Deep-module design standard
 
@@ -216,11 +217,19 @@ If a phase plan is being used, limit scope to phase `{N}` and change that phase�
 
 ## Verification plan
 
+Automated Verification is the **only** place that authorizes new or extended tests. Prefer **0–2** new cases unless this phase adds multiple distinct public contracts (list each). Prefer extending an existing case over adding a new one. If no new public contract needs locking, write `none — reuse existing` under New/extended cases.
+
 ### Automated Verification
-{automated verification plan - terse bullet list}
+
+**Existing coverage to run**
+- {commands / suites / cases already covering this boundary — or `none`}
+
+**New/extended cases** (each must name the public contract; else `none — reuse existing`)
+- {extend|new}: {case} — locks: {public contract / observable behavior}
+- Ban: private-helper tests, call-count/mock interaction tests, duplicate cases for the same contract, tests whose sole job is to go red then green, snapshot/golden files unless named here
 
 ### Manual Verification
-{manual verification plan - terse bullet list}
+{manual verification plan - terse bullet list; OK as primary check for low-risk plumbing when New/extended is none}
 ```
 
 #### Template `.working_items/{task}/phase-{N}/tasks.md`
@@ -247,7 +256,7 @@ last_error: null
 - **DO NOT proceed to Implementation without explicit "APPROVED" sign-off.** Once approved, set `approved: true` and `phase: implementation` in `phase-{N}/tasks.md` frontmatter.
 
 ### 4. Implementation
-- Implement a specific task using a strict Red-Green-Refactor loop. To avoid cluttering the main thread, the actual coding and testing loop must be delegated to a subagent.
+- Implement via a **Contract-first verify** loop (not mandatory red/green per step). To avoid cluttering the main thread, coding must be delegated to a subagent.
 - Use the `Task` tool (subagent) to perform the implementation.
 - **Subagent prompt MUST include** (verbatim constraints — do not omit):
   - Paths to `.working_items/{task}/phase-{N}/implementation_plan.md`, `.working_items/{task}/phase-{N}/tasks.md`, and `.working_items/{task}/agent_notes.md`
@@ -256,19 +265,24 @@ last_error: null
   - The **Deep-module design standard** block from this skill
   - The **agent_notes.md** rules (purpose, write/update, banned content, in-section edits only — no full-file rewrite)
   - Instruct: stay within the approved plan’s file list; do not start later phases; no new abstractions unless the plan names them
+  - Instruct: follow **only** the approved plan’s **Automated Verification** for tests — do not invent cases; if a new case seems needed, stop and ask to amend/re-approve the Verification plan (extending an already-listed case in place is OK)
   - Instruct: as each checklist step completes, the **subagent** must change `- [ ]` to `- [x]` in `.working_items/{task}/phase-{N}/tasks.md`
   - Instruct: update `agent_notes.md` in-section when durable map knowledge is learned; check the notes checklist item when done (or when intentionally confirming no new durable knowledge)
-- Instruct the subagent to follow the Red-Green-Refactor loop:
-  - **RED**: Write ONE test against observable behavior at the intended module boundary. Avoid tests coupled to private implementation. Run the test command and verify it FAILS.
-  - **GREEN**: Write the smallest coherent change that makes the test PASS while following the approved boundary design. Run the test command and verify it PASSES.
-  - **REFACTOR**: Move complexity inward, simplify callers, remove obsolete shallow paths, and keep the public interface narrow. Ensure tests still pass.
-- Instruct the subagent to return a clean summary of changes and test results when finished.
+- Instruct the subagent to follow **Contract-first verify**:
+  - **Default**: Implement the approved change, then run **Existing coverage to run**. No new test required for refactors, wiring, or plumbing.
+  - **When New/extended cases lists a case**: light red→green only for that **net-new or extended public contract** — write/extend the listed case against observable boundary behavior, confirm it fails for the right reason (new) or asserts the new contract (extend), then make the smallest coherent change that passes while following the approved boundary design.
+  - **When New/extended is `none — reuse existing`**: do not add tests; implement and run existing coverage (plus Manual Verification if listed).
+  - **Refactor**: Move complexity inward, simplify callers, remove obsolete shallow paths, and keep the public interface narrow; keep authorized tests green.
+  - **Ban**: tests for private helpers, call counts, mock interaction shape, duplicates of the same contract, or any test whose sole purpose is to satisfy a red/green ritual.
+- Instruct the subagent to return a clean summary of changes, commands run, and Test budget (`new: N | extended: M | reused only: yes/no`) when finished.
 - Maintain exact indentation/formatting; avoid placeholder code.
 
 ### 5. Verification
 - **Main agent** owns verification and review artifacts (not the implementation subagent).
 - Update `phase: verification` in `phase-{N}/tasks.md`.
-- Execute all automated verification checks.
+- Execute all automated verification checks from the approved plan (Existing coverage + any listed New/extended cases).
+- Confirm Test budget matches the plan’s New/extended list (`new: N | extended: M | reused only: yes/no`).
+- **Soft warn (do not block)**: if the subagent added test cases beyond the approved Verification plan, note them in the walkthrough and prefer removing or folding into an amended plan next time — still allow phase completion if checks pass.
 - Verify callers use the intended simple interface and do not depend on newly private implementation details.
 - Verify the refactor removed obsolete paths and did not leave duplicate orchestration across the old and new boundaries.
 - **agent_notes hard check**: Re-read `.working_items/{task}/agent_notes.md`. Confirm it reflects this phase’s durable map/gotchas (prune superseded bullets; soft cap ~30). Ensure the `tasks.md` notes checkbox is checked. If there was no new durable knowledge, checking the box alone is enough — do **not** add meta status lines into `agent_notes.md`. Do **not** mark the phase complete until this check passes.
@@ -281,7 +295,7 @@ last_error: null
 - **Main agent** creates `.working_items/{task}/phase-{N}/walkthrough.md` (new file for this phase; never overwrite another phase’s walkthrough).
 - Provide a very brief summary in the chat including:
   - **Summary of Changes**: A 1-2 sentence high level overview.
-  - **Test Status**: Show the tests that were failing and now pass.
+  - **Verification**: Commands/suites run and contracts covered; **Test budget** `new: N | extended: M | reused only: yes/no` (must match the approved plan). Mention new/extended cases only if the plan listed them. Soft-warn if extras were added.
   - **Code Overview**: A numbered list of completed logical steps.
   - **User Review**: A relative link to the walkthrough file.
 - **Next phase (new chat)**: If `phase_plan.md` has remaining `- [ ]` phases, end with a short prompt to start a **new chat** for the next phase, and include a relative link to `.working_items/{task}/phase_plan.md` (and the next phase title). Do **not** implement the next phase in this chat — the next chat must create a new `phase-{N+1}/` with its own plan, tasks, and walkthrough.
@@ -309,7 +323,10 @@ last_error: null
 ## Verification Results
 
 ### Automated Verification
-{automated verification results - results of verification steps}
+- Commands/suites run: {terse}
+- Contracts covered: {terse}
+- Test budget: new: {N} | extended: {M} | reused only: {yes/no}
+- Extras beyond plan (soft warn): {none | list}
 
 ### Manual Verification
 {manual verification plan - brief steps for the user}
