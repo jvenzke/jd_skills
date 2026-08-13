@@ -21,6 +21,7 @@ All artifacts live under `.working_items/{task}/`:
 ```
 .working_items/{task}/
   phase_plan.md                 # optional; once per task
+  agent_notes.md                # always; task-level code map for agents
   phase-{N}/                    # one folder per phase (or phase-1 if no phase plan)
     implementation_plan.md
     tasks.md
@@ -28,6 +29,42 @@ All artifacts live under `.working_items/{task}/`:
 ```
 
 `{N}` is the 1-based phase index from `phase_plan.md` (or `1` when skipping phases). **Never overwrite** a completed phase folder — always create a new `phase-{N}/` for the next incomplete phase.
+
+## agent_notes.md (agent code map)
+
+Task-level file for handoff between agents/chats. **Not** a second plan or walkthrough.
+
+### Purpose
+- Durable map of where code lives, entry points, gotchas, commands, and fragile areas
+- Only information **not** already in `phase_plan.md`, `implementation_plan.md`, `tasks.md`, or `walkthrough.md`
+- Written for agents: paths, symbols, commands, one-line facts — no human prose
+
+### Rules
+- **Create** the stub at task start. On resume, create the stub if missing; do not block on backfill.
+- **Read order**: plans/tasks first (intent), then `agent_notes.md` (code map). Main agent and all subagents read it after plans on startup.
+- **Write**: any agent that researched or changed code updates it when they learn durable knowledge. Edit the relevant section in place; **subagents must not rewrite the whole file**. Main agent prunes/merges at Verification.
+- **Update continuously** whenever durable knowledge appears, plus checkpoints after research, after implementation, and during Verification.
+- **Bullets only**: each bullet is a repo-root-relative path, symbol, command, or one-line verified fact. Optional `#L` / symbol anchors when stable; prefer symbols over churning line numbers.
+- **Banned**: plan/walkthrough duplication; user-facing summaries; approval status; test pass/fail narratives; phase changelogs; speculative TODOs / design debate.
+- **Prune**: prefer ≤~30 bullets total. Merge duplicates; delete anything now obvious from code or already in plans. Keep still-true gotchas and `Do not touch`.
+- Always keep all five section headers, even when empty.
+
+#### Template `.working_items/{task}/agent_notes.md`
+```markdown
+# agent_notes — {task}
+
+Agent-facing code map. Paths/symbols/commands/one-line facts only. No plan duplication.
+
+## Key paths
+
+## Entry points / flows
+
+## Gotchas / invariants
+
+## Commands
+
+## Do not touch
+```
 
 ## Rules (priority order)
 
@@ -58,14 +95,16 @@ Treat a module as any file, class, object, package, service, or subsystem with a
 
 ### 1. Review request, research & clarify
 - Standardize a unique `{task}` slug as a lowercase kebab-case identifier (e.g., `fix-auth-bug`). Create `.working_items/{task}/` if missing.
+- Create `.working_items/{task}/agent_notes.md` from the template if missing (stub with all five section headers).
 - **Entry / resume (phase plan linked or exists)**: If the user links or names a phase plan, or `.working_items/{task}/phase_plan.md` already exists:
   1. Read `.working_items/{task}/phase_plan.md` and, for the next incomplete phase, any existing `phase-{N}/implementation_plan.md` and `phase-{N}/tasks.md`.
-  2. Find the next incomplete phase (`- [ ]` or `- [o]`). Treat `- [o]` as the current in-progress phase. Let `{N}` be that phase’s 1-based index.
-  3. Skip 2a/2b if `approved: true` in the phase plan frontmatter.
-  4. Post a concise chat summary: completed phases, next phase title, and where work resumes — then clarify (below) before planning that phase (**create or reuse** `phase-{N}/` artifacts for *this* phase only; do not reuse or overwrite other phase folders).
-- **Resuming mid-phase**: If `phase-{N}/tasks.md` exists with incomplete checklist items and `approved: true`, skip clarify/planning, resume at the first unchecked item, and continue Implementation/Verification as appropriate.
-- **No phase plan**: use `phase-1/` for all implementation artifacts.
-- **Research codebase**: Find relevant files, trace logical flows, and build a full understanding of the scope of changes, potential impacts, risks, and side-effects.
+  2. Read `.working_items/{task}/agent_notes.md` (create stub first if missing).
+  3. Find the next incomplete phase (`- [ ]` or `- [o]`). Treat `- [o]` as the current in-progress phase. Let `{N}` be that phase’s 1-based index.
+  4. Skip 2a/2b if `approved: true` in the phase plan frontmatter.
+  5. Post a concise chat summary: completed phases, next phase title, and where work resumes — then clarify (below) before planning that phase (**create or reuse** `phase-{N}/` artifacts for *this* phase only; do not reuse or overwrite other phase folders).
+- **Resuming mid-phase**: If `phase-{N}/tasks.md` exists with incomplete checklist items and `approved: true`, skip clarify/planning, resume at the first unchecked item, and continue Implementation/Verification as appropriate. Still read plans then `agent_notes.md` before coding.
+- **No phase plan**: use `phase-1/` for all implementation artifacts. Still maintain `agent_notes.md`.
+- **Research codebase**: Find relevant files, trace logical flows, and build a full understanding of the scope of changes, potential impacts, risks, and side-effects. Update `agent_notes.md` with durable paths/symbols/gotchas/commands not already in plans.
 - **Evaluate boundaries**: Identify the current public interface, complexity leaked to callers, duplicated orchestration, shallow wrappers, and invariants spread across modules. Determine which boundary should own that complexity.
 - **Clarify (user input only)**: Ask only questions that require user judgment — goals, constraints, boundary ownership, interface shape, risks, and trade-offs that affect the plan. If a question can be answered by exploring the codebase, explore instead; do not ask it.
   - Ask all **independent** questions in a **single pass**. Number each with a stable id (`1.`, `2.`, …).
@@ -74,10 +113,10 @@ Treat a module as any file, class, object, package, service, or subsystem with a
     ```
     1. Where should drafts persist?
        a) Existing documents table
-       b) New drafts table (recommended)
+       b) (recommended) New drafts table
        c) Local files only
     2. Who can edit drafts?
-       a) Author only (recommended)
+       a) (recommended) Author only
        b) Any project member
     ```
 
@@ -199,6 +238,7 @@ last_error: null
 
 - [ ] Step 1: {granular checklist step 1}
 - [ ] Step 2: {granular checklist step 2}
+- [ ] Update `.working_items/{task}/agent_notes.md` (or confirm no new durable knowledge)
 ```
 
 ### 3. User review
@@ -210,11 +250,14 @@ last_error: null
 - Implement a specific task using a strict Red-Green-Refactor loop. To avoid cluttering the main thread, the actual coding and testing loop must be delegated to a subagent.
 - Use the `Task` tool (subagent) to perform the implementation.
 - **Subagent prompt MUST include** (verbatim constraints — do not omit):
-  - Paths to `.working_items/{task}/phase-{N}/implementation_plan.md` and `.working_items/{task}/phase-{N}/tasks.md`
+  - Paths to `.working_items/{task}/phase-{N}/implementation_plan.md`, `.working_items/{task}/phase-{N}/tasks.md`, and `.working_items/{task}/agent_notes.md`
+  - Instruct: read plans/tasks first, then `agent_notes.md`, before coding
   - The **Rules (priority order)** block from this skill
   - The **Deep-module design standard** block from this skill
+  - The **agent_notes.md** rules (purpose, write/update, banned content, in-section edits only — no full-file rewrite)
   - Instruct: stay within the approved plan’s file list; do not start later phases; no new abstractions unless the plan names them
   - Instruct: as each checklist step completes, the **subagent** must change `- [ ]` to `- [x]` in `.working_items/{task}/phase-{N}/tasks.md`
+  - Instruct: update `agent_notes.md` in-section when durable map knowledge is learned; check the notes checklist item when done (or when intentionally confirming no new durable knowledge)
 - Instruct the subagent to follow the Red-Green-Refactor loop:
   - **RED**: Write ONE test against observable behavior at the intended module boundary. Avoid tests coupled to private implementation. Run the test command and verify it FAILS.
   - **GREEN**: Write the smallest coherent change that makes the test PASS while following the approved boundary design. Run the test command and verify it PASSES.
@@ -228,6 +271,7 @@ last_error: null
 - Execute all automated verification checks.
 - Verify callers use the intended simple interface and do not depend on newly private implementation details.
 - Verify the refactor removed obsolete paths and did not leave duplicate orchestration across the old and new boundaries.
+- **agent_notes hard check**: Re-read `.working_items/{task}/agent_notes.md`. Confirm it reflects this phase’s durable map/gotchas (prune superseded bullets; soft cap ~30). Ensure the `tasks.md` notes checkbox is checked. If there was no new durable knowledge, checking the box alone is enough — do **not** add meta status lines into `agent_notes.md`. Do **not** mark the phase complete until this check passes.
 - If checks fail: increment `verification_attempts`, record test/linter error in `last_error` field of `phase-{N}/tasks.md` frontmatter, apply fixes, and re-run.
 - If unresolved after **3 attempts**, halt, report logs, and ask for user guidance.
 - **DO NOT proceed to review changes until all Automated Verification checks pass.**
