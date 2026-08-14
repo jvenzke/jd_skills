@@ -108,7 +108,7 @@ Treat a module as any file, class, object, package, service, or subsystem with a
 - **No phase plan**: use `phase-1/` for all implementation artifacts. Still maintain `agent_notes.md`.
 - **Research codebase**: Find relevant files, trace logical flows, and build a full understanding of the scope of changes, potential impacts, risks, and side-effects. Update `agent_notes.md` with durable paths/symbols/gotchas/commands not already in plans.
 - **Evaluate boundaries**: Identify the current public interface, complexity leaked to callers, duplicated orchestration, shallow wrappers, and invariants spread across modules. Determine which boundary should own that complexity.
-- **Clarify (user input only)**: Ask only questions that require user judgment — goals, constraints, boundary ownership, interface shape, risks, and trade-offs that affect the plan. If a question can be answered by exploring the codebase, explore instead; do not ask it.
+- **Clarify (user input only)**: Interview relentlessly about goals, constraints, boundary ownership, interface shape, risks, and trade-offs until shared understanding. Walk each branch of the decision tree; resolve dependencies one-by-one. If a question can be answered by exploring the codebase, explore instead; do not ask it.
   - Ask all **independent** questions in a **single pass**. Number each with a stable id (`1.`, `2.`, …).
   - For each question, list options alphabetically (`a)`, `b)`, `c)`, …) and mark the recommended one. Users reply with ids (e.g. `1b 2a`).
 
@@ -122,9 +122,9 @@ Treat a module as any file, class, object, package, service, or subsystem with a
        b) Any project member
     ```
 
-  - Use follow-ups only when a prior answer is required for the next question, or when new information changes a decision.
-  - Pause for the user's response before planning.
-  - **DO NOT proceed to phase plan or implementation plan until clarifying questions are resolved**.
+  - After answers, ask any follow-up pass unlocked by those decisions (or by new information). Continue passes until alignment is complete — no open branches that still need user judgment.
+  - Pause for the user's response before the next pass or before planning.
+  - **DO NOT proceed to phase plan or implementation plan until clarifying questions are resolved and alignment is complete**.
   - **Next step after clarify**: If `.working_items/{task}/phase_plan.md` exists with `approved: true`, proceed to **2c**. If a phase plan is needed but not yet approved, proceed to **2a**. If no phase plan is needed, skip to **2c**.
 
 ### 2a. Develop a phase plan (optional)
