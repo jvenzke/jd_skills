@@ -85,6 +85,7 @@ Treat a module as any file, class, object, package, service, or subsystem with a
 - Expose the smallest practical interface for the capability. Callers should express intent without coordinating internal steps.
 - Keep invariants, sequencing, data representation, policy, error handling, and dependency details behind the boundary.
 - Favor fewer, deeper modules over many shallow wrappers, pass-through methods, or narrowly fragmented helpers.
+- Prefer classes over standalone functions and global variables
 - Co-locate related complexity when doing so reduces knowledge shared across modules.
 - Avoid interfaces that mirror implementation details through excessive parameters, getters/setters, configuration, or internal types.
 - Judge an abstraction by the complexity it removes from callers, not by its line count. A simple interface may legitimately contain a substantial implementation.
