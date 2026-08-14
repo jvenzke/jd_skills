@@ -122,10 +122,10 @@ Treat a module as any file, class, object, package, service, or subsystem with a
        b) Any project member
     ```
 
-  - After answers, ask any follow-up pass unlocked by those decisions (or by new information). Continue passes until alignment is complete — no open branches that still need user judgment.
+  - After answers, ask any follow-up questions unlocked by those decisions or by new information. Continue passes until alignment is complete — no open branches that still need user judgment.
   - Pause for the user's response before the next pass or before planning.
-  - **DO NOT proceed to phase plan or implementation plan until clarifying questions are resolved and alignment is complete**.
-  - **Next step after clarify**: If `.working_items/{task}/phase_plan.md` exists with `approved: true`, proceed to **2c**. If a phase plan is needed but not yet approved, proceed to **2a**. If no phase plan is needed, skip to **2c**.
+- **DO NOT proceed to phase plan or implementation plan until all clarifying questions are resolved and alignment is complete**.
+- **Next step after clarify**: If `.working_items/{task}/phase_plan.md` exists with `approved: true`, proceed to **2c**. If a phase plan is needed but not yet approved, proceed to **2a**. If no phase plan is needed, skip to **2c**.
 
 ### 2a. Develop a phase plan (optional)
 Create a phase plan when **any** of these apply:
