@@ -192,13 +192,13 @@ If a phase plan is being used, limit scope to phase `{N}` and change that phaseâ
 
 ## User Review Required
 
-> <span style="color:red">**RISKS**</span>
-> 
-> 1. {risk notes - terse list}
+### RISKS
 
-> <span style="color:yellow">**IMPORTANT**</span>
-> 
-> 1. {important notes - terse list}
+1. {risk notes - terse list}
+
+### IMPORTANT
+
+1. {important notes - terse list}
 
 ### Decisions from clarify
 
@@ -308,13 +308,13 @@ last_error: null
 
 ## User Review Required
 
-> <span style="color:red">**RISKS**</span>
-> 
-> 1. {risk notes - terse list}
+### RISKS
 
-> <span style="color:yellow">**IMPORTANT**</span>
-> 
-> 1. {important notes - terse list}
+1. {risk notes - terse list}
+
+### IMPORTANT
+
+1. {important notes - terse list}
 
 ## Changes made
 
