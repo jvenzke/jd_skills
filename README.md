@@ -43,21 +43,21 @@ The [`/meta-review`](meta-review/SKILL.md) skill is the source of truth for what
 
 - [`/toggle-html`](toggle-html/SKILL.md): Toggle the generation of HTML review surfaces (RESEARCH_REVIEW.html and RESEARCH_PLAN_PITCH_DECK.html) on or off.
 
-## Antigravity Workflows (Last updated: 2026-07-30)
+## Antigravity Workflows (Last updated: 2026-08-17)
 
-Single-skill research → plan → **APPROVED** → implement (subagent) → verify → walkthrough cycles. Artifacts live under `.working_items/` (except quantumgravity, which uses a Cursor Canvas). Pick by how much code quality and change size matter:
+Single-skill clarify → plan → **APPROVED** → implement → verify → walkthrough cycles. Artifacts live under `.working_items/` (except quantumgravity, which uses a Cursor Canvas). Pick by how much code quality and change size matter:
 
 | Skill | Use when | Diff from the others |
 | --- | --- | --- |
-| [`/r-antigravity`](r-antigravity/SKILL.md) | Research / exploratory work where speed and terse plans matter more than perfect diffs | One plan + one approval; no phase splitting or reuse-first rules |
-| [`/d-antigravity`](d-antigravity/SKILL.md) | Real development where bloat and large diffs are a problem | Prefer this over `r-antigravity` when change size and code quality matter: optional phase plan, vertical slices (≤5 steps; may touch >3 files when deepening one boundary), deep-module / reuse rules, per-phase approval + fresh `phase-{N}/` artifacts, new chat for phase 2+ |
+| [`/r-antigravity`](r-antigravity/SKILL.md) | Research spikes: throwaway experiments, research tooling, quick analysis-backed prototypes | Spike-light: per-task folder, clarify gate, one plan + one approval, optional subagent, researcher-path smoke; no phases, `agent_notes`, or adversarial review |
+| [`/d-antigravity`](d-antigravity/SKILL.md) | Real development where bloat and large diffs are a problem | Prefer this over `r-antigravity` when change size and code quality matter: optional phase plan, vertical slices, deep-module / reuse rules, adversarial plan review, `agent_notes`, per-phase approval + fresh `phase-{N}/` artifacts, new chat for phase 2+ |
 | [`/quantumgravity`](quantumgravity/SKILL.md) | Same cycle as `r-antigravity`, but you want an interactive Canvas plan/tracker instead of Markdown files | Plan, checklist, verification, and walkthrough live in one Canvas workspace |
 
-**Shared cycle (r / d):** research → implementation plan + tasks → user **APPROVED** → subagent implements (red-green-refactor) → automated verification (halt after 3 failures) → walkthrough.
+**Shared cycle (r / d):** clarify (blocking decisions) → implementation plan + tasks → user **APPROVED** → implement (optional subagent) → verification (halt after 3 failures) → walkthrough.
 
-**`r-antigravity` artifacts:** `.working_items/implementation_plan_{task}.md`, `tasks_{task}.md`, `walkthrough_{task}.md`.
+**`r-antigravity` artifacts:** `.working_items/{task}/{implementation_plan,tasks,walkthrough}.md`. Runnable code stays in repo conventions (`src/`, notebooks, or `scratch/{task}/`) — not under `.working_items/`.
 
-**`d-antigravity` artifacts:** `.working_items/{task}/phase_plan.md` (optional) and per-phase `.working_items/{task}/phase-{N}/{implementation_plan,tasks,walkthrough}.md`. Each chat implements one phase only and must not overwrite prior phase folders; resume by linking or naming the phase plan.
+**`d-antigravity` artifacts:** `.working_items/{task}/phase_plan.md` (optional), `agent_notes.md`, and per-phase `.working_items/{task}/phase-{N}/{implementation_plan,tasks,walkthrough}.md`. Each chat implements one phase only and must not overwrite prior phase folders; resume by linking or naming the phase plan.
 
 ## Light Research Workflow (Last updated: 2026-05-06)
 
