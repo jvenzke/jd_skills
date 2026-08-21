@@ -3,15 +3,15 @@ name: d-antigravity
 description: >-
   Phased development workflow (antigravity-style) for maintainable systems.
   Prefer over r-antigravity when architecture and code quality matter:
-  deep-module design, vertical-slice phases, adversarial plan review before
-  each human gate, and explicit approval before each phase.
+  deep-module design, vertical-slice phases, and explicit approval before
+  each phase.
 disable-model-invocation: true
 ---
 
 # Antigravity workflow (development)
 
-Simulates the antigravity cycle — research, clarify, plan, adversarial review,
-approval, implement, review — with bounded vertical slices and a deep-module
+Simulates the antigravity cycle — research, clarify, plan, approval,
+implement, review — with bounded vertical slices and a deep-module
 design posture. Prefer simple, stable interfaces that hide cohesive
 implementation complexity.
 
@@ -93,65 +93,6 @@ Treat a module as any file, class, object, package, service, or subsystem with a
 - Preserve public behavior and compatibility unless the approved plan explicitly includes an interface migration.
 - Larger refactors are justified when they measurably simplify the interface, reduce coupling, centralize invariants, or eliminate duplicated orchestration. Do not use deep-module design to justify speculative generalization.
 
-## Adversarial plan review (mandatory)
-
-Run this protocol **before every human gate**: after drafting `phase_plan.md` (before **2b**), and after drafting `implementation_plan.md` + `tasks.md` (before **3**). No skip path.
-
-### Goals
-Find blind spots the planner missed: incorrect behavior risk, coupling/leakage across module boundaries, deep-module or vertical-slice violations, unverifiable contracts, missing rollback/migration risk, contradictions with clarify decisions, and (for implementation plans) checklist drift vs the plan.
-
-### Blocking vs nits
-- **Blocking**: could cause incorrect behavior; unsafe coupling / boundary leakage; missing rollback/migration risk; unverifiable contracts; scope that violates vertical-slice or deep-module rules; contradictions with clarify decisions; `tasks.md` steps that do not match proposed changes or verification contracts.
-- **Nits** (non-blocking): wording, style, optional polish. Nits do not prevent alignment.
-
-### Loop (max 3 rounds)
-1. Set `adversarial_status: in_progress` and `adversarial_round: N` on the owning frontmatter (see State below). First critique uses `N = 1`. Seed `## Adversarial review` on the plan under review if missing.
-2. Invoke a **Task** subagent (`generalPurpose`) with the prompt constraints below. The subagent explores the codebase as needed, then **rewrites only** `## Adversarial review` on the plan under review.
-3. If status is `paused-for-clarify` (blocking gap needs a user decision): main agent returns to **clarify**, updates the plan from answers, resets `adversarial_round` to `0`, and restarts this loop from round 1 on the revised plan.
-4. If **aligned** (`Blocking: none`): set `adversarial_status: aligned` and proceed to the human gate.
-5. If blocking findings remain and `N < 3`: main agent revises the **plan body** (and `tasks.md` when in scope) to address blockers (or records why a blocker is declined under `Planner response`), sets `adversarial_round` to `N+1`, and re-invokes the subagent.
-6. If round **3** still has blockers: main agent applies any non-contentious fixes, sets `adversarial_status: exhausted-with-dissent`, fills `Unresolved dissent`, and proceeds to the human gate anyway.
-
-**Aligned** = adversarial reports no blocking findings (nits allowed).
-
-### Quiet chat
-Do **not** post per-round chatter. At the human gate, add one status line: `adversarial: aligned in N` or `adversarial: exhausted — see Adversarial review`.
-
-### State (frontmatter)
-- **Phase-plan loop**: `.working_items/{task}/phase_plan.md` → `adversarial_status`, `adversarial_round`
-- **Implementation-plan loop**: `.working_items/{task}/phase-{N}/tasks.md` → `adversarial_status`, `adversarial_round`
-
-`adversarial_status`: `pending` | `in_progress` | `aligned` | `exhausted-with-dissent` | `paused-for-clarify`  
-`adversarial_round`: integer `0`–`3` (`0` = not started)
-
-### `## Adversarial review` section (rewrite each round; keep after APPROVED)
-```markdown
-## Adversarial review
-
-- Status: {in_progress | aligned | exhausted-with-dissent | paused-for-clarify}
-- Round: {N}/3
-- Blocking:
-  - {finding} | none
-- Nits:
-  - {nit} | none
-- Planner response:
-  - {what changed / why a blocker was declined} | none
-- Unresolved dissent:
-  - {remaining blockers + why not adopted} | none
-```
-
-### Subagent prompt (verbatim constraints — do not omit)
-- Paths to the plan under review, `.working_items/{task}/agent_notes.md`, and (implementation loop) `.working_items/{task}/phase-{N}/tasks.md`
-- Instruct: read plans/tasks first, then `agent_notes.md`, then explore code for coupling/blind spots
-- The **Rules (priority order)** block from this skill
-- The **Deep-module design standard** block from this skill
-- The **agent_notes.md** rules (purpose, write/update, banned content — adversarial must **not** edit `agent_notes.md`)
-- The **Blocking vs nits** criteria from this section
-- Instruct: **read-only** on code and plan bodies; **may only write** the `## Adversarial review` section of the plan under review (replace that section entirely each round). Do not edit Proposed phases/changes, Verification plan, or `tasks.md`.
-- Instruct: for the implementation loop, also review `tasks.md` for drift vs proposed changes and verification contracts; report mismatches as **Blocking**; leave checklist edits to the main agent
-- Instruct: if a blocking gap requires a user decision, set `Status: paused-for-clarify` and put the decision needed under Blocking
-- Instruct: return structured findings matching the section fields, including `aligned: yes|no`
-
 ## Tasks
 **use the TODO tool to track tasks**
 
@@ -163,9 +104,8 @@ Do **not** post per-round chatter. At the human gate, add one status line: `adve
   2. Read `.working_items/{task}/agent_notes.md` (create stub first if missing).
   3. Find the next incomplete phase (`- [ ]` or `- [o]`). Treat `- [o]` as the current in-progress phase. Let `{N}` be that phase’s 1-based index.
   4. Skip 2a/2b if `approved: true` in the phase plan frontmatter.
-  5. **Resume adversarial if incomplete**: If phase-plan `adversarial_status` is `in_progress` or `paused-for-clarify`, resume **Adversarial plan review** for the phase plan (do not re-draft from scratch). If `paused-for-clarify`, clarify first, then restart rounds. If implementation `tasks.md` has `adversarial_status` `in_progress` or `paused-for-clarify` and the phase is not yet `approved: true`, resume that adversarial loop before step **3**.
-  6. Post a concise chat summary: completed phases, next phase title, and where work resumes — then clarify (below) before planning that phase (**create or reuse** `phase-{N}/` artifacts for *this* phase only; do not reuse or overwrite other phase folders).
-- **Resuming mid-phase**: If `phase-{N}/tasks.md` exists with incomplete checklist items and `approved: true`, skip clarify/planning/adversarial, resume at the first unchecked item, and continue Implementation/Verification as appropriate. Still read plans then `agent_notes.md` before coding.
+  5. Post a concise chat summary: completed phases, next phase title, and where work resumes — then clarify (below) before planning that phase (**create or reuse** `phase-{N}/` artifacts for *this* phase only; do not reuse or overwrite other phase folders).
+- **Resuming mid-phase**: If `phase-{N}/tasks.md` exists with incomplete checklist items and `approved: true`, skip clarify/planning, resume at the first unchecked item, and continue Implementation/Verification as appropriate. Still read plans then `agent_notes.md` before coding.
 - **No phase plan**: use `phase-1/` for all implementation artifacts. Still maintain `agent_notes.md`.
 - **Research codebase**: Find relevant files, trace logical flows, and build a full understanding of the scope of changes, potential impacts, risks, and side-effects. Update `agent_notes.md` with durable paths/symbols/gotchas/commands not already in plans.
 - **Establish baseline**: Record the current branch/base commit and any pre-existing dirty files before implementation. Preserve unrelated user changes.
@@ -215,8 +155,6 @@ Otherwise skip to **2c** (use `phase-1/`). If no phase plan is used, only one **
 ---
 task: {task}
 approved: false
-adversarial_status: pending
-adversarial_round: 0
 ---
 
 # Phase Plan: {title}
@@ -233,29 +171,15 @@ adversarial_round: 0
    * Details about phase 1 
 - [ ] Phase 2: {Brief description of phase 2}
    * Details about phase 2
-
-## Adversarial review
-
-- Status: pending
-- Round: 0/3
-- Blocking:
-  - none
-- Nits:
-  - none
-- Planner response:
-  - none
-- Unresolved dissent:
-  - none
 ```
 
-After drafting the phase plan, run **Adversarial plan review** (phase-plan loop) until `aligned` or `exhausted-with-dissent`, then proceed to **2b**. Do not present the phase plan for human review while `adversarial_status` is `pending`, `in_progress`, or `paused-for-clarify`.
+After drafting the phase plan, proceed to **2b**.
 
 ### 2b. Phase plan review
 If a phase document is generated do the following. Otherwise skip to develop an implementation plan.
 - Provide a highly concise, high-level summary of proposed phases **(maximum 3-4 bullets total)** in the chat, followed by a relative link to `.working_items/{task}/phase_plan.md`.
-- Include one line for adversarial status: `adversarial: aligned in N` or `adversarial: exhausted — see Adversarial review`.
 - If the phase plan itself introduces a major architectural, scope, migration, or irreversible decision that requires separate authorization, ask the user to reply with **APPROVED** before 2c and set `approved: true` once approved.
-- If the user requests phase-plan revisions before APPROVED (or before proceeding when no separate gate), update the plan, reset phase-plan `adversarial_round` to `0`, re-run **Adversarial plan review**, then present **2b** again.
+- If the user requests phase-plan revisions before APPROVED (or before proceeding when no separate gate), update the plan, then present **2b** again.
 - Otherwise proceed to **2c** and include the phase plan in the implementation-plan approval at step 3; do not require a second formal gate.
 
 ### 2c. Develop an implementation plan
@@ -314,19 +238,6 @@ Automated Verification is the **only** place that authorizes planned new or exte
 
 ### Manual Verification
 {manual verification plan - terse bullet list; OK as primary check for low-risk plumbing when New/extended is none}
-
-## Adversarial review
-
-- Status: pending
-- Round: 0/3
-- Blocking:
-  - none
-- Nits:
-  - none
-- Planner response:
-  - none
-- Unresolved dissent:
-  - none
 ```
 
 #### Template `.working_items/{task}/phase-{N}/tasks.md`
@@ -336,8 +247,6 @@ task: {task}
 phase_number: {N}
 phase: planning
 approved: false
-adversarial_status: pending
-adversarial_round: 0
 verification_attempts: 0
 last_error: null
 ---
@@ -353,15 +262,14 @@ last_error: null
 - none
 ```
 
-After drafting `implementation_plan.md` and `tasks.md`, run **Adversarial plan review** (implementation-plan loop: plan + checklist in scope; state on `tasks.md`) until `aligned` or `exhausted-with-dissent`, then proceed to **3**. Do not present for human review while `adversarial_status` is `pending`, `in_progress`, or `paused-for-clarify`.
+After drafting `implementation_plan.md` and `tasks.md`, proceed to **3**.
 
 ### 3. User review
 - Provide a highly concise, high-level summary of proposed changes **(maximum 3-4 bullets total)** in the chat, followed by a relative link to `.working_items/{task}/phase-{N}/implementation_plan.md`.
 - If an unapproved phase plan is being used, include its relative link in the same review.
-- Include one line for adversarial status: `adversarial: aligned in N` or `adversarial: exhausted — see Adversarial review` (and mention unresolved dissent if exhausted).
 - Ask the user to reply with **APPROVED** to proceed. Repeat if revisions are requested.
-- If the user requests plan revisions before APPROVED, update the plan/`tasks.md`, reset that loop’s `adversarial_round` to `0`, re-run **Adversarial plan review**, then present human review again.
-- **DO NOT proceed to Implementation without explicit "APPROVED" sign-off.** Once approved, set `approved: true` and `phase: implementation` in `phase-{N}/tasks.md` frontmatter; if a phase plan is being approved in the same gate, also set `approved: true` in its frontmatter. Keep `## Adversarial review` sections as historical record (do not strip).
+- If the user requests plan revisions before APPROVED, update the plan/`tasks.md`, then present human review again.
+- **DO NOT proceed to Implementation without explicit "APPROVED" sign-off.** Once approved, set `approved: true` and `phase: implementation` in `phase-{N}/tasks.md` frontmatter; if a phase plan is being approved in the same gate, also set `approved: true` in its frontmatter.
 
 ### 4. Implementation
 - Implement via a **Contract-first verify** loop (not mandatory red/green per step).

@@ -15,7 +15,7 @@ Simulates the antigravity cycle — clarify, plan, approval, implement, smoke
 verify, review — for research tools and throwaway prototypes. Prefer deep
 modules: a small entrypoint that reduces researcher load, with plumbing hidden
 in the implementation. Do not let design polish hinder exploration. No phases,
-no `agent_notes`, no adversarial review.
+no `agent_notes`.
 
 ## Artifact layout
 
