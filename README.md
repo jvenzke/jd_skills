@@ -2,7 +2,20 @@
 
 Author: Joel DeVenzke
 
-Personal Cursor skills. Some ideas started from [Matt Pocock's Skills for Real Engineers](https://github.com/mattpocock/skills/tree/main).
+## Overview
+
+Slash-command skills I use day to day as a data scientist, covering the work
+between a rough idea and a reviewed pull request: development, research spikes,
+PR review, and design pressure-testing.
+
+Every skill is human-in-the-loop by design. Each one runs a numbered workflow,
+asks only the questions the codebase cannot answer, and waits for an explicit
+**APPROVED** before anything irreversible — implementation, GitHub writes,
+commits, or file deletions.
+
+Progress lives on disk, not in chat history. Skills write plans, task
+checklists, and walkthroughs to `.working_items/` in the target repo, so a
+fresh chat resumes by reading those files instead of re-deriving context.
 
 ## Active skills
 
@@ -67,10 +80,10 @@ Show exact changed lines in chat before discussing them. `human_presented` requi
 
 ## `/grill-me` and `/meta-review`
 
-`/grill-me`: one question at a time, recommended answer on each, pause for a reply. Explore the codebase instead of asking what it can answer.
+`/grill-me`: one question at a time, recommended answer on each, pause for a reply. Explore the codebase instead of asking what it can answer. (from [Matt Pocock's Skills for Real Engineers](https://github.com/mattpocock/skills/tree/main))
 
 `/meta-review`: compare this chat to the skill text. Propose compact edits. Do not change skills, the problem log, or git without an explicit decision on each issue.
 
 ## Archive
 
-[`old/`](old/) holds workflows that are no longer used (linear research, light research, ticket-to-PRD development, light-dev, and related helpers). Keep them for history. Do not list them as active steps, and do not teach new skills to call them.
+[`old/`](old/) holds workflows that are no longer used (linear research, light research, ticket-to-PRD development, light-dev, and related helpers). Keep them for history. Do not list them as active steps, and do not teach new skills to call them. (includes some skills from [Matt Pocock's Skills for Real Engineers](https://github.com/mattpocock/skills/tree/main))

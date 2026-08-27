@@ -1,4 +1,2 @@
 .working_items/*
-!.working_items/implementation_plan_*.md
-!.working_items/walkthrough_*.md
 .DS_Store
