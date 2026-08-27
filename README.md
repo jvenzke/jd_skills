@@ -2,112 +2,75 @@
 
 Author: Joel DeVenzke
 
-Some skills are inspired by Matt Pocock's [Skills for Real Engineers](https://github.com/mattpocock/skills/tree/main).
+Personal Cursor skills. Some ideas started from [Matt Pocock's Skills for Real Engineers](https://github.com/mattpocock/skills/tree/main).
 
-## References
+## Active skills
 
-- [Interesting talk on AI development and the importance of good coding practices](https://youtu.be/v4F1gFy-hqg?si=1opnC2coaZ8HVh7v)
-- [Longer walkthrough](https://youtu.be/-QFHIoCo-Ko?si=d8P-EoPUrC0qJa_L)
+| Skill | Use when |
+| --- | --- |
+| [`/d-antigravity`](d-antigravity/SKILL.md) | Real development: architecture, maintainable diffs, vertical slices |
+| [`/r-antigravity`](r-antigravity/SKILL.md) | Research spikes, throwaway tooling, analysis-backed prototypes |
+| [`/review-pr`](review-pr/SKILL.md) | GitHub pull request quality review |
+| [`/grill-me`](grill-me/SKILL.md) | Stress-test a plan or design one question at a time |
+| [`/meta-review`](meta-review/SKILL.md) | After a session: check whether skills were followed and should change |
 
-## Authoring Principles
+Unused skills live in [`old/`](old/). Do not invoke them; they are archive only.
 
-The [`/meta-review`](meta-review/SKILL.md) skill is the source of truth for what "good" looks like; it is what evaluates new and existing skills against the criteria below. Run it after any workflow or skill change so issues get logged in `meta-review/problems.md` and the skills evolve.
+## How these skills are built
 
-### Writing a Skill
+[`/meta-review`](meta-review/SKILL.md) is the quality bar. Run it after changing a skill. Log recurring misses in `meta-review/problems.md`.
 
-- The frontmatter `description` is the trigger contract. Make it specific enough that the agent can decide whether to read the skill from the description alone, including cue phrases the user is likely to say.
-- Keep each `SKILL.md` under 40 actionable directives. Count numbered steps and bullets; ignore frontmatter, headings, examples, and reference links. If you cannot fit the work in 40 directives after compression, split the skill.
-- One skill, one job. Split when a skill has independent triggers or workflows. Merge when two skills are always invoked together, share decision logic, and have no meaningful independent use.
-- Stay orthogonal. Communicate with upstream and downstream skills through stable artifacts (named files, sections, manifests), not implicit chat state. A skill should be resumable in a fresh chat by reading those artifacts.
-- When a skill prepares work for another skill, write the next-step context to a durable Markdown or structured file and name that file in the skill. Include what changed, what remains undecided, and which skill or workflow step should run next.
-- Don't repeat yourself. If two skills share the same interview, decision tree, or output format, reference the canonical skill instead of duplicating it.
-- Be terse. Every bullet should carry weight; cut narration, restatement, and obvious commentary. Compress before adding.
-- Gate irreversible work behind explicit user approval (file moves, deletions, commits, pushes, schema changes, network calls).
-- Use a consistent shape: short intent statement, numbered workflow, small set of rules, and an explicit out-of-scope or exit section when useful. [`review-research`](review-research/SKILL.md) is the reference for multi-step skills; [`grill-me`](grill-me/SKILL.md) is the reference for single-purpose skills.
-- Set `disable-model-invocation: true` for skills that should only be invoked explicitly by the user (see [`meta-review`](meta-review/SKILL.md)).
+**One invokable skill per workflow.** Tightly coupled steps stay inside that skill. Do not split a pipeline across slash commands the user must chain. [`/review-pr`](review-pr/SKILL.md) and [`/d-antigravity`](d-antigravity/SKILL.md) are the models: numbered tasks, durable artifacts, resume from disk.
 
-### Developing a Workflow
+**Progressive disclosure.** `SKILL.md` holds the contract: when to run, artifact layout, ordered rules, task list, gates, and resume. Load detail only for the active task (`review-pr/phases/…`, templates, scripts). Keep references one level deep. Prefer `SKILL.md` well under 500 lines.
 
-- Each step in a workflow should map to one skill with one clear output artifact. Skills must not spill into the next step's responsibility.
-- Define the artifact contract between steps explicitly (file names, folder layout, section headings, manifests). Downstream skills depend on the artifact, not on chat memory.
-- Use the README workflow section to explain the next step for each phase, including the handoff file the next chat should read before continuing.
-- Persist workflow state in a known location so any step can be resumed cold (e.g., `.working_items/`, `research_workspace/`, the research project folder).
-- Include a loop step and a convergence/exit criterion when the workflow is iterative (plan → execute → review → compress).
-- List the workflow in this README with numbered steps, a `Last updated` date, and an explicit status tag (e.g., `Currently untested`) so consumers know how much to trust it.
-- After running a new workflow end-to-end, invoke [`/meta-review`](meta-review/SKILL.md) to capture missed steps, bloat, duplication across skills, and split/merge candidates before the next iteration.
+**`description` is the trigger.** Third person. State what the skill does and when to use it. Set `disable-model-invocation: true` unless the skill should auto-attach from ambient context. These skills are explicit (`/name`) only.
 
-## General Skills
+**Artifact-first, not chat-memory.** Persist under `.working_items/` in the target repo. A later chat resumes by reading those files. Typical pieces:
 
-- [`/grill-me`](grill-me/SKILL.md): Stress-test a plan or design with one question at a time until the agent and user share a clear understanding.
-- [`/meta-review`](meta-review/SKILL.md): Review how skills performed in the current chat, propose compact improvements, and log approved recurring problems.
+- `tasks.md` — checklist plus frontmatter (`approved`, current phase, SHAs)
+- `implementation_plan.md` / `phase_plan.md` — intent the user approved
+- `agent_notes.md` — agent-only code map (paths, symbols, gotchas); not a second plan
+- `walkthrough.md` — what shipped and how it was verified
 
-- [`/toggle-html`](toggle-html/SKILL.md): Toggle the generation of HTML review surfaces (RESEARCH_REVIEW.html and RESEARCH_PLAN_PITCH_DECK.html) on or off.
+**Gates.** Ask only blocking questions. Implementation, GitHub writes, and similar irreversible work wait for an explicit **APPROVED** (or the skill's named equivalent). The main agent owns verification, artifacts, and presentation. Subagents are optional, read-constrained, and do not approve or post.
 
-## Antigravity Workflows (Last updated: 2026-07-30)
+**Shape.** Short intent, numbered workflow, small rule set, named artifacts, explicit out-of-scope. [`/d-antigravity`](d-antigravity/SKILL.md) is the multi-step reference. [`/grill-me`](grill-me/SKILL.md) is the single-purpose reference. Be terse. Gate file moves, deletions, commits, and pushes behind user approval.
 
-Single-skill research → plan → **APPROVED** → implement (subagent) → verify → walkthrough cycles. Artifacts live under `.working_items/` (except quantumgravity, which uses a Cursor Canvas). Pick by how much code quality and change size matter:
+Do not treat “one README step = one skill” as a rule. That produced the old split review and research pipelines now in `old/`.
 
-| Skill | Use when | Diff from the others |
-| --- | --- | --- |
-| [`/r-antigravity`](r-antigravity/SKILL.md) | Research / exploratory work where speed and terse plans matter more than perfect diffs | One plan + one approval; no phase splitting or reuse-first rules |
-| [`/d-antigravity`](d-antigravity/SKILL.md) | Real development where bloat and large diffs are a problem | Prefer this over `r-antigravity` when change size and code quality matter: optional phase plan, vertical slices (≤5 steps; may touch >3 files when deepening one boundary), deep-module / reuse rules, per-phase approval + fresh `phase-{N}/` artifacts, new chat for phase 2+ |
-| [`/quantumgravity`](quantumgravity/SKILL.md) | Same cycle as `r-antigravity`, but you want an interactive Canvas plan/tracker instead of Markdown files | Plan, checklist, verification, and walkthrough live in one Canvas workspace |
+## `/d-antigravity` (Last updated: 2026-08-27)
 
-**Shared cycle (r / d):** research → implementation plan + tasks → user **APPROVED** → subagent implements (red-green-refactor) → automated verification (halt after 3 failures) → walkthrough.
+Phased development when architecture and long-lived quality matter. Prefer over `/r-antigravity` for product code.
 
-**`r-antigravity` artifacts:** `.working_items/implementation_plan_{task}.md`, `tasks_{task}.md`, `walkthrough_{task}.md`.
+Cycle: research and blocking clarify → optional phase plan → implementation plan + `tasks.md` → **APPROVED** → implement (delegation optional) → main-agent verification → walkthrough. One phase per chat when a phase plan exists; never overwrite a completed `phase-{N}/`.
 
-**`d-antigravity` artifacts:** `.working_items/{task}/phase_plan.md` (optional) and per-phase `.working_items/{task}/phase-{N}/{implementation_plan,tasks,walkthrough}.md`. Each chat implements one phase only and must not overwrite prior phase folders; resume by linking or naming the phase plan.
+Artifacts: `.working_items/{task}/phase_plan.md` (optional), `agent_notes.md`, and `.working_items/{task}/phase-{N}/{implementation_plan,tasks,walkthrough}.md`.
 
-## Light Research Workflow (Last updated: 2026-05-06)
+Clarify is blocking: independent questions in one numbered pass with recommended options; do not plan while user decisions remain open. Deep-module rules apply: small interfaces, complexity behind the boundary, contract-first tests (no red/green ritual).
 
-Use this workflow to take an **idea end-to-end** to a **minimal prototype** (proof of approach) with a **fast** plan → do → plan loop—not broad exploratory research. Planning starts with **light alignment vs full grill-me**; execution adds **verification canvases and reproducible SQL** when the step is data-backed.
+## `/r-antigravity` (Last updated: 2026-08-27)
 
-1. [`/plan-light-research`](plan-light-research/SKILL.md): Plan one **small, time-bounded** next step; update the "Status/Next Steps" section of the main output document.
-2. [`/do-light-research`](do-light-research/SKILL.md): Execute the step, add artifacts and (when applicable) a **canvas** with plots and SQL for human verification, update the main document, and prompt for the next action.
-3. [`/summarize-light-research`](summarize-light-research/SKILL.md): Compile findings into a handoff document, including pointers to verification artifacts.
+Spike-light cycle for research tools and throwaway prototypes. Same clarify → plan → **APPROVED** → implement → smoke verify → walkthrough shape, without phases or `agent_notes`.
 
-## Linear Research Workflow (Last updated: 2026-05-21)
+Artifacts: `.working_items/{task}/{implementation_plan,tasks,walkthrough}.md`. Runnable code stays in repo conventions (`src/`, notebooks, `scratch/{task}/`), not under `.working_items/`.
 
-**Artifact chain:** `r-setup` creates the project **`README.md`** (stub), **`input_plan.md`**, **`research_plan.md`**, **`research_log.md`**, **`next_step.md`**, **`Canvases/`**, and **`src/`**. Canvas dashboards are saved under **`Canvases/<name>.canvas.tsx`** for git/handoff **and** mirrored to Cursor’s IDE **`canvases/`** path so they open beside chat (see canvas skill). **`r-plan`**, **`r-do`**, and **`r-extend`** update those files across iterations. **`r-summarize`** closes out by **writing the full results into the project `README.md`** (new sections: outcomes, findings, artifacts & verification, implementation handoff, open questions).
+Optimize for a simple researcher entrypoint and hidden plumbing. Prefer `/d-antigravity` once the work should live as maintained software.
 
-1. [`/r-setup`](r-setup/SKILL.md): Pull a Jira ticket (optional), set up base folders, and ask the user to update **`input_plan.md`**, then continue with **`r-plan`**.
-2. [`/r-plan`](r-plan/SKILL.md): Review **`input_plan.md`**, define the **next** research step only, maintain **`research_plan.md`**, **`research_log.md`**, and **`next_step.md`** (handoff to **`r-do`** or **`r-summarize`** when done).
-3. [`/r-do`](r-do/SKILL.md): Execute atomic tasks from **`next_step.md`**; add plots, reproducible Python/SQL, and verification canvases (**`Canvases/<name>.canvas.tsx`** in the research folder **and** the matching file under Cursor’s IDE **`canvases/`** path per the canvas skill); append **`research_log.md`**; checkpoint after each task (handoff back to **`r-plan`** or forward to **`r-summarize`**).
-4. [`/r-extend`](r-extend/SKILL.md): Refine and extend the research plan in `input_plan.md` by grilling the user on proposed next steps, aligning on details, and updating `input_plan.md`. Use this after completing a research step in `r-do` and before starting the next step in `r-plan` when you need to align on new steps or modify the existing research plan.
-5. [`/r-summarize`](r-summarize/SKILL.md): Read all planning and execution artifacts; **extend the project `README.md`** with summarized findings and verification pointers.
+## `/review-pr` (Last updated: 2026-08-27)
 
-## PR Review Workflow (Last updated: 2026-05-04)
+Single-chat GitHub PR review. Resume from artifacts in the reviewed repo at `.working_items/pr-review/<owner>-<repo>-<number>/`.
 
-Use this workflow to review GitHub PRs across fresh chats without losing context. Review state is written under `.working_items/pr-review/<owner>-<repo>-<pr-number>/` in the target repo, and each phase updates `NEXT_CHAT_PROMPT.md` so the next chat can resume cleanly.
+Tasks: intake and business claims → required SECURITY and test-coverage specialists → adversarial verification → claim-driven code walkthrough → staging → submit. Claims come from ticket, PR text, or the user—not inferred from the diff. Specialists must write `SECURITY.md` and `TESTS.md` (findings or a written skip) before the walk continues.
 
-1. [`/review-pr`](review-pr/SKILL.md): Orchestrate or resume the PR review workflow, choose the next phase, and maintain the shared artifact contract.
-2. [`/pr-brief`](pr-brief/SKILL.md): Snapshot PR metadata, branch-first Jira context, CI/check status, comments, diff files, gravity-center files, peripheral changes, and the recommended review plan.
-3. [`/scan-security`](scan-security/SKILL.md): Review the diff for evidence-backed security risks, toxic patterns, auth changes, sensitive data exposure, and dependency risk.
-4. [`/verify-tests`](verify-tests/SKILL.md): Use GitHub Actions/check results first, then inspect test quality, changed branch coverage, assertion strength, and regression coverage. Run targeted local tests only when useful.
-5. [`/logic-walkthrough`](logic-walkthrough/SKILL.md): Walk risk-based story slices, propose actionable inline comments, and create `human_review_prompts` for unclear business logic that needs human judgment.
-6. [`/submit-pr-review`](submit-pr-review/SKILL.md): Validate approved comment anchors against the latest diff and submit one GitHub review with inline comments. Use a minimal review body unless blockers or cross-cutting context need a short summary.
+Show exact changed lines in chat before discussing them. `human_presented` requires a fenced code block in that turn. Coverage totals appear every review turn and at submit. Comments stay local until the user replies **APPROVED** on the final payload. Phase instructions load from `review-pr/phases/` only when that task runs.
 
-Approved comments are staged locally until `/submit-pr-review`; they should become GitHub inline review comments, not a summary-only PR comment. Jira ticket discovery checks the PR branch name first, then title, body, and commits. Unresolved human review prompts are carried forward across chats and are not posted unless they become actionable comments.
+## `/grill-me` and `/meta-review`
 
-The workflow also tracks changed-line review coverage in `COVERAGE.md`. `/submit-pr-review` reports what percent of changed lines were presented to the human reviewer, what percent were reviewed only by the agent, and any unreviewed remainder. Agent-covered lines are grouped by why they were not shown, such as peripheral change, covered by tests/CI, matching an inspected pattern, duplicate mechanical change, static-review-only, or stale/superseded context.
+`/grill-me`: one question at a time, recommended answer on each, pause for a reply. Explore the codebase instead of asking what it can answer.
 
-## Development Workflow (Last updated: 2026-05-05, Untested)
+`/meta-review`: compare this chat to the skill text. Propose compact edits. Do not change skills, the problem log, or git without an explicit decision on each issue.
 
-1. [`/dev-align`](dev-align/SKILL.md): Read the incoming ticket or doc, explore the codebase, grill the user to align on scope, and create a git branch.
-2. [`/to-prd`](to-prd/SKILL.md): Turn the aligned plan into a PRD with a vertical-slice task breakdown (AFK/HITL) under `.working_items/`.
-3. [`/prd-to-issue-files`](prd-to-issue-files/SKILL.md): Extract each task from the PRD into its own implementation plan document.
-4. [`/dev-tdd`](dev-tdd/SKILL.md): Implement a task using a strict red-green-refactor loop, summarizing changes and committing after approval.
-5. [`/dev-review`](dev-review/SKILL.md): Perform a compressed review of the work, summarize coverage, and prepare/open a Pull Request.
+## Archive
 
-## Light Development Workflow (Last updated: 2026-05-05, Untested)
-
-Use this workflow for hotfixes and small implementation tasks that are well-scoped and do not require large rewrites or multiple parallel agents.
-
-1. [`/plan-light-dev`](plan-light-dev/SKILL.md): Read the ticket or request, explore the codebase, align on scope, and create a single `LIGHT_DEV_PLAN.md` tracking document.
-2. [`/do-light-dev`](do-light-dev/SKILL.md): Execute the tasks in `LIGHT_DEV_PLAN.md` flexibly, writing tests whenever possible to prevent future regressions.
-3. [`/review-light-dev`](review-light-dev/SKILL.md): Review the completed work against the plan, summarize coverage, and prepare/open a Pull Request.
-
-## Depricated (see depricated folder)
-
- - Research Agent Workflow (Last updated: 2026-05-07)
+[`old/`](old/) holds workflows that are no longer used (linear research, light research, ticket-to-PRD development, light-dev, and related helpers). Keep them for history. Do not list them as active steps, and do not teach new skills to call them.
