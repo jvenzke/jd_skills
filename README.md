@@ -4,7 +4,7 @@ Author: Joel DeVenzke
 
 ## Overview
 
-Slash-command skills I use day to day as a data scientist, covering the work
+A collection of skills I use day to day as a data scientist, covering the work
 between a rough idea and a reviewed pull request: development, research spikes,
 PR review, and design pressure-testing.
 
@@ -74,9 +74,9 @@ Optimize for a simple researcher entrypoint and hidden plumbing. Prefer `/d-anti
 
 Single-chat GitHub PR review. Resume from artifacts in the reviewed repo at `.working_items/pr-review/<owner>-<repo>-<number>/`.
 
-Tasks: intake and business claims → required SECURITY and test-coverage specialists → adversarial verification → claim-driven code walkthrough → staging → submit. Claims come from ticket, PR text, or the user—not inferred from the diff. Specialists must write `SECURITY.md` and `TESTS.md` (findings or a written skip) before the walk continues.
+Tasks: intake and business claims → required SECURITY and test-coverage specialists → adversarial verification → claim-driven code walkthrough → staging → submit. Claims come from PR text or the user—not inferred from the diff, and not from Jira. Specialists must write `SECURITY.md` and `TESTS.md` (findings or a written skip) before the walk continues.
 
-Show exact changed lines in chat before discussing them. `human_presented` requires a fenced code block in that turn. Coverage totals appear every review turn and at submit. Comments stay local until the user replies **APPROVED** on the final payload. Phase instructions load from `review-pr/phases/` only when that task runs.
+Show exact changed product lines in chat before discussing them. `human_presented` requires a fenced code block in that turn. Summarize tests in prose; do not paste test source. Coverage totals appear every review turn and at submit. Comments stay local until the user replies **APPROVED** on the final payload. Submit always posts one GitHub review: a human-vs-agent summary body plus any inline comments, with event `APPROVE`, `REQUEST_CHANGES`, or `COMMENT`. Phase instructions load from `review-pr/phases/` only when that task runs.
 
 ## `/grill-me` and `/meta-review`
 

@@ -7,16 +7,16 @@ Walk confirmed claims one at a time in risk/dependency order:
 3. APIs, controllers, jobs, events
 4. persistence and integrations
 5. UI/state flows
-6. tests proving the behavior
+6. tests proving the behavior (prose summary only; do not paste test source)
 
 Do not ask the user to select slices first. They may skip a claim.
 
 ## Per-claim loop
 
 1. State the claim id and exact claim text.
-2. Print every implementing changed range as a fenced code block using Cursor's code citation format (`startLine:endLine:path`). Show exact code and at most five surrounding context lines.
-3. Explain the code's role in no more than two sentences.
-4. Compare code, callers, tests, specialist evidence, and local patterns against the claim.
+2. Print every implementing **product** changed range as a fenced code block using Cursor's code citation format (`startLine:endLine:path`). Show exact code and at most five surrounding context lines. For changed tests, do not print the test; summarize in chat: file, scenario/setup, assertions, and which claim or branch it covers.
+3. Explain the product code's role in no more than two sentences.
+4. Compare product code, callers, summarized tests, specialist evidence, and local patterns against the claim.
 5. Present surviving findings. For each, include file/range, severity, confidence, concise rationale, and the verbatim GitHub comment body.
 6. Ask whether the shown code matches the claim and whether to approve the numbered comments.
 7. Wait for the user's response before walking the next claim.
@@ -25,7 +25,7 @@ Do not ask the user to select slices first. They may skip a claim.
 
 ## Coverage presentation
 
-Read `../coverage-protocol.md`. A range becomes `human_presented` only when its exact changed lines were printed in the current turn. A path/range mention does not count.
+Read `../coverage-protocol.md`. A **product** range becomes `human_presented` only when its exact changed lines were printed in the current turn. A path/range mention does not count. Test ranges are summarized in this turn and marked `agent_reviewed_not_shown` / `test_summarized_in_chat`.
 
 End every per-claim turn with:
 

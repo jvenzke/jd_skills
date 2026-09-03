@@ -6,37 +6,71 @@
 2. Validate every approved comment path and diff anchor against the current `gh pr diff`.
 3. Skip duplicate fingerprints already submitted.
 4. Mark stale anchors `stale_anchor`. Show nearby current diff and ask whether to re-anchor, convert to a top-level note, or drop.
-5. Only actionable, code-anchored, user-approved comments may be submitted.
+5. Only actionable, code-anchored, user-approved comments may be submitted as inline comments. The review-body summary always posts.
+
+## Review event
+
+The GitHub review must use one of: `APPROVE`, `REQUEST_CHANGES`, or `COMMENT`. Recommend one, then wait for the user to pick:
+
+- `REQUEST_CHANGES` when any submitted inline comment is a `blocker`
+- `APPROVE` when there are no blockers and the user is ready to sign off
+- `COMMENT` when feedback is non-blocking, questions remain, or they do not want to approve or block
+
+Do not default the event. Do not submit until the user names the event and replies **APPROVED**.
+
+## Review body
+
+Always post a top-level review summary **in addition to** any user-approved inline comments. Draft it from `COVERAGE.md` and `BUSINESS_CLAIMS.md`. Show the exact body in the approval gate.
+
+```markdown
+## Review summary
+
+**Verdict:** <approve | request changes | comment>
+
+### Human vs agent review
+- Changed lines: N
+- Human-reviewed (shown in chat): N (N%)
+- Agent-reviewed only: N (N%) — <brief reason mix, e.g. tests summarized, peripheral>
+- Not reviewed: N (N%) — <none, or why left uncovered>
+
+### Business content reviewed
+<2–4 sentences: confirmed claims walked, any skipped claims, unresolved prompts.>
+
+Inline comments below are separate, user-requested findings.
+```
+
+Keep this short. Do not paste code. Do not omit the human/agent split — that is the point of the body.
 
 ## Final approval gate
 
 Show:
 
-- all comments exactly as they will appear
-- review event (`COMMENT` by default; `REQUEST_CHANGES` only when explicitly requested)
+- the exact review body above
+- the chosen review event
+- all inline comments exactly as they will appear (or “none”)
 - unresolved business prompts
 - total changed lines, human-presented %, agent-only % by reason, not-reviewed %, and excluded count
 
-Ask the user to reply **APPROVED** before any GitHub write. An earlier claim/comment approval is not submission approval.
+Ask the user to confirm the event and reply **APPROVED** before any GitHub write. An earlier claim/comment approval is not submission approval.
 
 ## Submit
 
-Create one GitHub review containing all valid inline comments. Use a minimal body (`Reviewed with inline comments.`) unless blockers or cross-cutting context require more.
+Create **one** GitHub review: the summary body, the chosen event, and every valid inline comment.
 
-If an inline anchor fails, do not dump all comments into the body. Re-anchor or post only that issue as a top-level note referencing its file/range after approval.
+If an inline anchor fails, do not dump all comments into the body. Re-anchor or post only that issue as a top-level note referencing its file/range after approval. The human/agent summary stays in the review body.
 
-If there are no approved comments, skip GitHub submission unless the user explicitly asks for a no-findings review.
+Always submit this review, including when there are no inline comments.
 
 ## Walkthrough
 
 Write `SUBMISSION.md`:
 
 - PR/head SHA and review URL/id
+- review event and exact review body
 - submitted comment ids and fingerprints
 - skipped duplicates and stale anchors
 - security and test-coverage summaries
 - business claims walked and unresolved prompts
-- final coverage totals and agent-only reason breakdown
-- final review event
+- final coverage totals and agent-only reason breakdown (human vs agent)
 
 Set `phase: complete` and all task checkboxes complete. Do not delete artifacts without separate approval.
