@@ -10,22 +10,25 @@
    `gh pr diff <n> | python3 <skill-dir>/scripts/init_coverage.py --head-sha <head_sha> > <workspace>/COVERAGE.md`
 
 5. Identify:
-   - gravity center: 1–3 files/modules carrying the behavior change
-   - peripheral changes: generated files, lockfiles, formatting, styling, boilerplate
+   - core change: the few files/ranges that can make the stated product intent true or false
+   - incidental changes: generated files, lockfiles, formatting, styling, boilerplate, and unrelated mechanical edits
+   - supporting core ranges that matter to the implementation but need not become separate claims
    - change intent in three sourced sentences
    - risk areas and affected boundaries
-6. Write `PR_CONTEXT.md` and `PR_BRIEF.md`. Mark a peripheral range `agent_reviewed_not_shown / peripheral_change` only after enough inspection to justify it.
+6. Write `PR_CONTEXT.md` and `PR_BRIEF.md`. Mark an incidental range `agent_reviewed_not_shown / peripheral_change` only after enough inspection to justify it.
 
 ## Business claims
 
 Read `../business-claims.md`, then write `BUSINESS_CLAIMS.md`.
 
-- Claims must state observable product behavior: actor, trigger/state, result, and important invariant.
+- Draft 1–3 claims for the entire PR. Claims must state observable product behavior: actor, trigger/state, result, and important invariant.
 - Source each claim from the PR or user. Never infer product intent from implementation. Never fetch Jira.
-- Map each gravity-center hunk to at least one claim. Record unmapped behavior as a gap.
-- Ask all independent blocking questions in one batch. Ask only questions whose answers materially change the review verdict.
-- Stop until the user confirms the claims or answers every gap. Then set `claims_confirmed: true` in `tasks.md`.
+- Attach the implementing ranges that can make each claim true or false. Do not create claims to account for every diff region; classify other ranges as supporting core code, incidental, or unexplained coverage.
+- Print every drafted claim in chat. Never require the user to open `BUSINESS_CLAIMS.md` to review them.
+- Ask extra questions only when the PR and user do not provide enough intent to form the claims, and only when the answers materially change the verdict.
+- Launch SECURITY and test-coverage specialists against the draft claims while waiting for confirmation. If the user edits a claim, remap findings and rerun a specialist only when the edit materially changes its scope.
+- Stop the logic walkthrough until the user confirms the claims or answers every blocking gap. Then set `claims_confirmed: true` in `tasks.md`.
 
 ## Output
 
-In at most four bullets, show gravity center, PR intent, claim summary, CI status, and initial coverage. Ask for claim confirmation when required.
+In at most four bullets, show the core change, PR intent, all 1–3 claims verbatim, CI status, and initial coverage. Ask for a short confirmation or edits.

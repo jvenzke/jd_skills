@@ -27,4 +27,4 @@ Score independently:
 - Include `nit` only if the user explicitly requested small findings.
 - Route unresolved business intent to `HUMAN_REVIEW_PROMPTS.md`, not `COMMENTS.md`.
 - Record discarded candidates and the reason in the source artifact so the pass is auditable.
-- Main agent independently verifies every surviving finding before staging it.
+- Main agent independently verifies every surviving finding before presenting it in the walkthrough.
