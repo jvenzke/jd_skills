@@ -47,6 +47,8 @@ The main agent writes `SECURITY.md` with every heading below, even when clean:
 
 Return candidates with changed path/range, exact quote, uncovered claim/branch, concrete failure that could escape, existing evidence, fix direction, confidence, and severity.
 
+When the main agent presents test coverage in chat, summarize tests in prose. Never paste test source into chat.
+
 The main agent writes `TESTS.md` with every heading below, even when clean:
 
 ```markdown
