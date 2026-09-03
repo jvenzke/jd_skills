@@ -1,10 +1,10 @@
 # Phase 2 — Required specialists
 
-Run both tracks in parallel after `claims_confirmed: true`. They are required sections of every review, though either may record a justified skip when its surface is absent.
+Run both tracks in parallel as soon as the 1–3 draft claims are printed in chat. They may work while the user confirms or edits those claims. They are required sections of every review, though either may record a justified skip when its surface is absent.
 
 ## SECURITY specialist
 
-Review gravity-center changes and nearby trust boundaries for:
+Review core changes and nearby trust boundaries for:
 
 - hardcoded secrets or credentials
 - SQL, command, template, path, XSS, SSRF, deserialization, or unsafe-eval injection
@@ -68,4 +68,4 @@ The main agent writes `TESTS.md` with every heading below, even when clean:
 
 ## Completion gate
 
-Do not continue until both `SECURITY.md` and `TESTS.md` exist with all required headings. Main agent verifies candidate evidence and updates coverage for inspected lines; specialist output alone does not authorize a comment.
+Do not begin adversarial verification until both `SECURITY.md` and `TESTS.md` exist with all required headings. Do not begin the logic walkthrough until the claims are also confirmed. If a claim edit materially changes specialist scope, rerun only the affected track; otherwise remap its evidence. Main agent verifies candidate evidence and updates coverage for inspected lines; specialist output alone does not authorize a comment.

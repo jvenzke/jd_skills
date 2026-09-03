@@ -15,6 +15,8 @@ Mark a **product** row `human_presented` only when those exact lines were printe
 
 Changed tests are never `human_presented`. After the agent inspects them, summarize each relevant test in chat (setup, assertion, claim/branch) and mark `agent_reviewed_not_shown` with reason `test_summarized_in_chat`.
 
+The walkthrough is intent-complete, not line-complete. Show the implementing path needed to prove or disprove each claim and every range with a proposed comment. After inspecting them, summarize other core ranges in chat and mark them `agent_reviewed_not_shown` with reason `covered_by_static_review`. Incidental changes use the most specific agent-only reason.
+
 | path | lines | count | status | reason | shown_in |
 | --- | --- | ---: | --- | --- | --- |
 | | | | not_reviewed | | |

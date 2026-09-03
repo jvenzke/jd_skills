@@ -1,6 +1,6 @@
 # Business claims
 
-Write `BUSINESS_CLAIMS.md` during intake. Specialists and the logic walk do not start until the user confirms the claims or answers the blocking questions.
+Write `BUSINESS_CLAIMS.md` during intake. Draft 1–3 claims, print all of them in chat, and start the specialists while the user confirms or edits them. The logic walkthrough remains blocked until confirmation.
 
 ```markdown
 ---
@@ -16,9 +16,9 @@ Intent (3 sentences, from PR or user, not inferred from the diff):
 2.
 3.
 
-| id | claim (testable) | source | gravity files | status |
+| id | claim (testable) | source | implementing ranges | status |
 | --- | --- | --- | --- | --- |
-| C1 | | pr / user | | assumed, confirmed, or gap |
+| C1 | | pr / user | | draft, confirmed, or gap |
 
 ## Gaps
 
@@ -31,7 +31,8 @@ Quoted from the PR or user. Do not invent.
 
 Rules:
 
-- A claim is a product assertion you could be wrong about (who, when, what data, what must not happen). "Code compiles" is not a claim.
+- Use 1–3 claims for the PR. A claim is a product assertion you could be wrong about (who, when, what data, what must not happen). "Code compiles" is not a claim.
 - Source every claim from the PR or user. Do not search Jira. If the PR body has no acceptance criteria, do not invent them from the diff. Ask.
 - Status `gap` means the change cannot be judged yet. Ask before walking that code.
-- After confirmation, map each gravity-center hunk to a claim id. Unmapped behavior is a prompt, not a silent pass.
+- Claims describe product intent; they are not an inventory of diff regions. Attach only the core implementing ranges that can make each claim true or false.
+- Classify remaining changes as supporting core code, incidental changes, or unexplained coverage. Do not create another claim merely to map a leftover range. Unclear behavior becomes a human prompt.

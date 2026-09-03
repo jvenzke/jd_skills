@@ -79,13 +79,13 @@ Artifacts: `.working_items/{task}/{implementation_plan,tasks,walkthrough}.md`. R
 
 Optimize for a simple researcher entrypoint and hidden plumbing. Prefer `/d-antigravity` once the work should live as maintained software.
 
-## `/review-pr` (Last updated: 2026-08-27)
+## `/review-pr` (Last updated: 2026-09-03)
 
 Single-chat GitHub PR review. Resume from artifacts in the reviewed repo at `.working_items/pr-review/<owner>-<repo>-<number>/`.
 
-Tasks: intake and business claims → required SECURITY and test-coverage specialists → adversarial verification → claim-driven code walkthrough → staging → submit. Claims come from PR text or the user—not inferred from the diff, and not from Jira. Specialists must write `SECURITY.md` and `TESTS.md` (findings or a written skip) before the walk continues.
+Tasks: intake and 1–3 business claims → required SECURITY and test-coverage specialists → adversarial verification → intent-complete code walkthrough → submit. Claims come from PR text or the user—not inferred from the diff, and not from Jira. Claims are printed in chat, and specialists run against the drafts while the user confirms them. Specialists must write `SECURITY.md` and `TESTS.md` (findings or a written skip) before the walk continues.
 
-Show exact changed product lines in chat before discussing them. `human_presented` requires a fenced code block in that turn. Summarize tests in prose; do not paste test source. Coverage totals appear every review turn and at submit. Comments stay local until the user replies **APPROVED** on the final payload. Submit always posts one GitHub review: a human-vs-agent summary body plus any inline comments, with event `APPROVE`, `REQUEST_CHANGES`, or `COMMENT`. Phase instructions load from `review-pr/phases/` only when that task runs.
+Classify the diff as core vs incidental. In one walkthrough turn by default, show the implementing path needed to prove or disprove each claim plus every commented range; inspect and summarize the rest. Summarize tests in prose and never paste test source. High-confidence comments for broken logic, unintended consequences, security risk, or material test gaps are reviewed during the walk. The final submit prompt repeats the exact editable comments before **APPROVED**. Submit always posts one GitHub review: a human-vs-agent summary body plus any inline comments, with event `APPROVE`, `REQUEST_CHANGES`, or `COMMENT`.
 
 ## `/grill-me` and `/meta-review`
 

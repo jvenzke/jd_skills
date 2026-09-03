@@ -1,12 +1,14 @@
-# Phase 6 — Submit and walkthrough
+# Phase 5 — Submit and walkthrough
 
 ## Validate
 
 1. Fetch the live PR and compare `head_sha` with `tasks.md`.
 2. Validate every approved comment path and diff anchor against the current `gh pr diff`.
-3. Skip duplicate fingerprints already submitted.
-4. Mark stale anchors `stale_anchor`. Show nearby current diff and ask whether to re-anchor, convert to a top-level note, or drop.
-5. Only actionable, code-anchored, user-approved comments may be submitted as inline comments. The review-body summary always posts.
+3. Deduplicate comments by fingerprint and defect, and skip fingerprints already submitted.
+4. Revalidate that each comment remains `high` confidence, has a concrete consequence, is `blocker` or `recommended` unless broader feedback was requested, and still matches the current code.
+5. Mark stale anchors `stale_anchor`. Show nearby current diff and ask whether to re-anchor, convert to a top-level note, or drop.
+6. If any changed lines remain `not_reviewed`, identify them and either review them or explicitly explain the residual gap before requesting submission approval.
+7. Only actionable, code-anchored, user-approved comments may be submitted as inline comments. The review-body summary always posts.
 
 ## Review event
 
@@ -16,7 +18,7 @@ The GitHub review must use one of: `APPROVE`, `REQUEST_CHANGES`, or `COMMENT`. R
 - `APPROVE` when there are no blockers and the user is ready to sign off
 - `COMMENT` when feedback is non-blocking, questions remain, or they do not want to approve or block
 
-Do not default the event. Do not submit until the user names the event and replies **APPROVED**.
+Do not default the event. Do not submit until the user names the event and replies **APPROVED** after seeing the exact payload.
 
 ## Review body
 
@@ -47,11 +49,11 @@ Show:
 
 - the exact review body above
 - the chosen review event
-- all inline comments exactly as they will appear (or “none”)
+- every inline comment as a numbered item with path/range, severity, confidence, and the exact body that will be posted (or “none”). Re-paste every inline GitHub body in this message. A pointer to an earlier turn does not count.
 - unresolved business prompts
 - total changed lines, human-presented %, agent-only % by reason, not-reviewed %, and excluded count
 
-Ask the user to confirm the event and reply **APPROVED** before any GitHub write. An earlier claim/comment approval is not submission approval.
+Invite edits to any comment before submission. Apply requested wording changes, re-show the affected exact bodies, and ask the user to confirm the event and reply **APPROVED** before any GitHub write. The walkthrough comment decision determines eligibility, but it is not submission approval.
 
 ## Submit
 
