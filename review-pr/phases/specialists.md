@@ -35,27 +35,31 @@ The main agent writes `SECURITY.md` with every heading below, even when clean:
 ## Test coverage specialist
 
 1. Read CI/check results first. Record failing checks and map failures to changed files.
-2. Map changed source files and business claims to test files.
-3. Inspect whether tests prove:
+2. Identify the project, package, or module this PR belongs to. Read the GitHub workflow files that run on this PR (typically `.github/workflows/*`). Confirm those jobs actually execute the tests that cover that project and its claim-relevant dependents—not a subset skipped by path filters, `if` conditions, a different package selector, or an unrelated job. A workflow that is green because it never ran this project's tests is a finding (changed workflow path/range when the filter lives in the PR; otherwise record it under CI workflow scope and residual risk).
+3. Map changed source files and business claims to test files.
+4. For **new and changed product code**, record which tests cover it (file, scenario, assertions, claim/branch) and which new ranges, branches, or claims have no covering test.
+5. Inspect whether tests prove:
    - changed conditionals and branches
    - null, empty, min/max, missing-field, permission, and error edges
    - assertion specificity (not merely execution)
    - bug-fix regression behavior
    - each material business claim and invariant
-4. Passing CI is evidence, not proof. Do not invent unstated product rules to demand tests.
-5. Run targeted local tests only when useful and cheap. Ask before expensive/full suites.
+6. Passing CI is evidence, not proof. Do not invent unstated product rules to demand tests.
+7. Run targeted local tests only when useful and cheap. Ask before expensive/full suites.
 
-Return candidates with changed path/range, exact quote, uncovered claim/branch, concrete failure that could escape, existing evidence, fix direction, confidence, and severity.
+Return candidates with changed path/range, exact quote, uncovered claim/branch, concrete failure that could escape, existing evidence, fix direction, confidence, and severity. Include CI-scope misses (relevant tests not invoked by the PR's workflows) the same way.
 
-When the main agent presents test coverage in chat, summarize tests in prose. Never paste test source into chat.
+When the main agent presents test coverage in chat, summarize tests in prose. Never paste test source into chat. After `TESTS.md` is written, print a **Test coverage of new code** block in chat (covering tests vs gaps for new/changed product code) and a **CI workflow scope** block (whether GitHub Actions runs this project's impacting tests). Repeat both in the logic walkthrough. They also go in the GitHub review body at submit.
 
 The main agent writes `TESTS.md` with every heading below, even when clean:
 
 ```markdown
 # Test coverage
 ## CI/check summary
+## CI workflow scope
 ## Failure triage
 ## Source-to-test and claim map
+## New-code coverage
 ## Uncovered changed branches
 ## Weak assertions
 ## Edge-case and regression gaps
@@ -64,7 +68,9 @@ The main agent writes `TESTS.md` with every heading below, even when clean:
 ## Skip reason
 ```
 
-`Skip reason` is `none` when the pass ran. A skip is allowed only when CI is green and there are no changed test files or claim-relevant branches.
+`CI workflow scope` names the workflows/jobs, the test commands or selectors they run, and whether they include this PR's project. `New-code coverage` maps each new/changed product behavior or claim to covering tests in prose, then lists uncovered new code.
+
+`Skip reason` is `none` when the pass ran. A skip is allowed only when CI is green, the PR's workflows already run this project's impacting tests, and there are no changed test files or claim-relevant branches. Always fill `CI workflow scope` and `New-code coverage` (`n/a` plus the skip reason if the rest of the pass is skipped).
 
 ## Completion gate
 

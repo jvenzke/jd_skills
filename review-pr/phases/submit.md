@@ -38,10 +38,16 @@ Always post a top-level review summary **in addition to** any user-approved inli
 ### Business content reviewed
 <2–4 sentences: confirmed claims walked, any skipped claims, unresolved prompts.>
 
+### Test coverage of new code
+<prose from TESTS.md: which new/changed product behaviors are covered by which tests; uncovered claims/branches; residual test risk. No test source.>
+
+### CI workflow scope
+<whether the GitHub workflows that run on this PR execute the tests that impact this project; name jobs/selectors and any path-filter or package-selector gaps.>
+
 Inline comments below are separate, user-requested findings.
 ```
 
-Keep this short. Do not paste code. Do not omit the human/agent split — that is the point of the body.
+Keep this short. Do not paste code. Do not omit the human/agent split, new-code coverage, or CI workflow scope.
 
 ## Final approval gate
 
@@ -71,7 +77,7 @@ Write `SUBMISSION.md`:
 - review event and exact review body
 - submitted comment ids and fingerprints
 - skipped duplicates and stale anchors
-- security and test-coverage summaries
+- security, test-coverage of new code, and CI workflow scope summaries
 - business claims walked and unresolved prompts
 - final coverage totals and agent-only reason breakdown (human vs agent)
 

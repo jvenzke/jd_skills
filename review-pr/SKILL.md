@@ -102,7 +102,7 @@ Read [phases/intake.md](phases/intake.md). Create runtime state, collect GitHub 
 
 ### 2. Required specialists
 
-Read [phases/specialists.md](phases/specialists.md). Launch the **SECURITY** and **test coverage** tracks in parallel as soon as draft claims are presented, while the user reviews those claims. Both `SECURITY.md` and `TESTS.md` with all required sections are mandatory before adversarial verification; a written skip is allowed only under that phase's narrow rules. Do not begin the walkthrough until claims are confirmed.
+Read [phases/specialists.md](phases/specialists.md). Launch the **SECURITY** and **test coverage** tracks in parallel as soon as draft claims are presented, while the user reviews those claims. Both `SECURITY.md` and `TESTS.md` with all required sections are mandatory before adversarial verification; a written skip is allowed only under that phase's narrow rules. After tests land, print **test coverage of new code** and **CI workflow scope** in chat (repeat in the walkthrough; both also go in the GitHub review body). Do not begin the walkthrough until claims are confirmed.
 
 ### 3. Adversarial verification
 
@@ -110,11 +110,11 @@ Read [phases/skeptic.md](phases/skeptic.md). Deduplicate candidates, then use a 
 
 ### 4. Intent-complete logic walkthrough
 
-Read [phases/logic-walk.md](phases/logic-walk.md). In one turn by default, repeat all confirmed claims, show the implementing path needed to prove or disprove each claim (summarize tests in prose), and present every proposed comment verbatim. The user confirms intent and approves, rejects, or edits comments in this turn.
+Read [phases/logic-walk.md](phases/logic-walk.md). In one turn by default, repeat all confirmed claims, show the implementing path needed to prove or disprove each claim (summarize tests in prose, including new-code coverage and whether CI runs this project's tests), and present every proposed comment verbatim. The user confirms intent and approves, rejects, or edits comments in this turn.
 
 ### 5. Submit and walkthrough
 
-Read [phases/submit.md](phases/submit.md). Validate anchors, draft the human-vs-agent review summary, obtain the review event (`APPROVE` / `REQUEST_CHANGES` / `COMMENT`) plus **APPROVED**, submit one GitHub review (summary body plus any inline comments), and write `SUBMISSION.md`.
+Read [phases/submit.md](phases/submit.md). Validate anchors, draft the human-vs-agent review summary (include test coverage of new code and CI workflow scope), obtain the review event (`APPROVE` / `REQUEST_CHANGES` / `COMMENT`) plus **APPROVED**, submit one GitHub review (summary body plus any inline comments), and write `SUBMISSION.md`.
 
 ## Delegation contract
 
