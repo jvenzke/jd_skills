@@ -49,7 +49,7 @@ Show:
 
 - the exact review body above
 - the chosen review event
-- every inline comment as a numbered item with path/range, severity, confidence, and the exact body that will be posted (or “none”)
+- every inline comment as a numbered item with path/range, severity, confidence, and the exact body that will be posted (or “none”). Re-paste every inline GitHub body in this message. A pointer to an earlier turn does not count.
 - unresolved business prompts
 - total changed lines, human-presented %, agent-only % by reason, not-reviewed %, and excluded count
 
