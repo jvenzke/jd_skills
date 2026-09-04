@@ -41,14 +41,14 @@ Primary human-review units are the **claim**, important design/boundary decision
 10. Present surviving findings as a single numbered comment list. For each, include file/range, severity, confidence, concise rationale, and the exact proposed GitHub body.
 11. By default, include only `high` confidence `blocker` or `recommended` findings with a concrete consequence: broken logic, unintended behavior, security risk, a material test gap (including CI that never runs this project's tests), or a maintainability regression with a concrete fix direction. Exclude nits unless the user requested them.
 12. Present unresolved product intent as chat questions and record them in `HUMAN_REVIEW_PROMPTS.md`; do not turn ambiguity into an inline comment.
-13. Ask once whether the shown implementation matches all claims (and boundary decisions when presented) and which comments to approve, reject, or edit. Wait for the user's response.
-14. Record the user's answer verbatim when it changes or clarifies a business claim. Update `COMMENTS.md`, `HUMAN_REVIEW_PROMPTS.md`, `LOGIC_WALKTHROUGH.md`, `COVERAGE.md` (including Human oversight), and `tasks.md`.
+13. Print the coverage table and Human oversight bullets (below). Then end the message with **Next actions** (below). Wait.
+14. When the reply covers every Next actions item, record it verbatim if it changes or clarifies a claim, update `COMMENTS.md`, `HUMAN_REVIEW_PROMPTS.md`, `LOGIC_WALKTHROUGH.md`, `COVERAGE.md` (including Human oversight), and `tasks.md`, then start Phase 5 immediately. If anything is missing, re-ask only those numbered items. Do not restart the walk.
 
 ## Coverage presentation
 
 Read `../coverage-protocol.md`. A **product** hunk becomes `human_presented` only when its exact changed lines were printed in the current turn. That is exposure, not proof of review. Test hunks are summarized in this turn and marked `agent_reviewed_not_shown` / `test_summarized_in_chat`. Other inspected core hunks may be summarized and marked `agent_reviewed_not_shown` / `covered_by_static_review`. Incidental changes use the most specific agent-only reason.
 
-End the walkthrough turn with presentation totals **and** oversight (do not treat shown hunks as the human-review score):
+Print presentation totals **and** oversight (do not treat shown hunks as the human-review score), then **Next actions**:
 
 ```markdown
 | this turn | hunks | % of PR |
@@ -65,6 +65,45 @@ End the walkthrough turn with presentation totals **and** oversight (do not trea
 ```
 
 Recompute cumulative totals in `COVERAGE.md`; do not estimate. Displayed hunks are not the primary measure of meaningful human review.
+
+## Next actions
+
+Last block of the walkthrough message. Actions only — do not restate claims, findings, or comment bodies. Do not ask for the review event or **APPROVED** (those are the submission gate).
+
+Include only items that still need a user decision this turn:
+
+- Intent (always): confirm the shown implementation matches the claims, or edit them.
+- Boundary decisions: only if that block was shown — confirm, or edit.
+- Each proposed comment: approve, reject, or edit (same words as the walkthrough gate). Omit this group when there are none.
+- Each unresolved product prompt: answer, or leave unresolved. Omit this group when there are none.
+- Additional (always): any other inline comments or product questions to add.
+
+Each item: one line of what to decide, then **Recommended:** plus the other options. Shorthand is allowed (`confirm all`, `approve all except 2`). End the block with an **Example reply** filled with this turn's recommended answers so the user can paste it.
+
+```markdown
+## Next actions
+Needed to start the submit gate (review event and **APPROVED** come later). Reply by number or shorthand.
+
+1. Intent — confirm the shown implementation matches the claims, or edit them.
+   Recommended: **confirm** · other: **edit** (what to change)
+2. Boundary decisions — confirm, or edit.
+   Recommended: **confirm** · other: **edit** (what to change)
+3. Comment 1 — approve, reject, or edit.
+   Recommended: **approve** · other: **reject** · **edit**
+4. Prompt — <short label>: answer, or leave unresolved.
+   Recommended: **<answer>** · other: **leave unresolved**
+5. Additional comments or product questions?
+   Recommended: **none** · other: provide the comment or question
+
+Example reply (recommended):
+1. confirm
+2. confirm
+3. approve
+4. <answer>
+5. none
+```
+
+Omit rows 2–4 when they do not apply. Keep numbering contiguous in the list and in the example reply. Fill the example with the actual recommended answers, not placeholders.
 
 ## Output lanes
 
