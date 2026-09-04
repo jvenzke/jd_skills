@@ -20,10 +20,10 @@ Split into another turn only when the user asks or the claim paths plus commente
 3. Print every changed product range that anchors a proposed comment, even if the range was already summarized elsewhere.
 4. For changed tests, do not print source. Summarize in chat: file, scenario/setup, assertions, and which claim or branch it covers.
 5. Print a **Test coverage of new code** block: which new/changed product behaviors are covered by which tests (prose), and which new ranges, branches, or claims are uncovered. Print a **CI workflow scope** block: which GitHub workflows/jobs run on this PR and whether they execute the tests that impact this project (path filters, package selectors, skipped jobs).
-6. Explain how the shown path implements the claim and compare product code, callers, summarized tests, specialist evidence, and local patterns against it.
+6. Explain how the shown path implements the claim and compare product code, callers, summarized tests, specialist evidence (including QUALITY.md correctness and maintainability), and local patterns against it.
 7. Inspect the rest of the core change and summarize its role and disposition. Do not paste every changed line merely to make coverage line-complete.
 8. Present surviving findings as a single numbered comment list. For each, include file/range, severity, confidence, concise rationale, and the exact proposed GitHub body.
-9. By default, include only `high` confidence `blocker` or `recommended` findings with a concrete consequence: broken logic, unintended behavior, security risk, or a material test gap (including CI that never runs this project's tests). Exclude nits unless the user requested them.
+9. By default, include only `high` confidence `blocker` or `recommended` findings with a concrete consequence: broken logic, unintended behavior, security risk, a material test gap (including CI that never runs this project's tests), or a maintainability regression with a concrete fix direction. Exclude nits unless the user requested them.
 10. Present unresolved product intent as chat questions and record them in `HUMAN_REVIEW_PROMPTS.md`; do not turn ambiguity into an inline comment.
 11. Ask once whether the shown implementation matches all claims and which comments to approve, reject, or edit. Wait for the user's response.
 12. Record the user's answer verbatim when it changes or clarifies a business claim. Update `COMMENTS.md`, `HUMAN_REVIEW_PROMPTS.md`, `LOGIC_WALKTHROUGH.md`, `COVERAGE.md`, and `tasks.md`.

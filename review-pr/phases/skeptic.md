@@ -12,7 +12,7 @@ For every candidate:
 2. Confirm path, changed lines, and exact quote at `head_sha`. Missing/mismatched evidence → confidence `0`.
 3. Confirm the defect is introduced or altered by the PR. Pre-existing root cause → confidence `0`.
 4. State the concrete trigger/input/state, execution path, and practical consequence.
-5. For business findings, cite the confirmed claim. For project guidance, cite policy at `base_sha`, not guidance introduced by the PR.
+5. For business findings, cite the confirmed claim. For project guidance and maintainability, cite `review-pr/coding-standards.md` and repo patterns at `base_sha`, not guidance introduced by the PR. A maintainability candidate must show how future change gets harder (leaked complexity, shallow boundary, complexity not pushed downward, or misplaced responsibility) — not merely that a different structure would be nicer.
 6. Try to identify guards, callers, validation, tests, or invariants that make the proposed failure impossible.
 7. If neither proven nor disproven, cap confidence at `low`.
 
@@ -23,7 +23,7 @@ Score independently:
 
 ## Filter
 
-- Keep only `high` confidence `blocker` or `recommended` findings by default.
+- Keep only `high` confidence `blocker` or `recommended` findings by default. Maintainability survivors need a concrete change-impact path, not style preference.
 - Include `nit` only if the user explicitly requested small findings.
 - Route unresolved business intent to `HUMAN_REVIEW_PROMPTS.md`, not `COMMENTS.md`.
 - Record discarded candidates and the reason in the source artifact so the pass is auditable.

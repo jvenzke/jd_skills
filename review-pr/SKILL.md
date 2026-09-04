@@ -2,9 +2,10 @@
 name: review-pr
 description: >-
   Runs or resumes an artifact-backed GitHub PR review in one workflow: business
-  alignment, required security and test-coverage specialists, adversarial
-  verification, code walkthrough, coverage accounting, and approved submission.
-  Use when reviewing a pull request or asking for PR quality review.
+  alignment, required security, test-coverage, and logic/quality specialists,
+  adversarial verification, code walkthrough, coverage accounting, and
+  approved submission. Use when reviewing a pull request or asking for PR
+  quality review.
 disable-model-invocation: true
 ---
 
@@ -25,6 +26,7 @@ All runtime artifacts live in the target repository:
   BUSINESS_CLAIMS.md
   SECURITY.md
   TESTS.md
+  QUALITY.md
   LOGIC_WALKTHROUGH.md
   COMMENTS.md
   HUMAN_REVIEW_PROMPTS.md
@@ -47,7 +49,7 @@ complete: false
 ---
 
 - [ ] 1. Intake and business claims
-- [ ] 2. SECURITY and test-coverage specialists
+- [ ] 2. SECURITY, test-coverage, and LOGIC_QUALITY specialists
 - [ ] 3. Adversarial verification
 - [ ] 4. Intent-complete logic walkthrough
 - [ ] 5. Submit and walkthrough
@@ -79,7 +81,7 @@ Store only durable paths, symbols, flows, commands, and verified invariants not 
 5. Specialists are read-only and cannot post, approve, edit product code, or update review artifacts.
 6. Keep comments local. No GitHub write before the final explicit **APPROVED** gate.
 7. During the walkthrough, show the product-code path needed to prove or disprove each claim and every range with a proposed comment. A path/line reference alone is not human presentation. **Tests are the exception:** never paste test source in chat; summarize each relevant test in prose (what it sets up, what it asserts, which claim/branch it covers).
-8. Prefer high-signal findings: concrete trigger, execution path, consequence, and fix direction. Silence beats speculative feedback.
+8. Prefer high-signal findings: concrete trigger, execution path, consequence, and fix direction. Silence beats speculative feedback. Maintainability findings count when the PR increases system complexity for callers, shallows a boundary, leaves complexity in the wrong place, or misplaces responsibility in a way that makes future change harder. LOGIC_QUALITY uses `coding-standards.md` (same bar as `/d-antigravity`).
 9. Preserve unrelated user changes. Do not edit product code or tests during review.
 10. Use one chat unless the user stops or context requires a handoff.
 
@@ -102,7 +104,7 @@ Read [phases/intake.md](phases/intake.md). Create runtime state, collect GitHub 
 
 ### 2. Required specialists
 
-Read [phases/specialists.md](phases/specialists.md). Launch the **SECURITY** and **test coverage** tracks in parallel as soon as draft claims are presented, while the user reviews those claims. Both `SECURITY.md` and `TESTS.md` with all required sections are mandatory before adversarial verification; a written skip is allowed only under that phase's narrow rules. After tests land, print **test coverage of new code** and **CI workflow scope** in chat (repeat in the walkthrough; both also go in the GitHub review body). Do not begin the walkthrough until claims are confirmed.
+Read [phases/specialists.md](phases/specialists.md). Launch the **SECURITY**, **test coverage**, and **LOGIC_QUALITY** tracks in parallel as soon as draft claims are presented, while the user reviews those claims. `SECURITY.md`, `TESTS.md`, and `QUALITY.md` with all required sections are mandatory before adversarial verification; a written skip is allowed only under that phase's narrow rules. After tests land, print **test coverage of new code** and **CI workflow scope** in chat (repeat in the walkthrough; both also go in the GitHub review body). Do not begin the walkthrough until claims are confirmed.
 
 ### 3. Adversarial verification
 
@@ -122,7 +124,7 @@ Use subagents when a core change is complex or parallel work protects the main c
 
 - identify the PR URL, base/head SHA, review workspace, active phase file, and relevant artifacts
 - instruct it to read the active phase instructions before reviewing
-- include the applicable rules from this skill
+- include the applicable rules from this skill; for LOGIC_QUALITY, also instruct it to read `coding-standards.md`
 - constrain scope to assigned core files/claims
 - require exact changed path/range and verbatim code evidence in the specialist return (tests: quote internally; the main agent summarizes tests in chat, never pastes them)
 - require trigger, execution path, consequence, confidence, severity, and fix direction
@@ -145,7 +147,7 @@ Each `COMMENTS.md` entry contains:
 - verbatim GitHub body
 - anchor status, approval status, and submission id
 
-Only user-approved, validly anchored comments are eligible to submit. By default, propose only high-confidence `blocker` or `recommended` findings with a concrete consequence: broken logic, unintended behavior, security risk, or a material test gap. Exclude nits unless the user requests them. Keep unresolved product intent in `HUMAN_REVIEW_PROMPTS.md` and ask it in chat rather than turning it into an inline comment.
+Only user-approved, validly anchored comments are eligible to submit. By default, propose only high-confidence `blocker` or `recommended` findings with a concrete consequence: broken logic, unintended behavior, security risk, a material test gap, or a maintainability regression (leaked complexity, shallow boundary, complexity not pushed downward, or misplaced responsibility) with a concrete fix direction. Exclude nits unless the user requests them. Keep unresolved product intent in `HUMAN_REVIEW_PROMPTS.md` and ask it in chat rather than turning it into an inline comment.
 
 ## Coverage hard check
 
@@ -166,4 +168,4 @@ Read [coverage-protocol.md](coverage-protocol.md). Initialize with `scripts/init
 
 ## Completion
 
-The main agent confirms both required specialist artifacts, all claims walked/skipped, no unexplained coverage gaps, current anchors, chosen review event, and final approval. Then it writes `SUBMISSION.md`, marks `tasks.md` complete, and reports the review URL plus concise human-vs-agent coverage and residual-risk summaries.
+The main agent confirms all three required specialist artifacts, all claims walked/skipped, no unexplained coverage gaps, current anchors, chosen review event, and final approval. Then it writes `SUBMISSION.md`, marks `tasks.md` complete, and reports the review URL plus concise human-vs-agent coverage and residual-risk summaries.

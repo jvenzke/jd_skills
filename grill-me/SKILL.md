@@ -6,6 +6,6 @@ disable-model-invocation: true
 
 Interview me relentlessly about every aspect of this plan until we reach a shared understanding. Walk down each branch of the design tree, resolving dependencies between decisions one-by-one. For each question, provide your recommended answer.
 
-Ask the questions one at a time. Ask the questions directly in the chat and pause for my response. 
+Ask all questions in 1 pass. Ask them directly in the chat and pause for my response. Only repeat a pass if answering a question was blocked or changed by the answers I gave. 
 
 If a question can be answered by exploring the codebase, explore the codebase instead.
