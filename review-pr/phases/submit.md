@@ -30,7 +30,7 @@ Always post a top-level review summary **in addition to** any user-approved inli
 **Verdict:** <approve | request changes | comment>
 **Review risk:** <low | medium | high> — <reasons>
 
-### Presentation (not human-reviewed)
+### Presentation
 - Changed hunks: N (added lines: N, deleted lines: N)
 - Shown in chat (`human_presented`): N (N%) — code exposure only
 - Agent-reviewed only: N (N%) — <brief reason mix, e.g. tests summarized, peripheral>
