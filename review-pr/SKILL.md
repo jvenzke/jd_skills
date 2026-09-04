@@ -114,7 +114,7 @@ Read [phases/skeptic.md](phases/skeptic.md). Deduplicate candidates, then use a 
 
 ### 4. Intent-complete logic walkthrough
 
-Read [phases/logic-walk.md](phases/logic-walk.md). In one turn by default, walk each confirmed claim (traced path, tests/evidence, material boundaries, residual uncertainty, surviving findings). Show exact product code when needed for judgment. Present every proposed comment verbatim. The user confirms intent and approves, rejects, or edits comments in this turn.
+Read [phases/logic-walk.md](phases/logic-walk.md). In one turn by default, walk each confirmed claim (traced path, tests/evidence, material boundaries, residual uncertainty, surviving findings). Show exact product code when needed for judgment. Present every proposed comment verbatim. End with that file's **Next actions** block (after coverage). The user confirms intent, approves, rejects, or edits comments, and may add questions or comments. Do not ask for the review event or **APPROVED** here. When Next actions is complete, start task 5.
 
 ### 5. Submit and walkthrough
 
@@ -160,13 +160,13 @@ Read [coverage-protocol.md](coverage-protocol.md). Initialize with `scripts/init
 - Changed tests are never `human_presented`. After inspecting them, summarize in chat and mark `agent_reviewed_not_shown` with reason `test_summarized_in_chat`.
 - The walkthrough is claim- and decision-complete, not hunk-complete. Inspect remaining core hunks and mark `agent_reviewed_not_shown`.
 - Update the inventory and recompute totals after every code-review turn. Keep **Human oversight** in `COVERAGE.md` in sync with explicit user decisions.
-- End each such turn with shown, agent-only-by-reason, and remaining **hunk** counts/percentages, plus the oversight bullets.
+- End each such turn with shown, agent-only-by-reason, and remaining **hunk** counts/percentages, plus the oversight bullets. On the walkthrough turn, follow that with **Next actions**.
 - Do not call review complete while `not_reviewed` is unexplained.
 
 ## Approval gates
 
 1. **Claims**: user confirms the 1–3 claims printed in chat or answers the questions needed to form them. Specialists may run against draft claims during this wait, but the walkthrough remains blocked.
-2. **Walkthrough**: user confirms the shown implementation matches intent and approves, rejects, or edits all proposed comments in one turn by default.
+2. **Walkthrough**: user replies to **Next actions** (see `phases/logic-walk.md`): confirms the shown implementation matches intent (or edits claims), approves, rejects, or edits comments, answers or leaves prompts unresolved, and may add comments or questions. Not the submission gate.
 3. **Submission**: user picks `APPROVE`, `REQUEST_CHANGES`, or `COMMENT`, then replies **APPROVED** after seeing the exact review body, exact inline comments, unresolved prompts, coverage, and human-oversight summary. The user may update comments at this gate. Earlier approval never authorizes GitHub writes.
 
 Do not add other approval gates. A new `head_sha` is summarized and then processed; do not pause for permission to refresh.
