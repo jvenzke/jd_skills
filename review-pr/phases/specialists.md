@@ -24,7 +24,7 @@ Skeptic (phase 3) still runs on whatever candidates exist, including integrated-
 
 ### medium
 
-Launch **SECURITY**, **test coverage**, and **LOGIC_QUALITY** in parallel (today’s default). Skip a track only when its surface is absent under that specialist’s skip rule below.
+Launch **SECURITY**, **test coverage**, and **LOGIC_QUALITY** in parallel. Skip a track only when its surface is absent under that specialist’s skip rule below.
 
 ### high
 
