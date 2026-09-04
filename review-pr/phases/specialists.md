@@ -1,6 +1,40 @@
 # Phase 2 — Required specialists
 
-Run the **SECURITY**, **test coverage**, and **LOGIC_QUALITY** tracks in parallel as soon as the 1–3 draft claims are printed in chat. They may work while the user confirms or edits those claims. All three artifacts are required sections of every review, though a track may record a justified skip when its surface is absent.
+Always write `SECURITY.md`, `TESTS.md`, and `QUALITY.md` with every required heading before adversarial verification. Depth follows `review_risk` on `tasks.md` (and `PR_BRIEF.md`). A written skip is allowed when the surface is absent **or** when low-risk dispatch does not invoke that specialist.
+
+Start the tracks that this risk class requires as soon as the 1–3 draft claims are printed in chat. They may work while the user confirms or edits those claims.
+
+## Risk dispatch
+
+Read stored `review_risk`. Do not reclassify unless `head_sha` changed and the summary of that update shows a new higher-risk surface (then raise, persist, and follow the new class).
+
+### low
+
+Main agent performs integrated logic/quality review and relevant CI/test verification (fill `QUALITY.md` and `TESTS.md`).
+
+Launch a specialist only when intake’s changed surface triggers that track:
+
+- SECURITY: auth, trust, secrets, injection, permissions, tenant isolation, sensitive data, or risky dependencies
+- TESTS: changed tests, failing checks, claim-relevant branches, or workflow/path-filter doubt
+- LOGIC_QUALITY: non-trivial product logic (not docs/copy/isolated styling/lockfile)
+
+If a track is not triggered, still write its artifact with `Skip reason` stating low-risk + absent surface. `Skip reason` is `none` when that scan ran.
+
+Skeptic (phase 3) still runs on whatever candidates exist, including integrated-review findings.
+
+### medium
+
+Launch **SECURITY**, **test coverage**, and **LOGIC_QUALITY** in parallel (today’s default). Skip a track only when its surface is absent under that specialist’s skip rule below.
+
+### high
+
+Same parallel specialists as medium, plus:
+
+- cheaper extra evidence: inspect authoritative schema/type/model definitions, lockfiles/resolvers, workflow selectors, and relevant call sites for any candidate that needs them
+- run a narrow local test or command when it is cheap and would falsify a suspected path
+- note material architecture/public/module boundary changes for the walkthrough **Boundary decisions** block (no extra approval gate)
+
+Do not skip high-risk tracks to save time.
 
 ## SECURITY specialist
 
@@ -30,7 +64,7 @@ The main agent writes `SECURITY.md` with every heading below, even when clean:
 ## Skip reason
 ```
 
-`Skip reason` is `none` when the scan ran. A skip is allowed only when intake found no security-relevant surface.
+`Skip reason` is `none` when the scan ran. A skip is allowed when intake found no security-relevant surface, or when low-risk dispatch did not trigger SECURITY.
 
 ## Test coverage specialist
 
@@ -70,7 +104,7 @@ The main agent writes `TESTS.md` with every heading below, even when clean:
 
 `CI workflow scope` names the workflows/jobs, the test commands or selectors they run, and whether they include this PR's project. `New-code coverage` maps each new/changed product behavior or claim to covering tests in prose, then lists uncovered new code.
 
-`Skip reason` is `none` when the pass ran. A skip is allowed only when CI is green, the PR's workflows already run this project's impacting tests, and there are no changed test files or claim-relevant branches. Always fill `CI workflow scope` and `New-code coverage` (`n/a` plus the skip reason if the rest of the pass is skipped).
+`Skip reason` is `none` when the pass ran. A skip is allowed when CI is green, the PR's workflows already run this project's impacting tests, and there are no changed test files or claim-relevant branches; or when low-risk dispatch did not trigger TESTS. Always fill `CI workflow scope` and `New-code coverage` (`n/a` plus the skip reason if the rest of the pass is skipped).
 
 ## LOGIC_QUALITY specialist
 
@@ -114,8 +148,8 @@ The main agent writes `QUALITY.md` with every heading below, even when clean:
 ## Skip reason
 ```
 
-`Skip reason` is `none` when the scan ran. A skip is allowed only when intake found no core product-code change (docs/config-only, generated/lockfile, or incidental-only). Always fill `Correctness` and `Maintainability` (`n/a` plus the skip reason if skipped).
+`Skip reason` is `none` when the scan ran. A skip is allowed when intake found no core product-code change (docs/config-only, generated/lockfile, or incidental-only), or when low-risk dispatch did not trigger LOGIC_QUALITY. Always fill `Correctness` and `Maintainability` (`n/a` plus the skip reason if skipped).
 
 ## Completion gate
 
-Do not begin adversarial verification until `SECURITY.md`, `TESTS.md`, and `QUALITY.md` exist with all required headings. Do not begin the logic walkthrough until the claims are also confirmed. If a claim edit materially changes specialist scope, rerun only the affected track; otherwise remap its evidence. Main agent verifies candidate evidence and updates coverage for inspected lines; specialist output alone does not authorize a comment.
+Do not begin adversarial verification until `SECURITY.md`, `TESTS.md`, and `QUALITY.md` exist with all required headings. Do not begin the logic walkthrough until the claims are also confirmed. If a claim edit materially changes specialist scope, rerun only the affected track; otherwise remap its evidence. Main agent verifies candidate evidence and updates coverage for inspected hunks; specialist output alone does not authorize a comment.

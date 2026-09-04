@@ -2,12 +2,12 @@
 
 ## Validate
 
-1. Fetch the live PR and compare `head_sha` with `tasks.md`.
+1. Fetch the live PR and compare `head_sha` with `tasks.md`. If it differs, summarize the update, then refresh context and rebuild coverage without waiting. Do not reset `COMMENTS.md`; re-anchor or drop stale comments in the steps below.
 2. Validate every approved comment path and diff anchor against the current `gh pr diff`.
 3. Deduplicate comments by fingerprint and defect, and skip fingerprints already submitted.
-4. Revalidate that each comment remains `high` confidence, has a concrete consequence (logic, behavior, security, test gap, or maintainability regression), is `blocker` or `recommended` unless broader feedback was requested, and still matches the current code.
+4. Revalidate that each comment remains `high` confidence (trigger, traced path, consequence, attempted cheap falsification), has a concrete consequence (logic, behavior, security, test gap, or maintainability regression), is `blocker` or `recommended` unless broader feedback was requested, and still matches the current code.
 5. Mark stale anchors `stale_anchor`. Show nearby current diff and ask whether to re-anchor, convert to a top-level note, or drop.
-6. If any changed lines remain `not_reviewed`, identify them and either review them or explicitly explain the residual gap before requesting submission approval.
+6. If any changed hunks remain `not_reviewed`, identify them and either review them or explicitly explain the residual gap before requesting submission approval.
 7. Only actionable, code-anchored, user-approved comments may be submitted as inline comments. The review-body summary always posts.
 
 ## Review event
@@ -28,12 +28,19 @@ Always post a top-level review summary **in addition to** any user-approved inli
 ## Review summary
 
 **Verdict:** <approve | request changes | comment>
+**Review risk:** <low | medium | high> — <reasons>
 
-### Human vs agent review
-- Changed lines: N
-- Human-reviewed (shown in chat): N (N%)
+### Presentation (not human-reviewed)
+- Changed hunks: N (added lines: N, deleted lines: N)
+- Shown in chat (`human_presented`): N (N%) — code exposure only
 - Agent-reviewed only: N (N%) — <brief reason mix, e.g. tests summarized, peripheral>
 - Not reviewed: N (N%) — <none, or why left uncovered>
+
+### Human oversight
+- Claims confirmed: <ids / none>
+- Architecture/boundary decisions reviewed: <none, or what the user confirmed>
+- Findings approved/rejected/edited: <counts>
+- Unresolved business questions answered: <yes/no/partial; remaining>
 
 ### Business content reviewed
 <2–4 sentences: confirmed claims walked, any skipped claims, unresolved prompts.>
@@ -47,7 +54,7 @@ Always post a top-level review summary **in addition to** any user-approved inli
 Inline comments below are separate, user-requested findings.
 ```
 
-Keep this short. Do not paste code. Do not omit the human/agent split, new-code coverage, or CI workflow scope.
+Keep this short. Do not paste code. Do not omit presentation vs oversight, new-code coverage, or CI workflow scope. Never label `human_presented` as Human-reviewed.
 
 ## Final approval gate
 
@@ -57,7 +64,7 @@ Show:
 - the chosen review event
 - every inline comment as a numbered item with path/range, severity, confidence, and the exact body that will be posted (or “none”). Re-paste every inline GitHub body in this message. A pointer to an earlier turn does not count.
 - unresolved business prompts
-- total changed lines, human-presented %, agent-only % by reason, not-reviewed %, and excluded count
+- hunk coverage (`changed_hunks`, `added_lines`, `deleted_lines`, `human_presented` %, agent-only % by reason, not-reviewed %, excluded count) and the human-oversight bullets
 
 Invite edits to any comment before submission. Apply requested wording changes, re-show the affected exact bodies, and ask the user to confirm the event and reply **APPROVED** before any GitHub write. The walkthrough comment decision determines eligibility, but it is not submission approval.
 
@@ -65,7 +72,7 @@ Invite edits to any comment before submission. Apply requested wording changes, 
 
 Create **one** GitHub review: the summary body, the chosen event, and every valid inline comment.
 
-If an inline anchor fails, do not dump all comments into the body. Re-anchor or post only that issue as a top-level note referencing its file/range after approval. The human/agent summary stays in the review body.
+If an inline anchor fails, do not dump all comments into the body. Re-anchor or post only that issue as a top-level note referencing its file/range after approval. The presentation/oversight summary stays in the review body.
 
 Always submit this review, including when there are no inline comments.
 
@@ -74,11 +81,13 @@ Always submit this review, including when there are no inline comments.
 Write `SUBMISSION.md`:
 
 - PR/head SHA and review URL/id
+- `review_risk` and reasons
 - review event and exact review body
 - submitted comment ids and fingerprints
 - skipped duplicates and stale anchors
 - security, logic/quality, test-coverage of new code, and CI workflow scope summaries
 - business claims walked and unresolved prompts
-- final coverage totals and agent-only reason breakdown (human vs agent)
+- presentation totals (hunks, added/deleted lines) and agent-only reason breakdown
+- human-oversight summary (claims, boundary decisions, finding decisions, prompts)
 
 Set `phase: complete` and all task checkboxes complete. Do not delete artifacts without separate approval.
