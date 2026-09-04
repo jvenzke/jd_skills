@@ -5,7 +5,7 @@
 1. Fetch the live PR and compare `head_sha` with `tasks.md`.
 2. Validate every approved comment path and diff anchor against the current `gh pr diff`.
 3. Deduplicate comments by fingerprint and defect, and skip fingerprints already submitted.
-4. Revalidate that each comment remains `high` confidence, has a concrete consequence, is `blocker` or `recommended` unless broader feedback was requested, and still matches the current code.
+4. Revalidate that each comment remains `high` confidence, has a concrete consequence (logic, behavior, security, test gap, or maintainability regression), is `blocker` or `recommended` unless broader feedback was requested, and still matches the current code.
 5. Mark stale anchors `stale_anchor`. Show nearby current diff and ask whether to re-anchor, convert to a top-level note, or drop.
 6. If any changed lines remain `not_reviewed`, identify them and either review them or explicitly explain the residual gap before requesting submission approval.
 7. Only actionable, code-anchored, user-approved comments may be submitted as inline comments. The review-body summary always posts.
@@ -77,7 +77,7 @@ Write `SUBMISSION.md`:
 - review event and exact review body
 - submitted comment ids and fingerprints
 - skipped duplicates and stale anchors
-- security, test-coverage of new code, and CI workflow scope summaries
+- security, logic/quality, test-coverage of new code, and CI workflow scope summaries
 - business claims walked and unresolved prompts
 - final coverage totals and agent-only reason breakdown (human vs agent)
 

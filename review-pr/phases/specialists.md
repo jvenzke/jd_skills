@@ -1,6 +1,6 @@
 # Phase 2 — Required specialists
 
-Run both tracks in parallel as soon as the 1–3 draft claims are printed in chat. They may work while the user confirms or edits those claims. They are required sections of every review, though either may record a justified skip when its surface is absent.
+Run the **SECURITY**, **test coverage**, and **LOGIC_QUALITY** tracks in parallel as soon as the 1–3 draft claims are printed in chat. They may work while the user confirms or edits those claims. All three artifacts are required sections of every review, though a track may record a justified skip when its surface is absent.
 
 ## SECURITY specialist
 
@@ -44,7 +44,7 @@ The main agent writes `SECURITY.md` with every heading below, even when clean:
    - assertion specificity (not merely execution)
    - bug-fix regression behavior
    - each material business claim and invariant
-6. Passing CI is evidence, not proof. Do not invent unstated product rules to demand tests.
+6. Passing CI is evidence, not proof. Do not invent unstated product rules to demand tests. Prefer high-signal contract tests over test volume; do not demand extra cases merely to perform a red/green loop.
 7. Run targeted local tests only when useful and cheap. Ask before expensive/full suites.
 
 Return candidates with changed path/range, exact quote, uncovered claim/branch, concrete failure that could escape, existing evidence, fix direction, confidence, and severity. Include CI-scope misses (relevant tests not invoked by the PR's workflows) the same way.
@@ -72,6 +72,50 @@ The main agent writes `TESTS.md` with every heading below, even when clean:
 
 `Skip reason` is `none` when the pass ran. A skip is allowed only when CI is green, the PR's workflows already run this project's impacting tests, and there are no changed test files or claim-relevant branches. Always fill `CI workflow scope` and `New-code coverage` (`n/a` plus the skip reason if the rest of the pass is skipped).
 
+## LOGIC_QUALITY specialist
+
+Review core product changes for claim-aligned correctness **and** long-term maintainability. Read `../coding-standards.md` before inspecting code. Do not review tests for coverage (TESTS owns that) or invent product rules the claims do not state.
+
+Correctness:
+
+- wrong branches, inverted conditions, off-by-one, and missed error/empty paths in changed logic
+- invariants that the implementation does not actually preserve
+- callers, persistence, or UI that contradict a claim
+- control-flow or state updates that make a claim false under a concrete trigger
+
+Maintainability (coding-standards.md; same bar as `/d-antigravity`; goal is easier future change, not a small diff):
+
+- leaked complexity: callers coordinate internal steps, policy, representation, or special cases
+- shallow boundaries: wrappers, pass-throughs, fragmented helpers, or interfaces that mirror internals
+- complexity not pushed downward: invariants, sequencing, policy, or errors handled in callers instead of the owning module
+- misplaced responsibility: invariants or orchestration split across modules, or organized by execution order instead of knowledge
+- invalid states or special cases left exposed instead of eliminated behind the boundary
+- hard-to-describe or awkwardly coordinated new/reshaped boundaries
+- comments that restate obvious code; missing comments only where a non-obvious invariant or rationale is required
+- unrelated cleanup or speculative generalization (not a finding to *demand* extra refactor; a finding if the PR itself adds drive-by noise or unjustified new abstractions)
+
+Require a concrete trigger, execution or change-impact path, consequence, and fix direction. Naming, formatting, and local style are not findings unless the user asked for nits.
+
+Severity: `blocker` only if the defect or smell creates a concrete correctness or security failure. `recommended` for reachable logic defects and for clear boundary/complexity regressions that will make the codebase harder to maintain. `nit` for local style.
+
+Return candidates with changed path/range, exact quote, trigger, consequence, evidence checked, fix direction, confidence, severity, and claim id where applicable. Tag each candidate `correctness` or `maintainability`.
+
+The main agent writes `QUALITY.md` with every heading below, even when clean:
+
+```markdown
+# Logic and quality
+## Reviewed files and patterns
+## Evidence checked
+## Correctness
+## Maintainability
+## Clean areas
+## Findings
+## Unresolved questions
+## Skip reason
+```
+
+`Skip reason` is `none` when the scan ran. A skip is allowed only when intake found no core product-code change (docs/config-only, generated/lockfile, or incidental-only). Always fill `Correctness` and `Maintainability` (`n/a` plus the skip reason if skipped).
+
 ## Completion gate
 
-Do not begin adversarial verification until both `SECURITY.md` and `TESTS.md` exist with all required headings. Do not begin the logic walkthrough until the claims are also confirmed. If a claim edit materially changes specialist scope, rerun only the affected track; otherwise remap its evidence. Main agent verifies candidate evidence and updates coverage for inspected lines; specialist output alone does not authorize a comment.
+Do not begin adversarial verification until `SECURITY.md`, `TESTS.md`, and `QUALITY.md` exist with all required headings. Do not begin the logic walkthrough until the claims are also confirmed. If a claim edit materially changes specialist scope, rerun only the affected track; otherwise remap its evidence. Main agent verifies candidate evidence and updates coverage for inspected lines; specialist output alone does not authorize a comment.

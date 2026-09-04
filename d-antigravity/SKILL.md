@@ -71,27 +71,27 @@ Agent-facing code map. Paths/symbols/commands/one-line facts only. No plan dupli
 
 Apply in this order when they conflict:
 
-1. **Deep modules**: keep interfaces small and simple; hide complexity inside cohesive implementations.
-2. **Reduce system complexity**: optimize for simpler callers and fewer leaked concepts, not the smallest diff.
-3. **Extend/reuse** sound existing code, but do not preserve shallow abstractions or misplaced responsibilities merely to minimize changes.
-4. Prefer **orthogonal boundaries** with low coupling. New or reshaped public/module boundaries must be named in the approved plan; private implementation structure may evolve when needed to realize that design.
-5. Keep changes within the approved vertical slice. Larger code changes are allowed when required to deepen a module; no unrelated cleanup.
-6. **Test restraint**: prefer high-signal contract tests over red/green volume; do not add tests merely to perform a loop. (Details: Verification plan + Implementation.)
-7. **Comments**: Limit comments to where the code is unclear. If the code can be understood directly, avoid writing a comment.
+1. **Reduce system complexity**: optimize for simpler callers, fewer concepts, and less coordination—not the smallest diff or fastest implementation.
+2. **Deep modules**: prefer small, intent-oriented interfaces that hide substantial cohesive implementation complexity.
+3. **Push complexity downward**: keep invariants, sequencing, representation, policy, error handling, and special cases behind the module that owns them.
+4. **Prefer clear boundaries**: minimize coupling, information leakage, pass-through layers, and duplicated orchestration. Organize around responsibility and knowledge, not execution order.
+5. **Extend/reuse sound code**, but do not preserve shallow abstractions or misplaced responsibilities merely to minimize changes.
+6. **Design deliberately**: for important or reshaped boundaries, consider alternative designs. Treat excessive coordination, awkward naming, or difficult-to-describe interfaces as signs the abstraction may be wrong.
+7. **Keep the approved vertical slice**: larger changes are allowed when required to deepen a module or simplify its boundary; no unrelated cleanup or speculative generalization.
+8. **Test restraint**: prefer high-signal contract tests over test volume; do not add tests merely to perform a red/green loop.
+9. **Comments explain what code cannot**: document non-obvious intent, invariants, or rationale; avoid comments that restate understandable code.
 
 ## Deep-module design standard
 
 Treat a module as any file, class, object, package, service, or subsystem with a boundary.
 
-- Expose the smallest practical interface for the capability. Callers should express intent without coordinating internal steps.
-- Keep invariants, sequencing, data representation, policy, error handling, and dependency details behind the boundary.
-- Favor fewer, deeper modules over many shallow wrappers, pass-through methods, or narrowly fragmented helpers.
-- Prefer cohesive modules that encapsulate state, policy, and invariants. Use classes when identity, mutable state, lifecycle, or polymorphism materially benefits the boundary; otherwise follow the repository's established idiom.
-- Co-locate related complexity when doing so reduces knowledge shared across modules.
-- Avoid interfaces that mirror implementation details through excessive parameters, getters/setters, configuration, or internal types.
-- Judge an abstraction by the complexity it removes from callers, not by its line count. A simple interface may legitimately contain a substantial implementation.
-- Preserve public behavior and compatibility unless the approved plan explicitly includes an interface migration.
-- Larger refactors are justified when they measurably simplify the interface, reduce coupling, centralize invariants, or eliminate duplicated orchestration. Do not use deep-module design to justify speculative generalization.
+* Expose the smallest practical interface for the capability. Callers should express intent without coordinating internal steps.
+* Favor fewer, deeper modules over shallow wrappers, pass-through methods, fragmented helpers, or interfaces that mirror implementation details.
+* Co-locate state, policy, invariants, and related complexity when doing so reduces knowledge shared across modules.
+* Prefer designs that eliminate invalid states and special cases rather than repeatedly exposing or handling them.
+* Judge an abstraction by the complexity it removes from callers, not by its size or line count.
+* Preserve public behavior and compatibility unless the approved plan explicitly includes an interface migration.
+* New or reshaped public/module boundaries must be named in the approved plan; private implementation structure may evolve as needed to realize that design.
 
 ## Tasks
 **use the TODO tool to track tasks**

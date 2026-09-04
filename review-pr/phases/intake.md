@@ -26,7 +26,7 @@ Read `../business-claims.md`, then write `BUSINESS_CLAIMS.md`.
 - Attach the implementing ranges that can make each claim true or false. Do not create claims to account for every diff region; classify other ranges as supporting core code, incidental, or unexplained coverage.
 - Print every drafted claim in chat. Never require the user to open `BUSINESS_CLAIMS.md` to review them.
 - Ask extra questions only when the PR and user do not provide enough intent to form the claims, and only when the answers materially change the verdict.
-- Launch SECURITY and test-coverage specialists against the draft claims while waiting for confirmation. If the user edits a claim, remap findings and rerun a specialist only when the edit materially changes its scope.
+- Launch SECURITY, test-coverage, and LOGIC_QUALITY specialists against the draft claims while waiting for confirmation. If the user edits a claim, remap findings and rerun a specialist only when the edit materially changes its scope.
 - Stop the logic walkthrough until the user confirms the claims or answers every blocking gap. Then set `claims_confirmed: true` in `tasks.md`.
 
 ## Output
