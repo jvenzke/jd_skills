@@ -218,6 +218,7 @@ If a phase plan is being used, limit scope to phase `{N}` and change that phase�
 
 ## Deep-module design
 
+- **System context**: {owning boundary and its role in the system; who calls it, at a high level; what this slice does not own. One sentence default, two max. No file tree. Same sentence as the Step 3 chat line.}
 - **Interface**: {small public surface callers will use}
 - **Hidden complexity**: {sequencing, invariants, representation, errors, or dependencies moved behind it}
 - **Caller impact**: {coordination or concepts removed from callers}
@@ -265,7 +266,8 @@ last_error: null
 After drafting `implementation_plan.md` and `tasks.md`, proceed to **3**.
 
 ### 3. User review
-- Provide a highly concise, high-level summary of proposed changes **(maximum 3-4 bullets total)** in the chat, followed by a relative link to `.working_items/{task}/phase-{N}/implementation_plan.md`.
+- In the chat, first a **System context** line (verbatim from the implementation plan’s Deep-module **System context** bullet): one sentence by default, two max. Name the owning boundary and its role so the user can tell what part of the system is changing; who calls it at a high level; what this slice does not own. No file tree. Always include it, even for thin wiring — still name the owning boundary.
+- Then a highly concise, high-level summary of proposed changes **(maximum 3-4 bullets total)**, followed by a relative link to `.working_items/{task}/phase-{N}/implementation_plan.md`.
 - If an unapproved phase plan is being used, include its relative link in the same review.
 - Ask the user to reply with **APPROVED** to proceed. Repeat if revisions are requested.
 - If the user requests plan revisions before APPROVED, update the plan/`tasks.md`, then present human review again.
@@ -312,6 +314,7 @@ After drafting `implementation_plan.md` and `tasks.md`, proceed to **3**.
 ### 6. Review changes
 - **Main agent** creates `.working_items/{task}/phase-{N}/walkthrough.md` (new file for this phase; never overwrite another phase’s walkthrough).
 - Provide a very brief summary in the chat including:
+  - **System context**: The same sentence as the implementation plan (copy into the walkthrough). Owning boundary and role in the system — what part of the system changed. No file tree.
   - **Summary of Changes**: A 1-2 sentence high level overview.
   - **Verification**: Commands/suites run and contracts covered; **Test budget** `new: N | extended: M | reused only: yes/no` (must match the approved plan plus any recorded regression delta). Mention new/extended cases only if the plan listed them or they were a recorded regression delta. Soft-warn if other extras were added.
   - **Code Overview**: A numbered list of completed logical steps.
@@ -323,6 +326,8 @@ After drafting `implementation_plan.md` and `tasks.md`, proceed to **3**.
 # Walkthrough: {title} (Phase {N})
 
 {summary - 1-2 sentences}
+
+- **System context**: {same sentence as implementation plan Deep-module **System context**}
 
 ## User Review Required
 
