@@ -2,6 +2,8 @@
 
 The main agent deduplicates specialist (and integrated-review) candidates by defect (same mechanism, overlapping lines) without judging them, then dispatches a fresh read-only skeptic for each candidate or a small related batch.
 
+If `review_scope` is `incremental`, also skeptic `still_open` / `stale` / `reintroduced` prior comments. Addressed prior items are out of scope unless the update reintroduces them.
+
 ## Skeptic contract
 
 The skeptic's job is to disprove findings, not confirm them.

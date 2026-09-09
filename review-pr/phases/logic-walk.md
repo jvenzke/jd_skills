@@ -1,6 +1,8 @@
 # Phase 4 — Intent-complete logic walkthrough
 
-Walk all confirmed claims in one turn by default, ordered by risk/dependency:
+Walk all confirmed claims in one turn by default, ordered by risk/dependency.
+
+If `review_scope` is `incremental`, read `follow-up.md`. Walk only claims whose implementing hunks are in the update diff (plus claims tied to `still_open` / `reintroduced` comments). Note unchanged claims as already reviewed at `prior_review_head_sha`. Show update product code only. Include a **Prior comments** table (addressed / still open / stale / reintroduced) before the new comment list.
 
 1. contracts, schemas, migrations, interfaces
 2. domain/service logic
@@ -17,7 +19,7 @@ Primary human-review units are the **claim**, important design/boundary decision
 
 ## Walkthrough
 
-1. Repeat every claim id and exact claim text in chat. Never require the user to open `BUSINESS_CLAIMS.md`.
+1. Repeat every walked claim id and exact claim text in chat (`incremental`: walked claims only; one-line reminder for already-reviewed unchanged claims). Never require the user to open `BUSINESS_CLAIMS.md`.
 2. For each confirmed claim, use this structure:
    - claim text
    - implementation path the agent traced (files/symbols/flow; cite ranges in prose)
@@ -68,11 +70,11 @@ Recompute cumulative totals in `COVERAGE.md`; do not estimate. Displayed hunks a
 
 ## Next actions
 
-Last block of the walkthrough message. Actions only — do not restate claims, findings, or comment bodies. Do not ask for the review event or **APPROVED** (those are the submission gate).
+Last block of the walkthrough message. Actions only — do not restate claims, findings, or comment bodies. Do not ask for the review type (that is the submission gate).
 
 Include only items that still need a user decision this turn:
 
-- Intent (always): confirm the shown implementation matches the claims, or edit them.
+- Intent (always): confirm the shown implementation matches the claims, or edit them. On `incremental`, this is the update and affected claims only.
 - Boundary decisions: only if that block was shown — confirm, or edit.
 - Each proposed comment: approve, reject, or edit (same words as the walkthrough gate). Omit this group when there are none.
 - Each unresolved product prompt: answer, or leave unresolved. Omit this group when there are none.
@@ -82,7 +84,7 @@ Each item: one line of what to decide, then **Recommended:** plus the other opti
 
 ```markdown
 ## Next actions
-Needed to start the submit gate (review event and **APPROVED** come later). Reply by number or shorthand.
+Needed to start the submit gate (review type comes later). Reply by number or shorthand.
 
 1. Intent — confirm the shown implementation matches the claims, or edit them.
    Recommended: **confirm** · other: **edit** (what to change)

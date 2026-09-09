@@ -13,6 +13,8 @@ not_applicable: 0
 
 Initialize with `gh pr diff <n> | python3 <this-skill>/scripts/init_coverage.py --head-sha <sha>`.
 
+When `review_scope` is `incremental`, initialize from the update diff instead (`git diff <prior_review_head_sha>...<head_sha>`). Percents and `not_reviewed` apply to that update, not the full PR. Unchanged hunks from the prior review are out of the inventory.
+
 The inventory unit is a **changed hunk** (one `@@` region). A rename with no remaining hunks is one row. Report `added_lines` and `deleted_lines` in frontmatter; do not use an additions-only `total_changed_lines`.
 
 Percents use `changed_hunks` as the denominator (exclude `not_applicable`). Presentation counts are not a measure of meaningful human review.

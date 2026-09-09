@@ -2,11 +2,13 @@
 
 Always write `SECURITY.md`, `TESTS.md`, and `QUALITY.md` with every required heading before adversarial verification. Depth follows `review_risk` on `tasks.md` (and `PR_BRIEF.md`). A written skip is allowed when the surface is absent **or** when low-risk dispatch does not invoke that specialist.
 
+If `review_scope` is `incremental`, read `follow-up.md`. Limit inspection to the update diff plus unresolved/stale prior-comment locations. Open each artifact with `Update since <prior_review_head_sha>`. Do not re-derive findings on unchanged code already covered by this user’s last submitted review unless a prior comment is still open or the defect is reintroduced.
+
 Start the tracks that this risk class requires as soon as the 1–3 draft claims are printed in chat. They may work while the user confirms or edits those claims.
 
 ## Risk dispatch
 
-Read stored `review_risk`. Do not reclassify unless `head_sha` changed and the summary of that update shows a new higher-risk surface (then raise, persist, and follow the new class).
+Read stored `review_risk`. Do not reclassify unless `head_sha` changed and the summary of that update shows a new higher-risk surface (then raise, persist, and follow the new class). On `incremental`, the same rule applies to the update diff.
 
 ### low
 
