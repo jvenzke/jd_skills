@@ -3,11 +3,15 @@
 ## Intake
 
 1. Accept a GitHub PR URL/number. If omitted, resume from the review workspace or ask for it.
-2. Fetch with `gh`: title, body, author, state, draft status, base/head branches and SHAs, commits, changed files, full diff, review threads/comments, and checks.
+2. Fetch with `gh`: title, body, author, state, draft status, base/head branches and SHAs, commits, changed files, full diff, review threads/comments, checks, the current GitHub user, and that user’s submitted reviews (`APPROVE` / `REQUEST_CHANGES` / `COMMENT`).
 3. Create the review workspace and initialize the artifacts required by `SKILL.md`. Do not search Jira or other ticket trackers for product intent.
-4. Run:
+4. If this user already submitted a review, read `follow-up.md`, set `review_scope: incremental`, write `PRIOR_REVIEW.md`, and initialize coverage from the update diff. Otherwise `review_scope: full` and run:
 
    `gh pr diff <n> | python3 <skill-dir>/scripts/init_coverage.py --head-sha <head_sha> > <workspace>/COVERAGE.md`
+
+   Incremental coverage (after fetch of both SHAs):
+
+   `git diff <prior_review_head_sha>...<head_sha> | python3 <skill-dir>/scripts/init_coverage.py --head-sha <head_sha> > <workspace>/COVERAGE.md`
 
 5. Identify:
    - core change: the few files/hunks that can make the stated product intent true or false
@@ -20,7 +24,7 @@
 
 ## Review risk
 
-Classify from the diff, not the PR’s self-description. If unsure, use `medium`.
+Classify from the coverage inventory’s diff (full PR or update), not the PR’s self-description. If unsure, use `medium`. On `incremental`, recompute from the **update**; raise if new higher-risk surfaces appear; do not lower a stored `high` just because this push is small.
 
 Higher-risk surfaces (any one can raise above `low`; several, or a trust/data/money boundary, usually mean `high`):
 
@@ -51,7 +55,10 @@ Read `../business-claims.md`, then write `BUSINESS_CLAIMS.md`.
 - Ask extra questions only when the PR and user do not provide enough intent to form the claims, and only when the answers materially change the verdict.
 - Start phase 2 against the draft claims while waiting for confirmation (depth follows `review_risk`). If the user edits a claim, remap findings and rerun a specialist only when the edit materially changes its scope.
 - Stop the logic walkthrough until the user confirms the claims or answers every blocking gap. Then set `claims_confirmed: true` in `tasks.md`.
+- On `incremental` follow-up: reuse unchanged confirmed claims without a new confirmation gate; print a one-line reminder plus **Prior comments** counts; confirm only new or materially changed claims. Classify core vs incidental on the **update** diff.
 
 ## Output
 
 In at most four bullets, show the core change, PR intent, `review_risk` plus reasons, all 1–3 claims verbatim, CI status, and initial hunk coverage (`changed_hunks`, `added_lines`, `deleted_lines`). Ask for a short confirmation or edits.
+
+On `incremental`, those bullets are the **update since last review** (commits/files/risk delta/claim delta), plus prior-comment addressed vs still-open counts. Do not recap the already-reviewed base.

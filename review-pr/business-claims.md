@@ -2,6 +2,8 @@
 
 Write `BUSINESS_CLAIMS.md` during intake. Draft 1–3 claims, print all of them in chat, and start phase-2 review (risk-adaptive specialists or integrated review) while the user confirms or edits them. The logic walkthrough remains blocked until confirmation.
 
+On an `incremental` follow-up, keep confirmed claims that still match product intent. Print a one-line reminder; do not re-open the claims gate unless the update adds, drops, or materially changes observable behavior (confirm only those deltas).
+
 ```markdown
 ---
 head_sha: <sha>
