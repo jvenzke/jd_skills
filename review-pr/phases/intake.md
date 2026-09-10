@@ -48,7 +48,7 @@ Do not lower a rating to save work. Risk controls specialist depth in phase 2; i
 
 Read `../business-claims.md`, then write `BUSINESS_CLAIMS.md`.
 
-- Draft 1–3 claims for the entire PR. Claims must state observable product behavior: actor, trigger/state, result, and important invariant.
+- Draft the fewest claims that cover the entire PR’s product work. One is enough when the PR is a single behavior. Add more only for independently testable product assertions. Do not pad to a target count. Claims must state observable product behavior: actor, trigger/state, result, and important invariant.
 - Source each claim from the PR or user. Never infer product intent from implementation. Never fetch Jira.
 - Attach the implementing sections that can make each claim true or false. Do not create claims to account for every diff region; classify other sections as supporting core code, incidental, or unexplained coverage.
 - Print every drafted claim in chat. Never require the user to open `BUSINESS_CLAIMS.md` to review them.
@@ -59,6 +59,6 @@ Read `../business-claims.md`, then write `BUSINESS_CLAIMS.md`.
 
 ## Output
 
-In at most four bullets, show the core change, PR intent, `review_risk` plus reasons, all 1–3 claims verbatim, CI status, and initial section coverage (`changed_sections`, `added_lines`, `deleted_lines`). Ask for a short confirmation or edits.
+In at most four bullets, show the core change, PR intent, `review_risk` plus reasons, every drafted claim verbatim, CI status, and initial section coverage (`changed_sections`, `added_lines`, `deleted_lines`). Ask for a short confirmation or edits.
 
 On `incremental`, those bullets are the **update since last review** (commits/files/risk delta/claim delta), plus prior-comment addressed vs still-open counts. Do not recap the already-reviewed base.

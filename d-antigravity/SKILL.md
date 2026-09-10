@@ -4,7 +4,8 @@ description: >-
   Phased development workflow (antigravity-style) for maintainable systems.
   Prefer over r-antigravity when architecture and code quality matter:
   deep-module design, vertical-slice phases, and explicit approval before
-  each phase.
+  each phase. Optional: a linked /scope-project step as input;
+  works unchanged without one.
 disable-model-invocation: true
 ---
 
@@ -97,7 +98,9 @@ Treat a module as any file, class, object, package, service, or subsystem with a
 **use the TODO tool to track tasks**
 
 ### 1. Review request, research & clarify
-- Standardize a unique `{task}` slug as a lowercase kebab-case identifier (e.g., `fix-auth-bug`). Create `.working_items/{task}/` if missing.
+- **Project intake (optional)**: Do **not** search for a parent project. Attach only when (1) the user links `.working_items/{project}/scope.md` or `steps/{NN}-*.md`, or names `{project}` and that `scope.md` exists, or (2) a `phase-*/tasks.md` for this `{task}` already has `project:`. Otherwise skip this block (behavior unchanged).
+  When attached: read `{project}/scope.md`, the step file (linked step, or next `- [ ]`/`- [o]` on the tracker if only `scope.md` was named), and `{project}/agent_notes.md`. Treat the **step** as the request; still research, clarify, and write phase/implementation plans as usual. Do not invent a different project. If creating a new task folder, `{task}` = `{project}--{step-stem}` (step filename without `.md`). Set that tracker line to `- [o]` if it was `- [ ]`. On resume, include project tracker status in the chat summary.
+- Standardize a unique `{task}` slug as a lowercase kebab-case identifier (e.g., `fix-auth-bug`). If project intake already set `{task}` to `{project}--{step-stem}`, keep that. Create `.working_items/{task}/` if missing.
 - Create `.working_items/{task}/agent_notes.md` from the template if missing (stub with all five section headers).
 - **Entry / resume (phase plan linked or exists)**: If the user links or names a phase plan, or `.working_items/{task}/phase_plan.md` already exists:
   1. Read `.working_items/{task}/phase_plan.md` and, for the next incomplete phase, any existing `phase-{N}/implementation_plan.md` and `phase-{N}/tasks.md`.
@@ -186,7 +189,7 @@ If a phase document is generated do the following. Otherwise skip to develop an 
 ### 2c. Develop an implementation plan
 Determine `{N}` (next incomplete phase index, or `1` if no phase plan). Create directory `.working_items/{task}/phase-{N}/` if missing.
 
-**Always write fresh** `implementation_plan.md` and `tasks.md` into that phase folder. Do **not** overwrite or edit artifacts under other `phase-*` folders. If this phase folder already has incomplete work (resume mid-phase), keep existing files and continue; otherwise create new ones.
+**Always write fresh** `implementation_plan.md` and `tasks.md` into that phase folder. Do **not** overwrite or edit artifacts under other `phase-*` folders. If this phase folder already has incomplete work (resume mid-phase), keep existing files and continue; otherwise create new ones. If a parent project is attached, include `project:` and `step:` in `tasks.md` frontmatter.
 
 If a phase plan is being used, limit scope to phase `{N}` and change that phase’s `- [ ]` to `- [o]` in `phase_plan.md`.
 
@@ -251,6 +254,9 @@ phase: planning
 approved: false
 verification_attempts: 0
 last_error: null
+# when a /scope-project parent is attached:
+# project: {project}
+# step: {NN}-{slug}
 ---
 
 # Checklist for: {task} (Phase {N})
@@ -294,6 +300,7 @@ After drafting `implementation_plan.md` and `tasks.md`, proceed to **3**.
   - **Refactor**: Move complexity inward, simplify callers, remove obsolete shallow paths, and keep the public interface narrow; keep authorized tests green.
   - **Ban**: tests for private helpers, call counts, mock interaction shape, duplicates of the same contract, or any test whose sole purpose is to satisfy a red/green ritual.
 - **Discoveries**: Record only material implementation discoveries in `tasks.md` — plan adjustments, newly discovered invariants, verification deltas, or unexpected scope. Adapt autonomously to local/reversible discoveries. Pause for user guidance if a discovery changes public behavior, an approved architecture/module boundary, migration strategy, significant dependency, or substantial scope.
+- **Project report-back (optional)**: If a parent project is attached, write material tradeoffs and work pushed out of this step onto `{project}/scope.md` (`## Tradeoffs / push-outs`, `## Later`, later tracker steps / new last step). Prefer deferring widening work over expanding this step. Pause if that changes approved project outcomes, owning boundaries, or drops/replaces a step. If no parent is attached, skip.
 - If delegated, instruct the subagent to return a clean summary of changes, commands run, discoveries, and Test budget (`new: N | extended: M | reused only: yes/no`) when finished.
 - Maintain exact indentation/formatting; avoid placeholder code.
 
@@ -306,11 +313,12 @@ After drafting `implementation_plan.md` and `tasks.md`, proceed to **3**.
 - Verify callers use the intended simple interface and do not depend on newly private implementation details.
 - Verify the refactor removed obsolete paths and did not leave duplicate orchestration across the old and new boundaries.
 - **Diff-to-plan check**: Review the final git diff against the recorded baseline. Confirm changed files and behavior match the approved vertical slice, unrelated user changes remain intact, and no unplanned public/module boundary or dependency was introduced.
-- **agent_notes hard check**: Re-read `.working_items/{task}/agent_notes.md`. Confirm it reflects this phase’s durable map/gotchas (prune superseded bullets; soft cap ~30). Ensure the `tasks.md` notes checkbox is checked. If there was no new durable knowledge, checking the box alone is enough — do **not** add meta status lines into `agent_notes.md`. Do **not** mark the phase complete until this check passes.
+- **agent_notes hard check**: Re-read `.working_items/{task}/agent_notes.md`. Confirm it reflects this phase’s durable map/gotchas (prune superseded bullets; soft cap ~30). Ensure the `tasks.md` notes checkbox is checked. If there was no new durable knowledge, checking the box alone is enough — do **not** add meta status lines into `agent_notes.md`. Do **not** mark the phase complete until this check passes. If a parent project is attached, also patch `{project}/agent_notes.md` in-section for durable facts that outlive this step (same rules; no full-file rewrite).
 - If checks fail: increment `verification_attempts`, classify the failure (`environment`, `existing baseline`, `implementation defect`, `verification defect`, or `plan invalidated`), and record the concise error/classification in `last_error` in `phase-{N}/tasks.md` frontmatter. Apply fixes and re-run when the failure is within the approved scope.
 - If the same material failure class remains unresolved after **3 repair attempts**, halt and report logs. Halt earlier if resolution requires changing an approved behavioral/architectural decision or substantial scope. Do not treat unrelated sequential failures (e.g. compile, then lint) as the same stuck loop.
 - **DO NOT proceed to review changes until all Automated Verification checks pass.**
 - If a phase plan is being used, change `- [o]` to `- [x]` in `phase_plan.md` for phase `{N}`.
+- **Project tracker (optional)**: If attached: leave the project step `- [o]` while `phase_plan.md` still has `- [ ]` phases. If this completes the last phase (or there is no phase plan), set that tracker line to `- [x]` and the step file `status: done`.
 
 ### 6. Review changes
 - **Main agent** creates `.working_items/{task}/phase-{N}/walkthrough.md` (new file for this phase; never overwrite another phase’s walkthrough).
@@ -321,6 +329,7 @@ After drafting `implementation_plan.md` and `tasks.md`, proceed to **3**.
   - **Code Overview**: A numbered list of completed logical steps.
   - **User Review**: A relative link to the walkthrough file.
 - **Next phase (new chat)**: If `phase_plan.md` has remaining `- [ ]` phases, end with a short prompt to start a **new chat** for the next phase, and include a relative link to `.working_items/{task}/phase_plan.md` (and the next phase title). Do **not** implement the next phase in this chat — the next chat must create a new `phase-{N+1}/` with its own plan, tasks, and walkthrough.
+- **Next project step (new chat)**: If a parent project is attached, this step is `- [x]`, and `scope.md` has later `- [ ]` steps, also prompt a **new chat** with `/d-antigravity` and a relative link to the next step file. Do not start that step here.
 
 #### Walkthrough Template `.working_items/{task}/phase-{N}/walkthrough.md`
 ```markdown

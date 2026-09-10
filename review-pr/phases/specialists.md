@@ -4,7 +4,7 @@ Always write `SECURITY.md`, `TESTS.md`, and `QUALITY.md` with every required hea
 
 If `review_scope` is `incremental`, read `follow-up.md`. Limit inspection to the update diff plus unresolved/stale prior-comment locations. Open each artifact with `Update since <prior_review_head_sha>`. Do not re-derive findings on unchanged code already covered by this user’s last submitted review unless a prior comment is still open or the defect is reintroduced.
 
-Start the tracks that this risk class requires as soon as the 1–3 draft claims are printed in chat. They may work while the user confirms or edits those claims.
+Start the tracks that this risk class requires as soon as the draft claims are printed in chat. They may work while the user confirms or edits those claims.
 
 ## Risk dispatch
 

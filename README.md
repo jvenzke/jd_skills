@@ -41,6 +41,7 @@ fresh chat resumes by reading those files instead of re-deriving context.
 | Skill | Use when |
 | --- | --- |
 | [`/research-first`](research-first/SKILL.md) | Same-chat prefix: web landscape + alignment before other work |
+| [`/scope-project`](scope-project/SKILL.md) | Multi-week project roadmap: migrations, dependencies, cross-step refactoring (no code) |
 | [`/d-antigravity`](d-antigravity/SKILL.md) | Real development: architecture, maintainable diffs, vertical slices |
 | [`/r-antigravity`](r-antigravity/SKILL.md) | Research spikes, throwaway tooling, analysis-backed prototypes |
 | [`/review-pr`](review-pr/SKILL.md) | GitHub pull request quality review |
@@ -53,7 +54,7 @@ Unused skills live in [`old/`](old/). Do not invoke them; they are archive only.
 
 [`/meta-review`](meta-review/SKILL.md) is the quality bar. Run it after changing a skill. Log recurring misses in `meta-review/problems.md`.
 
-**One invokable skill per workflow.** Tightly coupled steps stay inside that skill. Do not split a pipeline across slash commands the user must chain in a later chat. [`/research-first`](research-first/SKILL.md) is an optional **same-chat prefix**: landscape + alignment, then continue the user's task (and any other skill attached in that message) from `.working_items/{task}/field_research.md`. Do not require a second invocation in a new chat. [`/review-pr`](review-pr/SKILL.md) and [`/d-antigravity`](d-antigravity/SKILL.md) are the models for full workflows: numbered tasks, durable artifacts, resume from disk.
+**One invokable skill per workflow.** Tightly coupled steps stay inside that skill. Do not split a pipeline across slash commands the user must chain in a later chat. [`/research-first`](research-first/SKILL.md) is an optional **same-chat prefix**: landscape + alignment, then continue the user's task (and any other skill attached in that message) from `.working_items/{task}/field_research.md`. Do not require a second invocation in a new chat. [`/scope-project`](scope-project/SKILL.md) is a complete planning skill; it only names `/d-antigravity` at handoff. [`/review-pr`](review-pr/SKILL.md) and [`/d-antigravity`](d-antigravity/SKILL.md) are the models for full workflows: numbered tasks, durable artifacts, resume from disk.
 
 **Progressive disclosure.** `SKILL.md` holds the contract: when to run, artifact layout, ordered rules, task list, gates, and resume. Load detail only for the active task (`review-pr/phases/…`, templates, scripts). Keep references one level deep. Prefer `SKILL.md` well under 500 lines.
 
@@ -66,6 +67,7 @@ Unused skills live in [`old/`](old/). Do not invoke them; they are archive only.
 - `agent_notes.md` — agent-only code map (paths, symbols, gotchas); not a second plan
 - `walkthrough.md` — what shipped and how it was verified
 - `field_research.md` — web landscape + alignment decisions (`/research-first`)
+- `scope.md` + `steps/` — project tracker and coarse slices (`/scope-project`)
 
 **Gates.** Ask only blocking questions. Implementation, GitHub writes, and similar irreversible work wait for an explicit **APPROVED** (or the skill's named equivalent — `/research-first` logs option-id replies in `field_research.md` and does not add a second approval). The main agent owns verification, artifacts, and presentation. Subagents are optional, read-constrained, and do not approve or post.
 
@@ -79,11 +81,21 @@ Optional same-chat prefix when field context matters. Thin local orientation →
 
 Artifact: `.working_items/{task}/field_research.md` (Orientation, Landscape, Questions, Decisions). Resume from disk; refresh only if asked.
 
-## `/d-antigravity` (Last updated: 2026-08-27)
+## `/scope-project` (Last updated: 2026-09-10)
 
-Phased development when architecture and long-lived quality matter. Prefer over `/r-antigravity` for product code.
+Standalone planning/tracking for large changes that span chats, PRs, or weeks. Use when you need a durable map of migrations, dependencies, known follow-ups, and refactoring/deepening that only works if steps are sequenced. Never implements.
+
+Cycle: codebase research + `agent_notes.md` → blocking clarify (follow-up passes allowed) → `scope.md` + `steps/{NN}-*.md` → **APPROVED** → handoff prompt for a **new chat** with `/d-antigravity` and the next step file.
+
+Artifacts: `.working_items/{project}/scope.md`, `agent_notes.md`, `steps/`.
+
+## `/d-antigravity` (Last updated: 2026-09-10)
+
+Phased development when architecture and long-lived quality matter. Prefer over `/r-antigravity` for product code. Works with no `/scope-project` output.
 
 Cycle: research and blocking clarify → optional phase plan → implementation plan + `tasks.md` → **APPROVED** → implement (delegation optional) → main-agent verification → walkthrough. One phase per chat when a phase plan exists; never overwrite a completed `phase-{N}/`.
+
+Optional project attach: only if the user links `scope.md` / a step file (or `tasks.md` already has `project:`). Treat the step as the request; still write phase and implementation plans. Report tradeoffs and pushed-out work back to `scope.md`; update the project tracker when the step finishes.
 
 Artifacts: `.working_items/{task}/phase_plan.md` (optional), `agent_notes.md`, and `.working_items/{task}/phase-{N}/{implementation_plan,tasks,walkthrough}.md`.
 
@@ -101,7 +113,7 @@ Optimize for a simple researcher entrypoint and hidden plumbing. Prefer `/d-anti
 
 Single-chat GitHub PR review. Resume from artifacts in the reviewed repo at `.working_items/pr-review/<owner>-<repo>-<number>/`.
 
-Tasks: intake (1–3 business claims + `low`/`medium`/`high` review risk) → risk-adaptive SECURITY, test-coverage, and LOGIC_QUALITY review → adversarial verification → claim-and-decision walkthrough → submit. Claims come from PR text or the user—not inferred from the diff, and not from Jira. Claims are printed in chat. Always write `SECURITY.md`, `TESTS.md`, and `QUALITY.md` (findings or a written skip) before the walk continues; low risk uses integrated logic/quality plus CI/tests unless a surface triggers a specialist. LOGIC_QUALITY checks claim-aligned correctness and deep-module maintainability (easier future change, not a small diff). Tests report new-code coverage and whether GitHub Actions runs this project’s tests.
+Tasks: intake (fewest business claims that cover the PR + `low`/`medium`/`high` review risk) → risk-adaptive SECURITY, test-coverage, and LOGIC_QUALITY review → adversarial verification → claim-and-decision walkthrough → submit. Claims come from PR text or the user—not inferred from the diff, and not from Jira. Claims are printed in chat. Always write `SECURITY.md`, `TESTS.md`, and `QUALITY.md` (findings or a written skip) before the walk continues; low risk uses integrated logic/quality plus CI/tests unless a surface triggers a specialist. LOGIC_QUALITY checks claim-aligned correctness and deep-module maintainability (easier future change, not a small diff). Tests report new-code coverage and whether GitHub Actions runs this project’s tests.
 
 Coverage is changed hunks (with added and deleted line counts), not additions-only. `human_presented` means exact product code was shown; it is not “human-reviewed.” Submit separates presentation metrics from human oversight (confirmed claims, boundary decisions when applicable, finding decisions, answered prompts). Walkthrough units are claims, material boundaries, ambiguities, and surviving findings; paste code when judgment needs it. High confidence requires cheap falsification when tools can do it. Gates stay claims, walkthrough, and submit **APPROVED**. A new `head_sha` is summarized then processed without a pause. Submit posts one GitHub review with event `APPROVE`, `REQUEST_CHANGES`, or `COMMENT`.
 

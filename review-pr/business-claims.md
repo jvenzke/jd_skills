@@ -1,6 +1,6 @@
 # Business claims
 
-Write `BUSINESS_CLAIMS.md` during intake. Draft 1–3 claims, print all of them in chat, and start phase-2 review (risk-adaptive specialists or integrated review) while the user confirms or edits them. The logic walkthrough remains blocked until confirmation.
+Write `BUSINESS_CLAIMS.md` during intake. Draft the fewest claims that cover the PR’s product work, print all of them in chat, and start phase-2 review (risk-adaptive specialists or integrated review) while the user confirms or edits them. The logic walkthrough remains blocked until confirmation.
 
 On an `incremental` follow-up, keep confirmed claims that still match product intent. Print a one-line reminder; do not re-open the claims gate unless the update adds, drops, or materially changes observable behavior (confirm only those deltas).
 
@@ -33,7 +33,7 @@ Quoted from the PR or user. Do not invent.
 
 Rules:
 
-- Use 1–3 claims for the PR. A claim is a product assertion you could be wrong about (who, when, what data, what must not happen). "Code compiles" is not a claim.
+- Use as few claims as possible to cover the PR’s product work. Prefer one claim. Add another only when it is an independently testable product assertion (different actor, trigger, result, or must-not) that would be judged separately if it failed. Do not split a single feature into several claims, pad toward a count, or invent claims to occupy leftover diff sections. A claim is a product assertion you could be wrong about (who, when, what data, what must not happen). "Code compiles" is not a claim.
 - Source every claim from the PR or user. Do not search Jira. If the PR body has no acceptance criteria, do not invent them from the diff. Ask.
 - Status `gap` means the change cannot be judged yet. Ask before walking that code.
 - Claims describe product intent; they are not an inventory of diff sections. Attach only the core implementing sections that can make each claim true or false.

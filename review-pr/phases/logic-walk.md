@@ -11,7 +11,7 @@ If `review_scope` is `incremental`, read `follow-up.md`. Walk only claims whose 
 5. UI/state flows
 6. tests proving the behavior (prose summary only; do not paste test source)
 
-Do not ask the user to select slices first. They may skip a claim. Never split merely because there are two or three claims.
+Do not ask the user to select slices first. They may skip a claim. Never split merely because there is more than one claim.
 
 Split into another turn only when the user asks or the claim paths plus commented ranges would be unreadable in one response (normally more than four core files or an unusually large paste). Explain the split before pausing.
 
