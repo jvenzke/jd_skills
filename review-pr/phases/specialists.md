@@ -154,4 +154,4 @@ The main agent writes `QUALITY.md` with every heading below, even when clean:
 
 ## Completion gate
 
-Do not begin adversarial verification until `SECURITY.md`, `TESTS.md`, and `QUALITY.md` exist with all required headings. Do not begin the logic walkthrough until the claims are also confirmed. If a claim edit materially changes specialist scope, rerun only the affected track; otherwise remap its evidence. Main agent verifies candidate evidence and updates coverage for inspected hunks; specialist output alone does not authorize a comment.
+Do not begin adversarial verification until `SECURITY.md`, `TESTS.md`, and `QUALITY.md` exist with all required headings. Do not begin the logic walkthrough until the claims are also confirmed. If a claim edit materially changes specialist scope, rerun only the affected track; otherwise remap its evidence. Main agent verifies candidate evidence and updates coverage for inspected sections; specialist output alone does not authorize a comment.

@@ -18,7 +18,7 @@ Intent (3 sentences, from PR or user, not inferred from the diff):
 2.
 3.
 
-| id | claim (testable) | source | implementing hunks | status |
+| id | claim (testable) | source | implementing sections | status |
 | --- | --- | --- | --- | --- |
 | C1 | | pr / user | | draft, confirmed, or gap |
 
@@ -36,5 +36,5 @@ Rules:
 - Use 1–3 claims for the PR. A claim is a product assertion you could be wrong about (who, when, what data, what must not happen). "Code compiles" is not a claim.
 - Source every claim from the PR or user. Do not search Jira. If the PR body has no acceptance criteria, do not invent them from the diff. Ask.
 - Status `gap` means the change cannot be judged yet. Ask before walking that code.
-- Claims describe product intent; they are not an inventory of diff hunks. Attach only the core implementing hunks that can make each claim true or false.
-- Classify remaining changes as supporting core code, incidental changes, or unexplained coverage. Do not create another claim merely to map a leftover hunk. Unclear behavior becomes a human prompt.
+- Claims describe product intent; they are not an inventory of diff sections. Attach only the core implementing sections that can make each claim true or false.
+- Classify remaining changes as supporting core code, incidental changes, or unexplained coverage. Do not create another claim merely to map a leftover section. Unclear behavior becomes a human prompt.

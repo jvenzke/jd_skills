@@ -7,7 +7,7 @@
 3. Deduplicate comments by fingerprint and defect, and skip fingerprints already submitted.
 4. Revalidate that each comment remains `high` confidence (trigger, traced path, consequence, attempted cheap falsification), has a concrete consequence (logic, behavior, security, test gap, or maintainability regression), is `blocker` or `recommended` unless broader feedback was requested, and still matches the current code.
 5. Mark stale anchors `stale_anchor`. Show nearby current diff and ask whether to re-anchor, convert to a top-level note, or drop.
-6. If any changed hunks remain `not_reviewed`, identify them and either review them or explicitly explain the residual gap before asking for the review type.
+6. If any changed sections remain `not_reviewed`, identify them and either review them or explicitly explain the residual gap before asking for the review type.
 7. Only actionable, code-anchored, user-approved comments may be submitted as inline comments. The review-body summary always posts.
 
 ## Review event
@@ -31,7 +31,7 @@ Always post a top-level review summary **in addition to** any user-approved inli
 **Review risk:** <low | medium | high> — <reasons>
 
 ### Presentation
-- Changed hunks: N (added lines: N, deleted lines: N)
+- Changed sections: N (added lines: N, deleted lines: N)
 - Shown in chat (`human_presented`): N (N%) — code exposure only
 - Agent-reviewed only: N (N%) — <brief reason mix, e.g. tests summarized, peripheral>
 - Not reviewed: N (N%) — <none, or why left uncovered>
@@ -65,7 +65,7 @@ Show:
 - the exact review body above
 - every inline comment as a numbered item with path/range, severity, confidence, and the exact body that will be posted (or “none”). Re-paste every inline GitHub body in this message. A pointer to an earlier turn does not count.
 - unresolved business prompts
-- hunk coverage (`changed_hunks`, `added_lines`, `deleted_lines`, `human_presented` %, agent-only % by reason, not-reviewed %, excluded count) and the human-oversight bullets
+- section coverage (`changed_sections`, `added_lines`, `deleted_lines`, `human_presented` %, agent-only % by reason, not-reviewed %, excluded count) and the human-oversight bullets
 - recommended type with the same rules as **Review event**, clearly labeled as a recommendation only
 
 Ask only:
@@ -98,7 +98,7 @@ Write `SUBMISSION.md`:
 - skipped duplicates and stale anchors
 - security, logic/quality, test-coverage of new code, and CI workflow scope summaries
 - business claims walked and unresolved prompts
-- presentation totals (hunks, added/deleted lines) and agent-only reason breakdown
+- presentation totals (sections, added/deleted lines) and agent-only reason breakdown
 - human-oversight summary (claims, boundary decisions, finding decisions, prompts)
 - on `incremental`: prior review id/event/SHA and prior-comment statuses
 
