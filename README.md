@@ -2,6 +2,24 @@
 
 Author: Joel DeVenzke
 
+## Install
+
+```bash
+git clone https://github.com/jvenzke/jd_skills.git
+cd jd_skills
+./install.sh
+```
+
+Copies active skills (everything except [`old/`](old/)) into `~/.cursor/skills/`. Re-run the same command after `git pull` to update.
+
+```bash
+./install.sh grill-me review-pr              # named skills only
+./install.sh --project                       # current directory
+./install.sh --project ~/code/my-app         # a project root
+```
+
+`--project` installs into `<dir>/.cursor/skills/` so only that repo sees them. Named skills can include folders under `old/`.
+
 ## Overview
 
 A collection of skills I use day to day as a data scientist, covering the work
