@@ -1,4 +1,4 @@
-# Skills for Cursor
+# Skills for Cursor and Claude Code
 
 Author: Joel DeVenzke
 
@@ -14,11 +14,13 @@ Copies active skills (everything except [`old/`](old/)) into `~/.cursor/skills/`
 
 ```bash
 ./install.sh grill-me review-pr              # named skills only
-./install.sh --project                       # current directory
-./install.sh --project ~/code/my-app         # a project root
+./install.sh --project                       # current directory (Cursor)
+./install.sh --project ~/code/my-app         # a project root (Cursor)
+./install.sh --claude                        # Claude Code: ~/.claude/skills/
+./install.sh --claude --project ~/code/my-app
 ```
 
-`--project` installs into `<dir>/.cursor/skills/` so only that repo sees them. Named skills can include folders under `old/`.
+`--project` installs into `<dir>/.cursor/skills/` (or `<dir>/.claude/skills/` with `--claude`) so only that repo sees them. Named skills can include folders under `old/`. `--claude` does not also write Cursor dests.
 
 ## Overview
 

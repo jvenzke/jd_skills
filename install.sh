@@ -5,14 +5,15 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 usage() {
   cat <<EOF
-Usage: ./install.sh [skill...] [--project [dir]]
+Usage: ./install.sh [skill...] [--project [dir]] [--claude]
 
-Copy skills from this repo into Cursor.
+Copy skills from this repo into Cursor (default) or Claude Code (--claude).
 
   (no args)              active skills (not old/) → ~/.cursor/skills/
   skill ...              those skills only (old/ allowed by name)
   --project              → \$PWD/.cursor/skills/
   --project DIR          → DIR/.cursor/skills/
+  --claude               use ~/.claude/skills/ (or .claude/skills/ with --project)
 
 Re-run after git pull to update. Does not remove other installed skills.
 EOF
@@ -28,6 +29,7 @@ is_project_dir_arg() {
 
 project_mode=0
 project_dir=""
+claude_mode=0
 skills=()
 
 while [[ $# -gt 0 ]]; do
@@ -50,6 +52,10 @@ while [[ $# -gt 0 ]]; do
         shift
       fi
       ;;
+    --claude)
+      claude_mode=1
+      shift
+      ;;
     -*)
       echo "Unknown option: $1" >&2
       usage >&2
@@ -69,9 +75,17 @@ if [[ "$project_mode" -eq 1 ]]; then
     exit 1
   fi
   project_dir="$(cd "$project_dir" && pwd)"
-  dest="$project_dir/.cursor/skills"
+  if [[ "$claude_mode" -eq 1 ]]; then
+    dest="$project_dir/.claude/skills"
+  else
+    dest="$project_dir/.cursor/skills"
+  fi
 else
-  dest="${HOME}/.cursor/skills"
+  if [[ "$claude_mode" -eq 1 ]]; then
+    dest="${HOME}/.claude/skills"
+  else
+    dest="${HOME}/.cursor/skills"
+  fi
 fi
 
 default_skills() {
