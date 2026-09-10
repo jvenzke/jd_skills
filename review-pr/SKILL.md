@@ -110,7 +110,7 @@ Use the TODO tool to track these five tasks in chat. Read the named phase file o
 
 ### 1. Intake and business claims
 
-Read [phases/intake.md](phases/intake.md). Create runtime state, collect GitHub context (including this user’s submitted reviews), initialize coverage, classify core vs incidental changes, classify `review_risk` (`low` / `medium` / `high`) with reasons, and draft 1–3 testable business claims. Persist risk on `tasks.md` and in `PR_BRIEF.md`. Print the complete claims in chat and wait for a short confirmation or edits. Ask additional questions only when the PR and user do not provide enough intent to form the claims. If this user already submitted a review, read [phases/follow-up.md](phases/follow-up.md) and run intake as an update review.
+Read [phases/intake.md](phases/intake.md). Create runtime state, collect GitHub context (including this user’s submitted reviews), initialize coverage, classify core vs incidental changes, classify `review_risk` (`low` / `medium` / `high`) with reasons, and draft the fewest testable business claims that cover the PR’s product work (often one; more only when behaviors must be judged independently). Persist risk on `tasks.md` and in `PR_BRIEF.md`. Print the complete claims in chat and wait for a short confirmation or edits. Ask additional questions only when the PR and user do not provide enough intent to form the claims. If this user already submitted a review, read [phases/follow-up.md](phases/follow-up.md) and run intake as an update review.
 
 ### 2. Required specialists
 
@@ -173,7 +173,7 @@ Read [coverage-protocol.md](coverage-protocol.md). Initialize with `scripts/init
 
 ## Approval gates
 
-1. **Claims**: user confirms the 1–3 claims printed in chat or answers the questions needed to form them. Specialists may run against draft claims during this wait, but the walkthrough remains blocked. On a follow-up (`incremental`), skip this gate for unchanged confirmed claims; confirm only added or materially edited claims.
+1. **Claims**: user confirms the drafted claims printed in chat or answers the questions needed to form them. Specialists may run against draft claims during this wait, but the walkthrough remains blocked. On a follow-up (`incremental`), skip this gate for unchanged confirmed claims; confirm only added or materially edited claims.
 2. **Walkthrough**: user replies to **Next actions** (see `phases/logic-walk.md`): confirms the shown implementation matches intent (or edits claims), approves, rejects, or edits comments, answers or leaves prompts unresolved, and may add comments or questions. Not the submission gate.
 3. **Submission**: after seeing the exact review body, exact inline comments, unresolved prompts, coverage, and human-oversight summary, the user picks one review type: **Approve PR** (`APPROVE`), **Request changes** (`REQUEST_CHANGES`), or **Comment** (`COMMENT`). Naming the type is the GitHub write. The user may edit comments first; then re-show the payload and ask for the type again. Earlier walkthrough approval never authorizes GitHub writes.
 
