@@ -68,7 +68,8 @@ Treat a module as any script, notebook helper, class, object, package, or CLI en
 - **Resume**: If `tasks.md` exists with `approved: true` and unchecked items, read plan + tasks, skip clarify/planning, resume at the first unchecked item, and post a short “where we left off” summary. If a plan exists but is not approved, resume at clarify or user review as appropriate.
 - **Research**: Find relevant files, flows, risks, and the intended researcher entrypoint. Identify ceremony forced on the researcher and plumbing that should move behind a simple interface.
 - **Clarify blocking decisions only**: Resolve uncertainty that materially affects success criteria, inputs/outputs, irreversible side effects (writes, external calls), or substantial scope. If a question can be answered by exploring the codebase, explore instead.
-  - Ask all **independent** questions in a **single pass**. Number each (`1.`, `2.`, …). For each, list options alphabetically (`a)`, `b)`, …) and mark the recommended one. Users reply with ids (e.g. `1b 2a`).
+  - Ask questions directly in chat. **Do not use the Q&A/AskQuestion tool.**
+  - Ask all **independent** questions in a **single chat message**. Number each (`1.`, `2.`, …). For each, list options alphabetically (`a)`, `b)`, …) and mark the recommended one. Users reply with ids (e.g. `1b 2a`).
   - After answers, ask only follow-ups unlocked by those decisions. Pause for the response before the next pass or before planning.
 - **DO NOT** write the implementation plan while a blocking user decision remains unresolved.
 

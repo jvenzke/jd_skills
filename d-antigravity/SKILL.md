@@ -111,7 +111,8 @@ Treat a module as any file, class, object, package, service, or subsystem with a
 - **Establish baseline**: Record the current branch/base commit and any pre-existing dirty files before implementation. Preserve unrelated user changes.
 - **Evaluate boundaries**: Identify the current public interface, complexity leaked to callers, duplicated orchestration, shallow wrappers, and invariants spread across modules. Determine which boundary should own that complexity.
 - **Clarify blocking user decisions only**: Resolve uncertainty that materially affects externally observable behavior, architecture/module boundaries, irreversible decisions, significant dependencies, or substantial scope. If a question can be answered by exploring the codebase, explore instead; do not ask it. For reversible implementation choices, choose the locally consistent option and document any material assumption in the plan.
-  - Ask all **independent** questions in a **single pass**. Number each with a stable id (`1.`, `2.`, …).
+  - Ask questions directly in chat. **Do not use the Q&A/AskQuestion tool.**
+  - Ask all **independent** questions in a **single chat message**. Number each with a stable id (`1.`, `2.`, …).
   - For each question, list options alphabetically (`a)`, `b)`, `c)`, …) and mark the recommended one. Users reply with ids (e.g. `1b 2a`).
 
     ```
