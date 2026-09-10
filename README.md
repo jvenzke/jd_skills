@@ -85,7 +85,7 @@ Artifact: `.working_items/{task}/field_research.md` (Orientation, Landscape, Que
 
 ## `/scope-project` (Last updated: 2026-09-10)
 
-Standalone planning/tracking for large changes that span chats, PRs, or weeks. Use when you need a durable map of migrations, dependencies, known follow-ups, and refactoring/deepening that only works if steps are sequenced. Never implements.
+Standalone planning/tracking for large changes that span chats, PRs, or weeks. Use when you need a durable map of migrations, dependencies, known follow-ups, and refactoring/deepening that only works if steps are sequenced. `scope.md` includes **Deep modules** (in-work boundary deepening vs later/out in Quality backlog). Never implements. Legacy scope files missing that heading get it inserted in place, not rewritten.
 
 Cycle: codebase research + `agent_notes.md` → blocking clarify (follow-up passes allowed) → `scope.md` + `steps/{NN}-*.md` → **APPROVED** → handoff prompt for a **new chat** with `/d-antigravity` and the next step file.
 

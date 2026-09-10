@@ -28,7 +28,7 @@ In the **target repo** (not this skills repo unless that is the target):
 
 ```
 .working_items/{project}/
-  scope.md                 # summary, scope, quality backlog, tracker
+  scope.md                 # summary, scope, deep modules, quality backlog, tracker
   agent_notes.md           # project-level code map
   steps/
     {NN}-{slug}.md         # one coarse vertical slice per file
@@ -122,16 +122,16 @@ Agent-facing code map. Paths/symbols/commands/one-line facts only. No plan dupli
 - Standardize `{project}` (kebab-case). Create `.working_items/{project}/` and `steps/` if missing.
 - Create `agent_notes.md` from the template if missing.
 - **Resume**
-  - `scope.md` exists, `approved: false` → remaining clarify or **4. User review**. Do not rewrite from scratch.
-  - `approved: true` and user did **not** ask to re-scope → chat: tracker status + next incomplete step link, then **5. Handoff**. Stop.
-  - User asked to **re-scope** → read `scope.md`, steps, and `agent_notes.md`. Propose a roadmap diff. Do not overwrite completed step files (`status: done` or tracker `- [x]`). Adjust later steps only. Then clarify / rewrite unapproved later steps / **4**.
-  - User said `refresh` on research only → keep decisions; re-research; then review if artifacts change.
+  - `scope.md` exists, `approved: false` → remaining clarify or **4. User review**. Do not rewrite from scratch. If `## Deep modules` is missing, **insert it** (see **Missing Deep modules** below).
+  - `approved: true` and user did **not** ask to re-scope → chat: tracker status + next incomplete step link, then **5. Handoff**. Stop. If `## Deep modules` is missing, insert it from existing artifacts (or `- none`) without reopening approval unless the new text changes in-scope refactoring vs the approved outcomes.
+  - User asked to **re-scope** → read `scope.md`, steps, and `agent_notes.md`. Propose a roadmap diff. Do not overwrite completed step files (`status: done` or tracker `- [x]`). Adjust later steps only. Then clarify / rewrite unapproved later steps / **4**. Insert `## Deep modules` if missing.
+  - User said `refresh` on research only → keep decisions; re-research; then review if artifacts change. Insert `## Deep modules` if missing.
 
 
 
 ### 2. Research & clarify
 
-- **Research (codebase only)**. Map owning boundaries, call direction, leaked complexity, blast radius, migrations, dependencies, and quality opportunities. High level (systems/modules), not file-level diffs. Update `agent_notes.md`.
+- **Research (codebase only)**. Map owning boundaries, call direction, leaked complexity, blast radius, migrations, dependencies, quality opportunities, and which modules this work should deepen. High level (systems/modules), not file-level diffs. Update `agent_notes.md`.
 - **Clarify blocking user decisions only** (in/out of scope, which quality items to take now vs later, step order, compatibility/migration). If the codebase can answer, explore instead.
   - Ask in chat. **Do not use the Q&A/AskQuestion tool.**
   - All **independent** questions in **one** message. Number (`1.`, `2.`, …). Options `a)`, `b)`, … alphabetically; mark **(recommended)**. Users reply with ids (e.g. `1b 2a`). Custom replies allowed.
@@ -165,6 +165,12 @@ approved: false
 - **In**:
 - **Out**:
 - **Later**: {migrations / dependencies / known follow-ups}
+
+## Deep modules
+
+Key refactoring and module-deepening **in this work**. Not a general cleanup dump. `- none` if this project does not reshape boundaries.
+
+- **{module / boundary}**: {what's shallow or leaked today} → {target: smaller interface; complexity owned here}. Steps: {NN, …}. Do not {corner an earlier step must not paint}.
 
 ## Quality backlog
 
@@ -221,14 +227,29 @@ status: pending
 Keep step files **coarse**: intent, in/out, likely boundary, deps, risks,
 deepening. Not an implementation plan.
 
+**Deep modules** (required heading): discuss the refactoring this project
+should undertake — which boundaries to deepen, what complexity to hide,
+and how steps sequence that work. One bullet per owning boundary. Judge
+by complexity removed from callers, not by diff size. Leave **later/out**
+cleanups in Quality backlog; do not promote them into Deep modules unless
+they are tracker steps.
+
 Quality items: persist the full backlog on `scope.md`. Only **now** items
 become steps (or bullets on a step). Do not grow the project by default.
+
+**Missing Deep modules** (legacy `scope.md` without the heading): insert
+`## Deep modules` after `## Scope` (before `## Quality backlog` if
+present). Do **not** rewrite the rest of the file. Fill from Quality
+backlog `now` items, each step’s `## Quality / deepening`, and research.
+If those sources are empty, write `- none`. Adding the heading is not a
+re-scope. Changing in-scope refactoring versus already-approved outcomes
+**is** a re-scope — clarify if needed, then **4**.
 
 Optional ticket/PR links if the user provided them; do not create tickets.
 
 ### 4. User review
 
-- Chat: **maximum 3–4 bullets** (outcomes, step sequence, quality-now vs later) + relative link to `scope.md`.
+- Chat: **maximum 3–4 bullets** (outcomes, step sequence, in-work deepening vs later) + relative link to `scope.md`.
 - Ask for **APPROVED**. Revisions → update artifacts → review again.
 - **DO NOT** implement or hand off until **APPROVED**. Then set `approved: true` in `scope.md`.
 
