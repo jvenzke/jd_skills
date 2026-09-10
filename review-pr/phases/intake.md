@@ -14,13 +14,13 @@
    `git diff <prior_review_head_sha>...<head_sha> | python3 <skill-dir>/scripts/init_coverage.py --head-sha <head_sha> > <workspace>/COVERAGE.md`
 
 5. Identify:
-   - core change: the few files/hunks that can make the stated product intent true or false
+   - core change: the few files/sections that can make the stated product intent true or false
    - incidental changes: generated files, lockfiles, formatting, styling, boilerplate, and unrelated mechanical edits
-   - supporting core hunks that matter to the implementation but need not become separate claims
+   - supporting core sections that matter to the implementation but need not become separate claims
    - change intent in three sourced sentences
    - `review_risk`: `low`, `medium`, or `high`, with concrete reasons from changed surfaces and affected boundaries
 6. Persist `review_risk` and `review_risk_reasons` on `tasks.md`. Repeat the classification and reasons in `PR_BRIEF.md` so a cold resume does not re-derive them.
-7. Write `PR_CONTEXT.md` and `PR_BRIEF.md`. Mark an incidental hunk `agent_reviewed_not_shown / peripheral_change` only after enough inspection to justify it.
+7. Write `PR_CONTEXT.md` and `PR_BRIEF.md`. Mark an incidental section `agent_reviewed_not_shown / peripheral_change` only after enough inspection to justify it.
 
 ## Review risk
 
@@ -50,7 +50,7 @@ Read `../business-claims.md`, then write `BUSINESS_CLAIMS.md`.
 
 - Draft 1–3 claims for the entire PR. Claims must state observable product behavior: actor, trigger/state, result, and important invariant.
 - Source each claim from the PR or user. Never infer product intent from implementation. Never fetch Jira.
-- Attach the implementing hunks that can make each claim true or false. Do not create claims to account for every diff region; classify other hunks as supporting core code, incidental, or unexplained coverage.
+- Attach the implementing sections that can make each claim true or false. Do not create claims to account for every diff region; classify other sections as supporting core code, incidental, or unexplained coverage.
 - Print every drafted claim in chat. Never require the user to open `BUSINESS_CLAIMS.md` to review them.
 - Ask extra questions only when the PR and user do not provide enough intent to form the claims, and only when the answers materially change the verdict.
 - Start phase 2 against the draft claims while waiting for confirmation (depth follows `review_risk`). If the user edits a claim, remap findings and rerun a specialist only when the edit materially changes its scope.
@@ -59,6 +59,6 @@ Read `../business-claims.md`, then write `BUSINESS_CLAIMS.md`.
 
 ## Output
 
-In at most four bullets, show the core change, PR intent, `review_risk` plus reasons, all 1–3 claims verbatim, CI status, and initial hunk coverage (`changed_hunks`, `added_lines`, `deleted_lines`). Ask for a short confirmation or edits.
+In at most four bullets, show the core change, PR intent, `review_risk` plus reasons, all 1–3 claims verbatim, CI status, and initial section coverage (`changed_sections`, `added_lines`, `deleted_lines`). Ask for a short confirmation or edits.
 
 On `incremental`, those bullets are the **update since last review** (commits/files/risk delta/claim delta), plus prior-comment addressed vs still-open counts. Do not recap the already-reviewed base.

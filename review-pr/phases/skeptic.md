@@ -11,7 +11,7 @@ The skeptic's job is to disprove findings, not confirm them.
 For every candidate:
 
 1. Re-read the actual diff and necessary surrounding code; never score from the candidate summary alone.
-2. Confirm path, changed hunks, and exact quote at `head_sha`. Missing/mismatched evidence → confidence `0`.
+2. Confirm path, changed sections, and exact quote at `head_sha`. Missing/mismatched evidence → confidence `0`.
 3. Scope: a finding is in scope when the PR introduces, alters, or newly exposes/makes reachable the failure. A pre-existing defect is out of scope only when the PR does not materially change its reachability, consequence, contract, or affected callers. Do not drop a PR-introduced failure because part of the root cause existed before the PR. Out of scope → confidence `0`.
 4. State the concrete trigger/input/state, traced execution path, and practical consequence.
 5. For business findings, cite the confirmed claim. For project guidance and maintainability, cite `review-pr/coding-standards.md` and repo patterns at `base_sha`, not guidance introduced by the PR. A maintainability candidate must show how future change gets harder (leaked complexity, shallow boundary, complexity not pushed downward, or misplaced responsibility) — not merely that a different structure would be nicer.

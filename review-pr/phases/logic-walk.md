@@ -2,7 +2,7 @@
 
 Walk all confirmed claims in one turn by default, ordered by risk/dependency.
 
-If `review_scope` is `incremental`, read `follow-up.md`. Walk only claims whose implementing hunks are in the update diff (plus claims tied to `still_open` / `reintroduced` comments). Note unchanged claims as already reviewed at `prior_review_head_sha`. Show update product code only. Include a **Prior comments** table (addressed / still open / stale / reintroduced) before the new comment list.
+If `review_scope` is `incremental`, read `follow-up.md`. Walk only claims whose implementing sections are in the update diff (plus claims tied to `still_open` / `reintroduced` comments). Note unchanged claims as already reviewed at `prior_review_head_sha`. Show update product code only. Include a **Prior comments** table (addressed / still open / stale / reintroduced) before the new comment list.
 
 1. contracts, schemas, migrations, interfaces
 2. domain/service logic
@@ -15,7 +15,7 @@ Do not ask the user to select slices first. They may skip a claim. Never split m
 
 Split into another turn only when the user asks or the claim paths plus commented ranges would be unreadable in one response (normally more than four core files or an unusually large paste). Explain the split before pausing.
 
-Primary human-review units are the **claim**, important design/boundary decision, unresolved ambiguity, and surviving finding—not the raw hunk. Do not paste large implementation spans merely to raise `human_presented`.
+Primary human-review units are the **claim**, important design/boundary decision, unresolved ambiguity, and surviving finding—not the raw section. Do not paste large implementation spans merely to raise `human_presented`.
 
 ## Walkthrough
 
@@ -39,7 +39,7 @@ Primary human-review units are the **claim**, important design/boundary decision
 6. Print a **Test coverage of new code** block: which new/changed product behaviors are covered by which tests (prose), and which new ranges, branches, or claims are uncovered. Print a **CI workflow scope** block: which GitHub workflows/jobs run on this PR and whether they execute the tests that impact this project (path filters, package selectors, skipped jobs).
 7. Compare the traced path, callers, summarized tests, specialist evidence (including QUALITY.md correctness and maintainability), and local patterns against the claim.
 8. If `review_risk` is `high` (or a medium PR still reshaped a public/module boundary), include a **Boundary decisions** block: what changed at the boundary, why it matters, residual risk. The user confirms this in the same walkthrough turn—no extra gate.
-9. Inspect remaining core hunks and summarize role and disposition. Do not paste every changed hunk to make coverage hunk-complete.
+9. Inspect remaining core sections and summarize role and disposition. Do not paste every changed section to make coverage section-complete.
 10. Present surviving findings as a single numbered comment list. For each, include file/range, severity, confidence, concise rationale, and the exact proposed GitHub body.
 11. By default, include only `high` confidence `blocker` or `recommended` findings with a concrete consequence: broken logic, unintended behavior, security risk, a material test gap (including CI that never runs this project's tests), or a maintainability regression with a concrete fix direction. Exclude nits unless the user requested them.
 12. Present unresolved product intent as chat questions and record them in `HUMAN_REVIEW_PROMPTS.md`; do not turn ambiguity into an inline comment.
@@ -48,12 +48,12 @@ Primary human-review units are the **claim**, important design/boundary decision
 
 ## Coverage presentation
 
-Read `../coverage-protocol.md`. A **product** hunk becomes `human_presented` only when its exact changed lines were printed in the current turn. That is exposure, not proof of review. Test hunks are summarized in this turn and marked `agent_reviewed_not_shown` / `test_summarized_in_chat`. Other inspected core hunks may be summarized and marked `agent_reviewed_not_shown` / `covered_by_static_review`. Incidental changes use the most specific agent-only reason.
+Read `../coverage-protocol.md`. A **product** section becomes `human_presented` only when its exact changed lines were printed in the current turn. That is exposure, not proof of review. Test sections are summarized in this turn and marked `agent_reviewed_not_shown` / `test_summarized_in_chat`. Other inspected core sections may be summarized and marked `agent_reviewed_not_shown` / `covered_by_static_review`. Incidental changes use the most specific agent-only reason.
 
-Print presentation totals **and** oversight (do not treat shown hunks as the human-review score), then **Next actions**:
+Print presentation totals **and** oversight (do not treat shown sections as the human-review score), then **Next actions**:
 
 ```markdown
-| this turn | hunks | % of PR |
+| this turn | sections | % of PR |
 | --- | ---: | ---: |
 | shown in chat (`human_presented`) | N | N% |
 | agent-only — <reason> | N | N% |
@@ -66,7 +66,7 @@ Print presentation totals **and** oversight (do not treat shown hunks as the hum
 - unresolved business questions answered:
 ```
 
-Recompute cumulative totals in `COVERAGE.md`; do not estimate. Displayed hunks are not the primary measure of meaningful human review.
+Recompute cumulative totals in `COVERAGE.md`; do not estimate. Displayed sections are not the primary measure of meaningful human review.
 
 ## Next actions
 

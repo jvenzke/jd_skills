@@ -30,7 +30,7 @@ Use the latest submitted review by this user. Also persist `PRIOR_REVIEW.md` (be
 The review surface is `prior_review_head_sha...head_sha` (GitHub three-dot compare / `git diff A...B` after fetch).
 
 - Initialize `COVERAGE.md` from that update diff, not the full PR diff.
-- Core vs incidental, specialists, skeptic, walkthrough, and proposed **new** comments are limited to update hunks, plus any file still carrying an unresolved or stale prior comment.
+- Core vs incidental, specialists, skeptic, walkthrough, and proposed **new** comments are limited to update sections, plus any file still carrying an unresolved or stale prior comment.
 - Fetch full PR metadata as usual so claims and prior-comment context stay accurate; do not re-present the already-reviewed base in chat.
 
 If the update diff is empty (no new commits), do not re-walk the old implementation. Report “no new changes,” re-check prior comments against current code, and continue to submit only if the user still wants a new review event (common after fixes that GitHub already included in the last `commit_id`).
@@ -42,7 +42,7 @@ For each inline or review-body issue this user already submitted, classify:
 | status | meaning |
 | --- | --- |
 | `addressed` | thread resolved **or** current code no longer has the defect (quote/anchor stale and the failure path is gone) |
-| `still_open` | unresolved and the defect still applies; re-anchor if the hunk moved |
+| `still_open` | unresolved and the defect still applies; re-anchor if the section moved |
 | `stale` | outdated/unanchorable and not yet verified fixed — inspect current code this pass and upgrade to `addressed` or `still_open` |
 | `reintroduced` | previously addressed (or not present at last review) and the update brings the defect back |
 
@@ -56,12 +56,12 @@ Reuse confirmed claims when product intent is unchanged. Print them only as a on
 
 Ask for confirmation only when the update adds, drops, or materially changes observable behavior — and only for those added/edited claims. Unchanged confirmed claims stay confirmed.
 
-Walk only claims whose implementing hunks appear in the update diff, plus any claim tied to a `still_open` / `reintroduced` comment. Note skipped unchanged claims as already reviewed at `prior_review_head_sha`.
+Walk only claims whose implementing sections appear in the update diff, plus any claim tied to a `still_open` / `reintroduced` comment. Note skipped unchanged claims as already reviewed at `prior_review_head_sha`.
 
 ## Phase constraints
 
 - **Intake:** chat output is the update (commits, files, risk delta, claim delta, prior-comment counts), not a full-PR recap. Recompute `review_risk` from the **update** (raise if new higher-risk surfaces appear; do not lower a stored high rating just because this push is small).
-- **Specialists:** inspect update hunks and lingering prior-comment locations only. Write the usual artifacts; open with an `Update since <sha>` section. Do not re-derive findings on unchanged, already-reviewed code.
+- **Specialists:** inspect update sections and lingering prior-comment locations only. Write the usual artifacts; open with an `Update since <sha>` section. Do not re-derive findings on unchanged, already-reviewed code.
 - **Skeptic:** run on new candidates and on `still_open` / `stale` / `reintroduced` prior items. Addressed items are out of scope unless the update reintroduces them.
 - **Walkthrough:** show new/changed product code needed for judgment on the update; summarize tests added/changed in the update; include **Prior comments** with addressed vs still open. Next actions cover intent only for changed claims, plus new/still-open comments.
 - **Submit:** review body must state this is a follow-up, the prior event/SHA, and prior-comment outcomes. New inline comments are only the newly approved ones.

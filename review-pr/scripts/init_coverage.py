@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Build a COVERAGE.md inventory from a unified diff on stdin.
 
-Each inventory row is one changed diff hunk (or a rename-only / binary file).
+Each inventory row is one changed diff section (or a rename-only / binary file).
 Usage:
   gh pr diff <n> | python3 scripts/init_coverage.py --head-sha SHA > COVERAGE.md
 """
@@ -20,12 +20,12 @@ _DIFF_GIT_RE = re.compile(r"^diff --git (?:a/)?(\S+) (?:b/)?(\S+)\s*$")
 
 
 @dataclass
-class Hunk:
+class Section:
     path: str
     spec: str
     added: int
     deleted: int
-    kind: str = "hunk"  # hunk | rename | binary
+    kind: str = "section"  # section | rename | binary
 
 
 @dataclass
@@ -34,7 +34,7 @@ class FileDiff:
     old_path: str
     rename: bool = False
     binary: bool = False
-    hunks: list[Hunk] = field(default_factory=list)
+    sections: list[Section] = field(default_factory=list)
 
 
 def _unprefix(path: str) -> str:
@@ -46,19 +46,19 @@ def _unprefix(path: str) -> str:
 def parse_diff(text: str) -> list[FileDiff]:
     files: list[FileDiff] = []
     current: FileDiff | None = None
-    hunk: Hunk | None = None
+    section: Section | None = None
 
     def finish_file() -> None:
         nonlocal current
         if current is None:
             return
         if current.binary:
-            current.hunks = [
-                Hunk(path=current.path, spec="binary", added=0, deleted=0, kind="binary")
+            current.sections = [
+                Section(path=current.path, spec="binary", added=0, deleted=0, kind="binary")
             ]
-        elif current.rename and not current.hunks:
-            current.hunks = [
-                Hunk(path=current.path, spec="rename", added=0, deleted=0, kind="rename")
+        elif current.rename and not current.sections:
+            current.sections = [
+                Section(path=current.path, spec="rename", added=0, deleted=0, kind="rename")
             ]
         files.append(current)
         current = None
@@ -75,7 +75,7 @@ def parse_diff(text: str) -> list[FileDiff]:
                 new_p = _unprefix(parts[3]) if len(parts) > 3 else old_p
             path = new_p if new_p != "/dev/null" else old_p
             current = FileDiff(path=path, old_path=old_p)
-            hunk = None
+            section = None
             continue
         if current is None:
             continue
@@ -89,7 +89,7 @@ def parse_diff(text: str) -> list[FileDiff]:
             continue
         if raw.startswith("GIT binary patch") or raw.startswith("Binary files "):
             current.binary = True
-            hunk = None
+            section = None
             continue
         if raw.startswith("--- "):
             p = raw[4:].strip()
@@ -113,15 +113,15 @@ def parse_diff(text: str) -> list[FileDiff]:
             old_c = 1 if old_count is None else int(old_count)
             new_c = 1 if new_count is None else int(new_count)
             spec = f"-{old_start},{old_c} +{new_start},{new_c}"
-            hunk = Hunk(path=current.path, spec=spec, added=0, deleted=0)
-            current.hunks.append(hunk)
+            section = Section(path=current.path, spec=spec, added=0, deleted=0)
+            current.sections.append(section)
             continue
-        if hunk is None:
+        if section is None:
             continue
         if raw.startswith("+") and not raw.startswith("+++"):
-            hunk.added += 1
+            section.added += 1
         elif raw.startswith("-") and not raw.startswith("---"):
-            hunk.deleted += 1
+            section.deleted += 1
         elif raw.startswith("\\"):
             continue
     finish_file()
@@ -129,27 +129,27 @@ def parse_diff(text: str) -> list[FileDiff]:
 
 
 def render(files: list[FileDiff], head_sha: str) -> str:
-    rows: list[Hunk] = []
+    rows: list[Section] = []
     na = 0
     added_lines = 0
     deleted_lines = 0
     for f in files:
-        for h in f.hunks:
-            if h.kind == "binary":
+        for s in f.sections:
+            if s.kind == "binary":
                 na += 1
-                rows.append(h)
+                rows.append(s)
                 continue
-            h.path = f.path
-            added_lines += h.added
-            deleted_lines += h.deleted
-            rows.append(h)
+            s.path = f.path
+            added_lines += s.added
+            deleted_lines += s.deleted
+            rows.append(s)
 
-    changed = sum(1 for h in rows if h.kind != "binary")
+    changed = sum(1 for s in rows if s.kind != "binary")
 
     lines = [
         "---",
         f"head_sha: {head_sha}",
-        f"changed_hunks: {changed}",
+        f"changed_sections: {changed}",
         f"added_lines: {added_lines}",
         f"deleted_lines: {deleted_lines}",
         "human_presented: 0",
@@ -160,30 +160,30 @@ def render(files: list[FileDiff], head_sha: str) -> str:
         "",
         "# Coverage",
         "",
-        "Unit: one row per changed hunk (rename-only files are one row). "
+        "Unit: one row per changed section (rename-only files are one row). "
         "`human_presented` means the exact changed product code was shown in chat; "
         "it does not mean a human reviewed or understood those lines.",
         "",
         "Status: `not_reviewed` | `human_presented` | `agent_reviewed_not_shown` | `not_applicable`",
         "",
-        "| path | hunk | + | - | count | status | reason | shown_in |",
+        "| path | section | + | - | count | status | reason | shown_in |",
         "| --- | --- | ---: | ---: | ---: | --- | --- | --- |",
     ]
-    for h in rows:
-        if h.kind == "binary":
+    for s in rows:
+        if s.kind == "binary":
             lines.append(
-                f"| {h.path} | binary | 0 | 0 | 0 | not_applicable | binary | |"
+                f"| {s.path} | binary | 0 | 0 | 0 | not_applicable | binary | |"
             )
         else:
             lines.append(
-                f"| {h.path} | `{h.spec}` | {h.added} | {h.deleted} | 1 | not_reviewed | | |"
+                f"| {s.path} | `{s.spec}` | {s.added} | {s.deleted} | 1 | not_reviewed | | |"
             )
     lines.append("")
     lines.append("## Totals")
     lines.append("")
-    lines.append("Percents use `changed_hunks` as the denominator (exclude `not_applicable`).")
+    lines.append("Percents use `changed_sections` as the denominator (exclude `not_applicable`).")
     lines.append("")
-    lines.append("| status | hunks | pct |")
+    lines.append("| status | sections | pct |")
     lines.append("| --- | ---: | ---: |")
     lines.append("| human_presented | 0 | 0% |")
     lines.append("| agent_reviewed_not_shown | 0 | 0% |")
