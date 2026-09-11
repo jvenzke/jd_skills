@@ -85,7 +85,7 @@ Artifact: `.working_items/{task}/field_research.md` (Orientation, Landscape, Que
 
 ## `/scope-project` (Last updated: 2026-09-11)
 
-Standalone planning/tracking for large changes that span chats, PRs, or weeks. Use when you need a durable map of migrations, dependencies, known follow-ups, and refactoring/deepening that only works if steps are sequenced. Never implements. `scope.md` owns in/out/later, deps, and the tracker. `architecture.md` owns the short human map, quality notes, non-obvious edge cases, recommended architecture, and in-work deepening vs later/out backlog. Legacy projects missing `architecture.md` get it created from leftover scope headings, not a full rewrite.
+Standalone planning/tracking for large changes that span chats, PRs, or weeks. Use when you need a durable map of migrations, dependencies, known follow-ups, and refactoring/deepening that only works if steps are sequenced. KPI is easier future change, not spec-kit-style isolated tickets. Never implements. Artifacts stay under `.working_items/{project}/` (not Spec Kit / Kiro / MCP boards). `scope.md` owns in/out/later, deps, and the living tracker. `architecture.md` owns the short human map, quality notes (finding bar), non-obvious edge cases, recommended architecture, and in-work deepening vs later/out backlog. Legacy projects missing `architecture.md` get it created from leftover scope headings, not a full rewrite. Implement chats patch the tracker when they defer work.
 
 Cycle: resume notes → codebase research (web allowed) + `agent_notes.md` → alignment for a shared understanding → `scope.md` + `architecture.md` + `steps/{NN}-*.md` → **APPROVED** → handoff prompt for a **new chat** with `/d-antigravity` and the next step file only (that file links the rest).
 

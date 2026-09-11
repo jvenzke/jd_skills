@@ -16,9 +16,13 @@ Research a large change, reach a **shared understanding** with the user, and
 write a **project** tracker, **architecture** notes, and coarse **step** files
 under `.working_items/{project}/`. Human-review the roadmap, then stop.
 
-This skill tracks the project: migrations, dependencies, edge case, future issues, and refactoring/deepening that is only coherent across
-steps. Prefer **few** steps. Split on migrations, dependencies, rollback
-units, and module-deepening sequence — not on file count or tickets.
+This skill tracks the project: migrations, dependencies, edge cases, future
+issues, and refactoring/deepening that is only coherent across steps. Prefer
+**few** steps. Split on migrations, dependencies, rollback units, and
+module-deepening sequence — not on file count or tickets.
+
+On resume, trust on-disk `scope.md` / `architecture.md` over chat memory. Do
+not restore an older plan from this conversation.
 
 **Never** change product code, add tests, commit, or open tickets.
 
@@ -38,50 +42,42 @@ In the **target repo** (not this skills repo unless that is the target):
 `{project}` is a lowercase kebab-case slug. `{NN}` is zero-padded order
 (`01`, `02`, …). No required step count.
 
-**Who reads what**
+**Write these files as**
 
-- `scope.md` — scope and tracker. Single `approved:` flag.
-- `architecture.md` — short human-readable design: where the change lives,
-  quality notes, non-obvious edge cases, recommended architecture, how steps
-  sequence deepen code. Keep it short; put paths/symbols/commands in
-  `agent_notes.md`.
-- `agent_notes.md` — agent-only deeper context. Not a second plan.
-- `steps/` — enough for a coding agent to begin that slice. Each step links
-  `scope.md`, `architecture.md`, and **every** sibling step file so a handoff
-  that names only the step can reach the rest.
+- `scope.md` — scope and tracker. Single `approved:` flag. No deep modules,
+  quality backlog, or edge cases here.
+- `architecture.md` — short design: where the change lives, quality notes,
+  non-obvious edge cases, recommended architecture, how steps sequence
+  deepening. Keep it short; put paths/symbols/commands in `agent_notes.md`.
+- `agent_notes.md` — agent-only code map. Not a second plan.
+- `steps/` — start-work brief for that slice. Each step links `scope.md`,
+  `architecture.md`, and **every** sibling step so a handoff that names only
+  the step can reach the rest.
 
-## Rules (priority order)
+## When writing architecture and steps
 
-Apply in this order when they conflict:
+A module is any file, class, object, package, service, or subsystem with a
+boundary. Use this list to judge quality notes and how to split or sequence
+steps. Do not paste it into artifacts.
 
-1. **Reduce system complexity**: optimize for simpler callers, fewer concepts, and less coordination—not the smallest diff or fastest implementation.
-2. **Deep modules**: prefer small, intent-oriented interfaces that hide substantial cohesive implementation complexity.
-3. **Push complexity downward**: keep invariants, sequencing, representation, policy, error handling, and special cases behind the module that owns them.
-4. **Prefer clear boundaries**: minimize coupling, information leakage, pass-through layers, and duplicated orchestration. Organize around responsibility and knowledge, not execution order.
-5. **Extend/reuse sound code**, but do not preserve shallow abstractions or misplaced responsibilities merely to minimize changes.
-6. **Design deliberately**: for important or reshaped boundaries, consider alternative designs. Treat excessive coordination, awkward naming, or difficult-to-describe interfaces as signs the abstraction may be wrong.
-7. **Keep the approved vertical slice**: larger changes are allowed when required to deepen a module or simplify its boundary; no unrelated cleanup or speculative generalization.
-8. **Test restraint**: prefer high-signal contract tests over test volume; do not add tests merely to perform a red/green loop.
-9. **Comments explain what code cannot**: document non-obvious intent, invariants, or rationale; avoid comments that restate understandable code.
+- Prefer fewer, deeper modules: small intent-oriented interfaces. Hide
+  sequencing, policy, representation, errors, and special cases behind the
+  owner. Organize around responsibility and knowledge, not execution order.
+- Optimize for simpler callers and less coordination, not the smallest diff.
+  Do not keep a shallow wrapper or misplaced responsibility just to minimize
+  change.
+- Sequence steps so a later step can deepen a module that an earlier step
+  opens. Do not lock a later step into a design it cannot deepen.
+- Keep the approved slice: larger changes are allowed when they deepen a
+  module or simplify its boundary; no unrelated cleanup or speculative
+  generalization.
+- Name new or reshaped public/module boundaries in the plan. Preserve public
+  behavior unless the plan includes an interface migration.
+- Judge an abstraction by complexity removed from callers, not by size.
+  Compare a few boundary options in alignment chat when the interface is hard
+  to describe. Do not add extra design files or diagrams.
 
-## Deep-module design standard
-
-Treat a module as any file, class, object, package, service, or subsystem with a boundary.
-
-- Expose the smallest practical interface for the capability. Callers should express intent without coordinating internal steps.
-- Favor fewer, deeper modules over shallow wrappers, pass-through methods, fragmented helpers, or interfaces that mirror implementation details.
-- Co-locate state, policy, invariants, and related complexity when doing so reduces knowledge shared across modules.
-- Prefer designs that eliminate invalid states and special cases rather than repeatedly exposing or handling them.
-- Judge an abstraction by the complexity it removes from callers, not by its size or line count.
-- Preserve public behavior and compatibility unless the approved plan explicitly includes an interface migration.
-- New or reshaped public/module boundaries must be named in the approved plan; private implementation structure may evolve as needed to realize that design.
-
-Use these rules when judging quality opportunities and how to **sequence**
-steps so later work can deepen a module that an earlier step opens.
-A main goal is refactoring that would not be possible if each step were
-scoped in isolation.
-
-## Quality finding bar
+## Quality notes
 
 A quality note is real only with all three: a concrete trigger (how a future
 change or caller is harder), the leaked or misplaced knowledge, and a fix
@@ -134,25 +130,51 @@ Agent-facing code map. Paths/symbols/commands/one-line facts only. No plan dupli
 - File-level implementation plans or per-step task checklists
 - Implementing any step in this chat
 
+## Align to current document standards
+
+If existing project files do not match the templates in this skill (missing
+`architecture.md`, old headings on `scope.md` such as Deep modules / Quality
+backlog, old step sections, missing `agent_notes.md` headers), update them to
+the current layout.
+
+- Move content into the correct files and sections. Create missing files from
+  the templates.
+- If a section has no content, use `- none` where the template allows it.
+  Still fill **Where this change lives** from `agent_notes.md` / existing
+  steps.
+- Matching the current layout is **not** a re-scope.
+- Changing in-scope refactoring versus already-approved outcomes **is** a
+  re-scope — align if needed, then **4. User review**.
+
 ## Tasks
 
-**use the TODO tool to track tasks**
+Create TODO items for **1. Resume**, **2. Research then align**, **3. Scope
+and architecture**, **4. User review**, and **5. Handoff**. Mark each
+complete when you finish it. Skip **2** when resuming an approved project
+with no re-scope and no `refresh`.
 
-### 1. Resume notes
+### 1. Resume
 
-- Standardize `{project}` (kebab-case). Create `.working_items/{project}/` and `steps/` if missing.
-- Create `agent_notes.md` from the template if missing.
-- **Resume**
-  - `scope.md` exists, `approved: false` → remaining alignment or **4. User review**. Do not rewrite from scratch. If `architecture.md` is missing, **create it** (see **Missing architecture.md** below).
-  - `approved: true` and user did **not** ask to re-scope → chat: tracker status + next incomplete step link, then **5. Handoff**. Stop. If `architecture.md` is missing, create it from existing artifacts without reopening approval unless the new text changes in-scope refactoring vs the approved outcomes.
-  - User asked to **re-scope** → read `scope.md`, `architecture.md`, steps, and `agent_notes.md`. Propose a roadmap diff. Do not overwrite completed step files (`status: done` or tracker `- [x]`). Adjust later steps only. Then align / rewrite unapproved later steps / **4**. Create `architecture.md` if missing. On rewrite, strip leftover `## Deep modules` / `## Quality backlog` from `scope.md` (those live on `architecture.md`).
-  - User said `refresh` on research only → keep decisions; re-research; then review if artifacts change. Create `architecture.md` if missing.
+- Standardize `{project}` (kebab-case). Create `.working_items/{project}/`
+  and `steps/` if missing.
+- If files are missing or do not match current templates, apply **Align to
+  current document standards**. Do not block on fully backfilling
+  `agent_notes.md`.
+- Then:
+
+| Condition | Action |
+| --- | --- |
+| `scope.md` missing | **2. Research then align**, then **3**, **4**. |
+| `approved: false` | Finish remaining alignment or **4. User review**. Do not rewrite from scratch. |
+| `approved: true`, user did not ask to re-scope | Chat: tracker status + next incomplete step link. Then **5. Handoff**. Stop. Trust on-disk files; do not restore an older plan from chat. |
+| User asked to **re-scope** | Read all artifacts. Propose a roadmap diff. Do not overwrite completed steps (`status: done` or tracker `- [x]`). Adjust later steps only. Align / rewrite unapproved later steps / **4**. |
+| User said `refresh` (research only) | Keep decisions; re-research; **4** if artifacts change. |
 
 ### 2. Research then align
 
 Do this **before** writing `scope.md`, `architecture.md`, or steps.
 
-- **Research the codebase first.** Map owning boundaries, call direction, leaked complexity, blast radius, migrations, dependencies, quality opportunities (finding bar above), edge cases that may not be obvious, and which modules this work should deepen. High level (systems/modules), not file-level diffs. Update `agent_notes.md`.
+- **Research the codebase first.** Map owning boundaries, call direction, leaked complexity, blast radius, migrations, dependencies, quality opportunities (Quality notes above), edge cases that may not be obvious, and which modules this work should deepen. High level (systems/modules), not file-level diffs. Ground names in this repo (paths/symbols in `agent_notes.md`). Do not invent APIs or modules from chat or the web. Update `agent_notes.md`.
 - **Web search is allowed** to improve recommendations (library pitfalls, established patterns, migration notes). It does not replace tracing this repo. If an external note changes a recommendation, mention it briefly in `architecture.md` when you write that file.
 - **Align for a shared understanding** (in/out of scope, which quality items to take now vs later, step order, compatibility/migration). Goal is alignment, not a minimal interrogatory. If the codebase can answer, explore instead of asking.
   - Ask in chat. **Do not use the Q&A/AskQuestion tool.**
@@ -201,7 +223,10 @@ approved: false
 - none
 ```
 
-Tracker marks: `- [ ]` pending, `- [o]` in progress, `- [x]` done.
+This agent writes new tracker rows and new step files as pending (`- [ ]`,
+`status: pending`). On resume, **read** `- [o]` (in progress) and `- [x]`
+(done) and each step file’s `status`. Implementers may set those marks. Do
+not set in progress while only scoping.
 
 Do **not** put deep modules, quality backlog, or edge cases on `scope.md`.
 
@@ -218,9 +243,9 @@ Short human map and target design. Paths/symbols/commands live in `agent_notes.m
 
 ## Quality notes
 
-{finding-bar items relevant to this project. `- none` if research found nothing in-scope}
+{items that include trigger, leak, and fix direction. `- none` if research found nothing in-scope}
 
-- **{boundary}**: {leak / shallowness / misplaced knowledge} → {why future change is harder} → {fix direction}
+- **{boundary}**: {leaked or misplaced knowledge} → {why future change is harder} → {fix direction}
 
 ## Edge cases
 
@@ -239,7 +264,7 @@ Target abstractions, ownership, and call flows to build into this plan.
 
 In-work boundary deepening for **this** project. `- none` if this project does not reshape boundaries.
 
-- **{module / boundary}**: {what's shallow or leaked today} → {target: smaller interface; complexity owned here}. Steps: {NN, …}. Do not {corner an earlier step must not paint}.
+- **{module / boundary}**: {what's shallow or leaked today} → {target: smaller interface; complexity owned here}. Steps: {NN, …}. Do not {what this step must not lock in so a later step can still deepen the module}.
 
 ## Quality backlog
 
@@ -247,10 +272,12 @@ In-work boundary deepening for **this** project. `- none` if this project does n
   - {why sequencing/deepening beats a single isolated step}
 ```
 
-Keep architecture **short**. Module-level prose is enough. Judge deepening by
-complexity removed from callers, not by diff size. Leave **later/out**
-cleanups in Quality backlog; do not promote them into Deep modules unless
-they are tracker steps.
+Keep architecture **short**. Module-level prose is enough. Do not add extra
+architecture-decision files or diagrams. Compare a few boundaries in
+alignment chat when needed; do not require a parallel bake-off. Judge
+deepening by complexity removed from callers, not by diff size. Leave
+**later/out** cleanups in Quality backlog; do not promote them into Deep
+modules unless they are tracker steps.
 
 Quality items: persist the full backlog on `architecture.md`. Only **now**
 items become steps (or bullets on a step). Do not grow the project by default.
@@ -272,6 +299,7 @@ status: pending
 
 - Scope: [scope.md](../scope.md)
 - Architecture: [architecture.md](../architecture.md)
+- Steps: [01-{slug}.md](01-{slug}.md), [02-{slug}.md](02-{slug}.md) (every sibling, including this file)
 
 ## In scope
 
@@ -286,37 +314,36 @@ status: pending
 ## Architecture slice
 
 - Realize: {the piece of Recommended architecture / Deep modules this step owns}
-- Do not: {corner this step must not paint}
+- Do not: {what this step must not lock in so a later step can still deepen the module}
 - Read: `scope.md` → `architecture.md` → this file → `agent_notes.md`
 ```
 
 Keep step files as **start-work briefs**: intent, in/out, likely boundary,
 deps, risks, the architecture slice for this step. Name contracts to
 preserve. **Do not** list every file or a red/green task list — that is the
-implementation plan after handoff.
+implementation plan after handoff (`/d-antigravity`).
 
-**Missing architecture.md** (legacy project without the file): create
-`architecture.md` from `scope.md` `## Deep modules` / `## Quality backlog`,
-each step’s old `## Quality / deepening` if present, and research. If those
-sources are empty, write `- none` under Quality notes, Edge cases, Deep
-modules, and Quality backlog; still fill **Where this change lives** from
-`agent_notes.md` / existing steps. Adding the file is not a re-scope.
-Changing in-scope refactoring versus already-approved outcomes **is** a
-re-scope — align if needed, then **4**. After a successful copy, strip
-`## Deep modules` and `## Quality backlog` from `scope.md` only on re-scope
-or when rewriting unapproved artifacts; do not restripe an approved tracker
-just to move headings.
+A step is too small if it could ship as an isolated ticket without changing
+what a sibling may deepen. Fold it, or leave that work for the
+implementation-planning chat after handoff. Split when a later step cannot
+deepen a module unless an earlier step opens the boundary, or when
+rollback/migration/compatibility needs a seam.
 
-Optional ticket/PR links if the user provided them; do not create tickets.
+If the user pasted ticket/PR URLs, link them on the relevant step or on
+`scope.md`. Never create tickets.
 
 ### 4. User review
 
 - Chat: **maximum 3–4 bullets** (outcomes, step sequence, in-work deepening vs later).
 - Then relative links to `scope.md`, `architecture.md`, and **every** step file.
+- If the user pasted ticket/PR URLs, include those links. Never create tickets.
 - Ask for **APPROVED**. Revisions → update artifacts → review again.
 - **DO NOT** implement or hand off until **APPROVED**. Then set `approved: true` in `scope.md`.
 
 ### 5. Handoff (stop)
 
-- Prompt a **new chat** with `/d-antigravity` and a relative link to the first incomplete **step** file only. That file links scope and architecture.
+- Prompt a **new chat** with `/d-antigravity` and a relative link to the
+  first incomplete **step** file only. `/d-antigravity` is the
+  implementation-planning skill; it writes the implementation plan. This
+  skill does not. The step file links scope and architecture.
 - Do not implement here.
