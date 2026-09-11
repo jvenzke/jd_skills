@@ -18,8 +18,9 @@ under `.working_items/{project}/`. Human-review the roadmap, then stop.
 
 This skill tracks the project: migrations, dependencies, edge cases, future
 issues, and refactoring/deepening that is only coherent across steps. Prefer
-**few** steps. Split on migrations, dependencies, rollback units, and
-module-deepening sequence — not on file count or tickets.
+**few** steps. Split on migrations, dependencies, rollback units, ship
+destination (prod vs hold-on-branch), and module-deepening sequence — not on
+file count or tickets.
 
 On resume, trust on-disk `scope.md` / `architecture.md` over chat memory. Do
 not restore an older plan from this conversation.
@@ -52,7 +53,8 @@ In the **target repo** (not this skills repo unless that is the target):
 - `agent_notes.md` — agent-only code map. Not a second plan.
 - `steps/` — start-work brief for that slice. Each step links `scope.md`,
   `architecture.md`, and **every** sibling step so a handoff that names only
-  the step can reach the rest.
+  the step can reach the rest. Each step states whether its result may roll
+  out to **prod** or must stay on a **feature branch** until later steps.
 
 ## When writing architecture and steps
 
@@ -68,6 +70,13 @@ steps. Do not paste it into artifacts.
   change.
 - Sequence steps so a later step can deepen a module that an earlier step
   opens. Do not lock a later step into a design it cannot deepen.
+- Give every step an explicit **ship destination**: `prod` (safe to merge and
+  roll out when that step is done) or `feature-branch` (merge only onto a
+  long-lived project branch; do not roll out until named later steps
+  complete). Default to `prod` when the step is a rollback unit that can live
+  independently (additive, compatible, or flag-gated). Use `feature-branch`
+  when the intermediate state is incomplete, unsafe, or must land with a
+  later step.
 - Keep the approved slice: larger changes are allowed when they deepen a
   module or simplify its boundary; no unrelated cleanup or speculative
   generalization.
@@ -134,8 +143,8 @@ Agent-facing code map. Paths/symbols/commands/one-line facts only. No plan dupli
 
 If existing project files do not match the templates in this skill (missing
 `architecture.md`, old headings on `scope.md` such as Deep modules / Quality
-backlog, old step sections, missing `agent_notes.md` headers), update them to
-the current layout.
+backlog, old step sections, missing **Ship strategy** / **Ship destination**,
+missing `agent_notes.md` headers), update them to the current layout.
 
 - Move content into the correct files and sections. Create missing files from
   the templates.
@@ -176,7 +185,7 @@ Do this **before** writing `scope.md`, `architecture.md`, or steps.
 
 - **Research the codebase first.** Map owning boundaries, call direction, leaked complexity, blast radius, migrations, dependencies, quality opportunities (Quality notes above), edge cases that may not be obvious, and which modules this work should deepen. High level (systems/modules), not file-level diffs. Ground names in this repo (paths/symbols in `agent_notes.md`). Do not invent APIs or modules from chat or the web. Update `agent_notes.md`.
 - **Web search is allowed** to improve recommendations (library pitfalls, established patterns, migration notes). It does not replace tracing this repo. If an external note changes a recommendation, mention it briefly in `architecture.md` when you write that file.
-- **Align for a shared understanding** (in/out of scope, which quality items to take now vs later, step order, compatibility/migration). Goal is alignment, not a minimal interrogatory. If the codebase can answer, explore instead of asking.
+- **Align for a shared understanding** (in/out of scope, which quality items to take now vs later, step order, compatibility/migration, **per-step ship destination**: prod vs hold on a feature branch until later steps). Goal is alignment, not a minimal interrogatory. If the codebase can answer, explore instead of asking. If the user has a project-wide rule (always long-lived branch, or always ship each step), record it on `scope.md` and apply it to every step unless a step needs an exception.
   - Ask in chat. **Do not use the Q&A/AskQuestion tool.**
   - All **independent** questions in **one** message. Number (`1.`, `2.`, …). Options `a)`, `b)`, … alphabetically; mark **(recommended)**. Users reply with ids (e.g. `1b 2a`). Custom replies allowed.
   - After answers, ask only follow-ups those answers (or new facts that still need user judgment) unlock. Pause before the next pass or before writing artifacts.
@@ -214,9 +223,14 @@ approved: false
 
 - {A before B; compatibility windows}
 
+## Ship strategy
+
+- **Default**: prod | feature-branch ({branch name if known, else “project long-lived branch”})
+- **Exceptions**: {step NN holds until step MM; or `- none`}
+
 ## Tracker
 
-- [ ] Step 1: {title} — [steps/01-{slug}.md](steps/01-{slug}.md)
+- [ ] Step 1: {title} — ship: prod | feature-branch — [steps/01-{slug}.md](steps/01-{slug}.md)
 
 ## Tradeoffs / push-outs
 
@@ -309,6 +323,12 @@ status: pending
 
 ## Dependencies
 
+## Ship destination
+
+- **Where**: prod | feature-branch
+- **Until**: n/a | {later step(s) that must complete before this may roll out to prod}
+- **Why**: {rollback unit / compatible additive / flag-gated — or incomplete / unsafe / must land with later step}
+
 ## Risks
 
 ## Architecture slice
@@ -319,9 +339,9 @@ status: pending
 ```
 
 Keep step files as **start-work briefs**: intent, in/out, likely boundary,
-deps, risks, the architecture slice for this step. Name contracts to
-preserve. **Do not** list every file or a red/green task list — that is the
-implementation plan after handoff (`/d-antigravity`).
+deps, **ship destination**, risks, the architecture slice for this step. Name
+contracts to preserve. **Do not** list every file or a red/green task list —
+that is the implementation plan after handoff (`/d-antigravity`).
 
 A step is too small if it could ship as an isolated ticket without changing
 what a sibling may deepen. Fold it, or leave that work for the
@@ -329,12 +349,18 @@ implementation-planning chat after handoff. Split when a later step cannot
 deepen a module unless an earlier step opens the boundary, or when
 rollback/migration/compatibility needs a seam.
 
+Fill **Ship destination** on every step. `prod` means implementers may merge
+and roll out when that step is done (including merge-to-main behind a flag if
+that is how this repo ships). `feature-branch` means merge only onto the
+project branch named in **Ship strategy**; do not roll out to production until
+**Until** is satisfied. Do not leave destination implied.
+
 If the user pasted ticket/PR URLs, link them on the relevant step or on
 `scope.md`. Never create tickets.
 
 ### 4. User review
 
-- Chat: **maximum 3–4 bullets** (outcomes, step sequence, in-work deepening vs later).
+- Chat: **maximum 3–4 bullets** (outcomes, step sequence, in-work deepening vs later, which steps may go to prod vs hold on the feature branch).
 - Then relative links to `scope.md`, `architecture.md`, and **every** step file.
 - If the user pasted ticket/PR URLs, include those links. Never create tickets.
 - Ask for **APPROVED**. Revisions → update artifacts → review again.
