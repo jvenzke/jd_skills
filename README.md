@@ -69,7 +69,7 @@ Unused skills live in [`old/`](old/). Do not invoke them; they are archive only.
 - `agent_notes.md` — agent-only code map (paths, symbols, gotchas); not a second plan
 - `walkthrough.md` — what shipped and how it was verified
 - `field_research.md` — web landscape + alignment decisions (`/research-first`)
-- `scope.md` + `steps/` — project tracker and coarse slices (`/scope-project`)
+- `scope.md` + `architecture.md` + `steps/` — project tracker, target design, and start-work slices (`/scope-project`)
 
 **Gates.** Ask only blocking questions. Implementation, GitHub writes, and similar irreversible work wait for an explicit **APPROVED** (or the skill's named equivalent — `/research-first` logs option-id replies in `field_research.md` and does not add a second approval). The main agent owns verification, artifacts, and presentation. Subagents are optional, read-constrained, and do not approve or post.
 
@@ -83,21 +83,21 @@ Optional same-chat prefix when field context matters. Thin local orientation →
 
 Artifact: `.working_items/{task}/field_research.md` (Orientation, Landscape, Questions, Decisions). Resume from disk; refresh only if asked.
 
-## `/scope-project` (Last updated: 2026-09-10)
+## `/scope-project` (Last updated: 2026-09-11)
 
-Standalone planning/tracking for large changes that span chats, PRs, or weeks. Use when you need a durable map of migrations, dependencies, known follow-ups, and refactoring/deepening that only works if steps are sequenced. Never implements.
+Standalone planning/tracking for large changes that span chats, PRs, or weeks. Use when you need a durable map of migrations, dependencies, known follow-ups, and refactoring/deepening that only works if steps are sequenced. Never implements. `scope.md` owns in/out/later, deps, and the tracker. `architecture.md` owns the short human map, quality notes, non-obvious edge cases, recommended architecture, and in-work deepening vs later/out backlog. Legacy projects missing `architecture.md` get it created from leftover scope headings, not a full rewrite.
 
-Cycle: codebase research + `agent_notes.md` → blocking clarify (follow-up passes allowed) → `scope.md` + `steps/{NN}-*.md` → **APPROVED** → handoff prompt for a **new chat** with `/d-antigravity` and the next step file.
+Cycle: resume notes → codebase research (web allowed) + `agent_notes.md` → alignment for a shared understanding → `scope.md` + `architecture.md` + `steps/{NN}-*.md` → **APPROVED** → handoff prompt for a **new chat** with `/d-antigravity` and the next step file only (that file links the rest).
 
-Artifacts: `.working_items/{project}/scope.md`, `agent_notes.md`, `steps/`.
+Artifacts: `.working_items/{project}/scope.md`, `architecture.md`, `agent_notes.md`, `steps/`.
 
-## `/d-antigravity` (Last updated: 2026-09-10)
+## `/d-antigravity` (Last updated: 2026-09-11)
 
 Phased development when architecture and long-lived quality matter. Prefer over `/r-antigravity` for product code. Works with no `/scope-project` output.
 
 Cycle: research and blocking clarify → optional phase plan → implementation plan + `tasks.md` → **APPROVED** → implement (delegation optional) → main-agent verification → walkthrough. One phase per chat when a phase plan exists; never overwrite a completed `phase-{N}/`.
 
-Optional project attach: only if the user links `scope.md` / a step file (or `tasks.md` already has `project:`). Treat the step as the request; still write phase and implementation plans. Report tradeoffs and pushed-out work back to `scope.md`; update the project tracker when the step finishes.
+Optional project attach: only if the user links `scope.md` / `architecture.md` / a step file (or `tasks.md` already has `project:`). Treat the step as the request (follow its links to architecture and sibling steps); still write phase and implementation plans. Report tradeoffs to `scope.md` and dropped/deferred deepening to `architecture.md`; update the project tracker when the step finishes.
 
 Artifacts: `.working_items/{task}/phase_plan.md` (optional), `agent_notes.md`, and `.working_items/{task}/phase-{N}/{implementation_plan,tasks,walkthrough}.md`.
 
