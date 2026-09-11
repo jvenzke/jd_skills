@@ -55,6 +55,7 @@ In the **target repo** (not this skills repo unless that is the target):
   `architecture.md`, and **every** sibling step so a handoff that names only
   the step can reach the rest. Each step states whether its result may roll
   out to **prod** or must stay on a **feature branch** until later steps.
+  **Verification** is the implementing agent's completion bar for that slice.
 
 ## When writing architecture and steps
 
@@ -144,13 +145,16 @@ Agent-facing code map. Paths/symbols/commands/one-line facts only. No plan dupli
 If existing project files do not match the templates in this skill (missing
 `architecture.md`, old headings on `scope.md` such as Deep modules / Quality
 backlog, old step sections, missing **Ship strategy** / **Ship destination**,
-missing `agent_notes.md` headers), update them to the current layout.
+missing step **Verification**, missing `agent_notes.md` headers), update them
+to the current layout.
 
 - Move content into the correct files and sections. Create missing files from
   the templates.
 - If a section has no content, use `- none` where the template allows it.
   Still fill **Where this change lives** from `agent_notes.md` / existing
-  steps.
+  steps. **Verification** is never `- none`: add the heading and fill
+  checkboxes from that step's **In scope** / **Architecture slice** (behavior
+  and new logic only). That fill is **not** a re-scope.
 - Matching the current layout is **not** a re-scope.
 - Changing in-scope refactoring versus already-approved outcomes **is** a
   re-scope — align if needed, then **4. User review**.
@@ -336,12 +340,28 @@ status: pending
 - Realize: {the piece of Recommended architecture / Deep modules this step owns}
 - Do not: {what this step must not lock in so a later step can still deepen the module}
 - Read: `scope.md` → `architecture.md` → this file → `agent_notes.md`
+
+## Verification
+
+Implementer completion bar for this step (behavior / new logic). Not tests.
+
+- [ ] {observable behavior / new logic}
+- [ ] {observable behavior / new logic}
+- [ ] {observable behavior / new logic}
 ```
 
 Keep step files as **start-work briefs**: intent, in/out, likely boundary,
-deps, **ship destination**, risks, the architecture slice for this step. Name
-contracts to preserve. **Do not** list every file or a red/green task list —
-that is the implementation plan after handoff (`/d-antigravity`).
+deps, **ship destination**, risks, the architecture slice, and
+**Verification**. Name contracts to preserve. **Do not** list every file or an
+implementation task list — that is the plan after handoff (`/d-antigravity`).
+
+Write **Verification** for the implementing agent that starts from this file.
+**In scope** is what the slice includes; **Verification** is observable
+signals that those inclusions landed (behavior present, old path gone, callers
+use the new boundary). Do not clone **In scope**. Do not restate **Out of
+scope**. Every step has at least one checkbox; never `- none`. Ban test names,
+commands, coverage, and “add a test for X”. Ban file/symbol checklists. Leave
+checkboxes `- [ ]`; the implementer ticks them when reviewing completion.
 
 A step is too small if it could ship as an isolated ticket without changing
 what a sibling may deepen. Fold it, or leave that work for the
@@ -349,7 +369,8 @@ implementation-planning chat after handoff. Split when a later step cannot
 deepen a module unless an earlier step opens the boundary, or when
 rollback/migration/compatibility needs a seam.
 
-Fill **Ship destination** on every step. `prod` means implementers may merge
+Fill **Verification** and **Ship destination** on every step when writing
+or aligning. `prod` means implementers may merge
 and roll out when that step is done (including merge-to-main behind a flag if
 that is how this repo ships). `feature-branch` means merge only onto the
 project branch named in **Ship strategy**; do not roll out to production until
