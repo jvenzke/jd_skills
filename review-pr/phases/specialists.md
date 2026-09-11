@@ -52,7 +52,7 @@ Review core changes and nearby trust boundaries for:
 
 Require a concrete exploit/failure path. General hardening advice is not a finding. Use repo-native dependency/security checks before broad external research.
 
-Return candidates with changed path/range, exact quote, trigger, consequence, evidence checked, fix direction, confidence, severity, and claim id where applicable.
+Return candidates with changed path/range, exact quote, trigger, consequence, evidence checked, fix direction, confidence, severity, and claim id where applicable. Claim ids are for the main agent; do not draft GitHub-facing wording that uses claim ids, `.working_items/`, or local artifact/skill filenames.
 
 The main agent writes `SECURITY.md` with every heading below, even when clean:
 
@@ -83,7 +83,7 @@ The main agent writes `SECURITY.md` with every heading below, even when clean:
 6. Passing CI is evidence, not proof. Do not invent unstated product rules to demand tests. Prefer high-signal contract tests over test volume; do not demand extra cases merely to perform a red/green loop.
 7. Run targeted local tests only when useful and cheap. Ask before expensive/full suites.
 
-Return candidates with changed path/range, exact quote, uncovered claim/branch, concrete failure that could escape, existing evidence, fix direction, confidence, and severity. Include CI-scope misses (relevant tests not invoked by the PR's workflows) the same way.
+Return candidates with changed path/range, exact quote, uncovered claim/branch, concrete failure that could escape, existing evidence, fix direction, confidence, and severity. Include CI-scope misses (relevant tests not invoked by the PR's workflows) the same way. Claim ids are for the main agent; do not draft GitHub-facing wording that uses claim ids, `.working_items/`, or local artifact/skill filenames.
 
 When the main agent presents test coverage in chat, summarize tests in prose. Never paste test source into chat. After `TESTS.md` is written, print a **Test coverage of new code** block in chat (covering tests vs gaps for new/changed product code) and a **CI workflow scope** block (whether GitHub Actions runs this project's impacting tests). Repeat both in the logic walkthrough. They also go in the GitHub review body at submit.
 
@@ -134,7 +134,7 @@ Require a concrete trigger, execution or change-impact path, consequence, and fi
 
 Severity: `blocker` only if the defect or smell creates a concrete correctness or security failure. `recommended` for reachable logic defects and for clear boundary/complexity regressions that will make the codebase harder to maintain. `nit` for local style.
 
-Return candidates with changed path/range, exact quote, trigger, consequence, evidence checked, fix direction, confidence, severity, and claim id where applicable. Tag each candidate `correctness` or `maintainability`.
+Return candidates with changed path/range, exact quote, trigger, consequence, evidence checked, fix direction, confidence, severity, and claim id where applicable. Tag each candidate `correctness` or `maintainability`. Claim ids are for the main agent; do not draft GitHub-facing wording that uses claim ids, `.working_items/`, or local artifact/skill filenames.
 
 The main agent writes `QUALITY.md` with every heading below, even when clean:
 
