@@ -3,7 +3,8 @@ name: scope-project
 description: >-
   High-level project scoping for large, multi-PR / multi-week changes:
   codebase research, alignment, a durable tracker, architecture notes, and
-  coarse step files. Tracks migrations, dependencies, known follow-ups, and
+  coarse step files, then adversarial review of those artifacts before human
+  approval. Tracks migrations, dependencies, known follow-ups, and
   cross-step refactoring. Planning and tracking only — never implements.
   Use when the user invokes scope-project or wants to roadmap a major
   change before development.
@@ -14,7 +15,8 @@ disable-model-invocation: true
 
 Research a large change, reach a **shared understanding** with the user, and
 write a **project** tracker, **architecture** notes, and coarse **step** files
-under `.working_items/{project}/`. Human-review the roadmap, then stop.
+under `.working_items/{project}/`. Adversarially review those artifacts,
+human-review the roadmap, then stop.
 
 This skill tracks the project: migrations, dependencies, edge cases, future
 issues, and refactoring/deepening that is only coherent across steps. Prefer
@@ -36,6 +38,7 @@ In the **target repo** (not this skills repo unless that is the target):
   scope.md                 # summary, in/out/later, deps, tracker, tradeoffs
   architecture.md          # map, quality, edge cases, target design, deepening
   agent_notes.md           # project-level code map (paths/symbols/gotchas)
+  adversarial.md           # attack log; not a second plan
   steps/
     {NN}-{slug}.md         # start-work brief for one coarse vertical slice
 ```
@@ -56,6 +59,8 @@ In the **target repo** (not this skills repo unless that is the target):
   the step can reach the rest. Each step states whether its result may roll
   out to **prod** or must stay on a **feature branch** until later steps.
   **Verification** is the implementing agent's completion bar for that slice.
+- `adversarial.md` — attack log written in **4. Adversarial review**. Not a
+  second plan. Source of truth stays `scope.md` / `architecture.md` / steps.
 
 ## When writing architecture and steps
 
@@ -155,16 +160,17 @@ to the current layout.
   steps. **Verification** is never `- none`: add the heading and fill
   checkboxes from that step's **In scope** / **Architecture slice** (behavior
   and new logic only). That fill is **not** a re-scope.
-- Matching the current layout is **not** a re-scope.
+- Matching the current layout is **not** a re-scope. Do not treat a missing
+  `adversarial.md` as a layout mismatch; **4** creates it.
 - Changing in-scope refactoring versus already-approved outcomes **is** a
-  re-scope — align if needed, then **4. User review**.
+  re-scope — align if needed, then **4** / **5**.
 
 ## Tasks
 
 Create TODO items for **1. Resume**, **2. Research then align**, **3. Scope
-and architecture**, **4. User review**, and **5. Handoff**. Mark each
-complete when you finish it. Skip **2** when resuming an approved project
-with no re-scope and no `refresh`.
+and architecture**, **4. Adversarial review**, **5. User review**, and
+**6. Handoff**. Mark each complete when you finish it. Skip **2** and **4**
+when resuming an approved project with no re-scope and no `refresh`.
 
 ### 1. Resume
 
@@ -177,11 +183,11 @@ with no re-scope and no `refresh`.
 
 | Condition | Action |
 | --- | --- |
-| `scope.md` missing | **2. Research then align**, then **3**, **4**. |
-| `approved: false` | Finish remaining alignment or **4. User review**. Do not rewrite from scratch. |
-| `approved: true`, user did not ask to re-scope | Chat: tracker status + next incomplete step link. Then **5. Handoff**. Stop. Trust on-disk files; do not restore an older plan from chat. |
-| User asked to **re-scope** | Read all artifacts. Propose a roadmap diff. Do not overwrite completed steps (`status: done` or tracker `- [x]`). Adjust later steps only. Align / rewrite unapproved later steps / **4**. |
-| User said `refresh` (research only) | Keep decisions; re-research; **4** if artifacts change. |
+| `scope.md` missing | **2. Research then align**, then **3**, **4**, **5**. |
+| `approved: false` | Finish remaining alignment or **3** if artifacts are still incomplete. Then **4. Adversarial review** unless `adversarial.md` is `status: complete` and planning files are not newer than it. Then **5. User review**. Do not rewrite from scratch. |
+| `approved: true`, user did not ask to re-scope | Chat: tracker status + next incomplete step link. Then **6. Handoff**. Stop. Trust on-disk files; do not restore an older plan from chat. |
+| User asked to **re-scope** | Read all artifacts. Propose a roadmap diff. Do not overwrite completed steps (`status: done` or tracker `- [x]`). Adjust later steps only. Align / rewrite unapproved later steps / **4** / **5**. |
+| User said `refresh` (research only) | Keep decisions; re-research; **4** then **5** if artifacts change. |
 
 ### 2. Research then align
 
@@ -193,7 +199,7 @@ Do this **before** writing `scope.md`, `architecture.md`, or steps.
   - Ask in chat. **Do not use the Q&A/AskQuestion tool.**
   - All **independent** questions in **one** message. Number (`1.`, `2.`, …). Options `a)`, `b)`, … alphabetically; mark **(recommended)**. Users reply with ids (e.g. `1b 2a`). Custom replies allowed.
   - After answers, ask only follow-ups those answers (or new facts that still need user judgment) unlock. Pause before the next pass or before writing artifacts.
-- **DO NOT** write `scope.md` / `architecture.md` / steps while an alignment question that would change outcomes remains open.
+- **DO NOT** write `scope.md` / `architecture.md` / steps while an alignment question that would change outcomes remains open. Do not start **4** until those files exist.
 
 ### 3. Scope and architecture
 
@@ -379,15 +385,27 @@ project branch named in **Ship strategy**; do not roll out to production until
 If the user pasted ticket/PR URLs, link them on the relevant step or on
 `scope.md`. Never create tickets.
 
-### 4. User review
+### 4. Adversarial review
 
-- Chat: **maximum 3–4 bullets** (outcomes, step sequence, in-work deepening vs later, which steps may go to prod vs hold on the feature branch).
+Read [`phases/adversarial.md`](phases/adversarial.md). Run **before** user
+review whenever planning files were just written or are newer than
+`adversarial.md`. Fresh read-only subagent attacks `scope.md`,
+`architecture.md`, and all step files together; main agent verifies, patches
+those files, and writes `adversarial.md`.
+
+If a surviving finding would change a recorded alignment Decision, **In/Out/Later**,
+or a project-wide ship rule, pause and return to **2**. Do not silently
+override alignment. No extra **APPROVED** gate.
+
+### 5. User review
+
+- Chat: **maximum 3–5 bullets** (outcomes, step sequence, in-work deepening vs later, which steps may go to prod vs hold on the feature branch, plus `Adversarial: {N} applied, {M} leftovers`).
 - Then relative links to `scope.md`, `architecture.md`, and **every** step file.
 - If the user pasted ticket/PR URLs, include those links. Never create tickets.
-- Ask for **APPROVED**. Revisions → update artifacts → review again.
+- Ask for **APPROVED**. Revisions → update artifacts → **4** if planning files changed → review again.
 - **DO NOT** implement or hand off until **APPROVED**. Then set `approved: true` in `scope.md`.
 
-### 5. Handoff (stop)
+### 6. Handoff (stop)
 
 - Prompt a **new chat** with `/d-antigravity` and a relative link to the
   first incomplete **step** file only. `/d-antigravity` is the

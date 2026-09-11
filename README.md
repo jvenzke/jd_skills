@@ -72,7 +72,7 @@ Unused skills live in [`old/`](old/). Do not invoke them; they are archive only.
 - `agent_notes.md` — agent-only code map (paths, symbols, gotchas); not a second plan
 - `walkthrough.md` — what shipped and how it was verified
 - `field_research.md` — web landscape + alignment decisions (`/research-first`)
-- `scope.md` + `architecture.md` + `steps/` — project tracker, target design, and start-work slices (`/scope-project`)
+- `scope.md` + `architecture.md` + `steps/` + `adversarial.md` — project tracker, target design, start-work slices, and pre-approval attack log (`/scope-project`)
 
 **Gates.** Ask only blocking questions. Implementation, GitHub writes, skill-file edits, and similar irreversible work wait for an explicit **APPROVED** (or the skill's named equivalent — `/research-first` logs option-id replies in `field_research.md`; `/review-pr` submits when the user names `APPROVE` / `REQUEST_CHANGES` / `COMMENT`). The main agent owns verification, artifacts, and presentation. Subagents are optional, read-constrained, and do not approve or post.
 
@@ -90,9 +90,9 @@ Artifact: `.working_items/{task}/field_research.md` (Orientation, Landscape, Que
 
 Standalone planning/tracking for large changes that span chats, PRs, or weeks. Use when you need a durable map of migrations, dependencies, known follow-ups, and refactoring/deepening that only works if steps are sequenced. KPI is easier future change, not spec-kit-style isolated tickets. Never implements. Artifacts stay under `.working_items/{project}/` (not Spec Kit / Kiro / MCP boards). `scope.md` owns in/out/later, deps, and the living tracker. `architecture.md` owns the short human map, quality notes (finding bar), non-obvious edge cases, recommended architecture, and in-work deepening vs later/out backlog. Legacy projects missing `architecture.md` get it created from leftover scope headings, not a full rewrite. Implement chats patch the tracker when they defer work.
 
-Cycle: resume notes → codebase research (web allowed) + `agent_notes.md` → alignment for a shared understanding → `scope.md` + `architecture.md` + `steps/{NN}-*.md` → **APPROVED** → handoff prompt for a **new chat** with `/d-antigravity` and the next step file only (that file links the rest).
+Cycle: resume notes → codebase research (web allowed) + `agent_notes.md` → alignment for a shared understanding → `scope.md` + `architecture.md` + `steps/{NN}-*.md` → adversarial review of those artifacts → **APPROVED** → handoff prompt for a **new chat** with `/d-antigravity` and the next step file only (that file links the rest).
 
-Artifacts: `.working_items/{project}/scope.md`, `architecture.md`, `agent_notes.md`, `steps/`.
+Artifacts: `.working_items/{project}/scope.md`, `architecture.md`, `agent_notes.md`, `adversarial.md`, `steps/`.
 
 ## `/d-antigravity` (Last updated: 2026-09-11)
 
