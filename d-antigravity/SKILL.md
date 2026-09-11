@@ -11,14 +11,11 @@ disable-model-invocation: true
 
 # Antigravity workflow (development)
 
-Simulates the antigravity cycle — research, clarify, plan, approval,
-implement, review — with bounded vertical slices and a deep-module
-design posture. Prefer simple, stable interfaces that hide cohesive
-implementation complexity.
+Ship one approved vertical slice at a time with simple, stable interfaces that
+hide cohesive implementation complexity. All artifacts live under
+`.working_items/{task}/`. Follow **Tasks** in order.
 
 ## Artifact layout
-
-All artifacts live under `.working_items/{task}/`:
 
 ```
 .working_items/{task}/
@@ -68,55 +65,53 @@ Agent-facing code map. Paths/symbols/commands/one-line facts only. No plan dupli
 ## Do not touch
 ```
 
-## Rules (priority order)
+## Design rules (priority order)
 
-Apply in this order when they conflict:
+A module is any file, class, object, package, service, or subsystem with a boundary. Apply in this order when they conflict:
 
 1. **Reduce system complexity**: optimize for simpler callers, fewer concepts, and less coordination—not the smallest diff or fastest implementation.
-2. **Deep modules**: prefer small, intent-oriented interfaces that hide substantial cohesive implementation complexity.
-3. **Push complexity downward**: keep invariants, sequencing, representation, policy, error handling, and special cases behind the module that owns them.
+2. **Deep modules**: prefer small, intent-oriented interfaces that hide substantial cohesive implementation. Callers express intent without coordinating internal steps. Favor fewer, deeper modules over shallow wrappers, pass-through methods, fragmented helpers, or interfaces that mirror implementation details.
+3. **Push complexity downward**: keep invariants, sequencing, representation, policy, error handling, and special cases behind the module that owns them. Co-locate state, policy, invariants, and related complexity when that reduces knowledge shared across modules. Prefer eliminating invalid states and special cases over repeatedly exposing them.
 4. **Prefer clear boundaries**: minimize coupling, information leakage, pass-through layers, and duplicated orchestration. Organize around responsibility and knowledge, not execution order.
-5. **Extend/reuse sound code**, but do not preserve shallow abstractions or misplaced responsibilities merely to minimize changes.
-6. **Design deliberately**: for important or reshaped boundaries, consider alternative designs. Treat excessive coordination, awkward naming, or difficult-to-describe interfaces as signs the abstraction may be wrong.
-7. **Keep the approved vertical slice**: larger changes are allowed when required to deepen a module or simplify its boundary; no unrelated cleanup or speculative generalization.
+5. **Judge abstractions by caller complexity removed**, not by size or line count. For important or reshaped boundaries, consider alternative designs. Treat excessive coordination, awkward naming, or difficult-to-describe interfaces as signs the abstraction may be wrong.
+6. **Extend/reuse sound code**, but do not preserve shallow abstractions or misplaced responsibilities merely to minimize changes.
+7. **Keep the approved vertical slice**: larger changes are allowed when required to deepen a module or simplify its boundary; no unrelated cleanup or speculative generalization. New or reshaped public/module boundaries must be named in the approved plan; private implementation structure may evolve to realize that design. Preserve public behavior and compatibility unless the approved plan includes an interface migration.
 8. **Test restraint**: prefer high-signal contract tests over test volume; do not add tests merely to perform a red/green loop.
 9. **Comments explain what code cannot**: document non-obvious intent, invariants, or rationale; avoid comments that restate understandable code.
 
-## Deep-module design standard
-
-Treat a module as any file, class, object, package, service, or subsystem with a boundary.
-
-* Expose the smallest practical interface for the capability. Callers should express intent without coordinating internal steps.
-* Favor fewer, deeper modules over shallow wrappers, pass-through methods, fragmented helpers, or interfaces that mirror implementation details.
-* Co-locate state, policy, invariants, and related complexity when doing so reduces knowledge shared across modules.
-* Prefer designs that eliminate invalid states and special cases rather than repeatedly exposing or handling them.
-* Judge an abstraction by the complexity it removes from callers, not by its size or line count.
-* Preserve public behavior and compatibility unless the approved plan explicitly includes an interface migration.
-* New or reshaped public/module boundaries must be named in the approved plan; private implementation structure may evolve as needed to realize that design.
-
 ## Tasks
-**use the TODO tool to track tasks**
+
+Plans are bullets, not paragraphs.
+
+**Trackers**
+- **TODO tool**: which *skill* step this chat is on (`1`, `2a`, `2b`, `2c`, `3`, `4`, `5`, `6`). Update it as you enter each step.
+- **`phase-{N}/tasks.md`**: implementation work for the current phase (source of truth for coding steps).
+- **`phase_plan.md` checkboxes**: phase-level `- [ ]` / `- [o]` / `- [x]`.
 
 ### 1. Review request, research & clarify
-- **Project intake (optional)**: Do **not** search for a parent project. Attach only when (1) the user links `.working_items/{project}/scope.md`, `architecture.md`, or `steps/{NN}-*.md`, or names `{project}` and that `scope.md` exists, or (2) a `phase-*/tasks.md` for this `{task}` already has `project:`. Otherwise skip this block (behavior unchanged).
-  When attached: start from the linked **step** (or the next `- [ ]`/`- [o]` tracker step if only `scope.md` / `architecture.md` was named). Follow that step’s `## Related` links to `{project}/scope.md`, `{project}/architecture.md`, and sibling steps; also read `{project}/agent_notes.md`. If `architecture.md` is missing, create it from leftover `scope.md` `## Deep modules` / `## Quality backlog` (or `- none`) without a full rewrite — deepening and quality live on `architecture.md`. Treat the **step** as the request; still research, clarify, and write phase/implementation plans as usual. Honor the architecture slice and in-work deepening named for this step. Do not invent a different project. Do not explode the step into isolation-sized project-tracker tickets — granular checklists stay in this phase’s `tasks.md`. If creating a new task folder, `{task}` = `{project}--{step-stem}` (step filename without `.md`). Set that tracker line to `- [o]` if it was `- [ ]`. On resume, include project tracker status in the chat summary. Trust on-disk `{project}/scope.md` and `architecture.md` over chat memory (implementers may have patched them).
-- Standardize a unique `{task}` slug as a lowercase kebab-case identifier (e.g., `fix-auth-bug`). If project intake already set `{task}` to `{project}--{step-stem}`, keep that. Create `.working_items/{task}/` if missing.
-- Create `.working_items/{task}/agent_notes.md` from the template if missing (stub with all five section headers).
-- **Entry / resume (phase plan linked or exists)**: If the user links or names a phase plan, or `.working_items/{task}/phase_plan.md` already exists:
-  1. Read `.working_items/{task}/phase_plan.md` and, for the next incomplete phase, any existing `phase-{N}/implementation_plan.md` and `phase-{N}/tasks.md`.
-  2. Read `.working_items/{task}/agent_notes.md` (create stub first if missing).
-  3. Find the next incomplete phase (`- [ ]` or `- [o]`). Treat `- [o]` as the current in-progress phase. Let `{N}` be that phase’s 1-based index.
-  4. Skip 2a/2b if `approved: true` in the phase plan frontmatter.
-  5. Post a concise chat summary: completed phases, next phase title, and where work resumes — then clarify (below) before planning that phase (**create or reuse** `phase-{N}/` artifacts for *this* phase only; do not reuse or overwrite other phase folders).
-- **Resuming mid-phase**: If `phase-{N}/tasks.md` exists with incomplete checklist items and `approved: true`, skip clarify/planning, resume at the first unchecked item, and continue Implementation/Verification as appropriate. Still read plans then `agent_notes.md` before coding.
-- **No phase plan**: use `phase-1/` for all implementation artifacts. Still maintain `agent_notes.md`.
-- **Research codebase**: Find relevant files, trace logical flows, and build a full understanding of the scope of changes, potential impacts, risks, and side-effects. Update `agent_notes.md` with durable paths/symbols/gotchas/commands not already in plans.
-- **Establish baseline**: Record the current branch/base commit and any pre-existing dirty files before implementation. Preserve unrelated user changes.
-- **Evaluate boundaries**: Identify the current public interface, complexity leaked to callers, duplicated orchestration, shallow wrappers, and invariants spread across modules. Determine which boundary should own that complexity.
-- **Clarify blocking user decisions only**: Resolve uncertainty that materially affects externally observable behavior, architecture/module boundaries, irreversible decisions, significant dependencies, or substantial scope. If a question can be answered by exploring the codebase, explore instead; do not ask it. For reversible implementation choices, choose the locally consistent option and document any material assumption in the plan.
-  - Ask questions directly in chat. **Do not use the Q&A/AskQuestion tool.**
-  - Ask all **independent** questions in a **single chat message**. Number each with a stable id (`1.`, `2.`, …).
-  - For each question, list options alphabetically (`a)`, `b)`, `c)`, …) and mark the recommended one. Users reply with ids (e.g. `1b 2a`).
+
+1. Standardize a unique `{task}` slug as a lowercase kebab-case identifier (e.g., `fix-auth-bug`). Create `.working_items/{task}/` if missing.
+2. Create `.working_items/{task}/agent_notes.md` from the template if missing (stub with all five section headers).
+3. **Parent project — default skip.** Do **not** search for a parent project. Attach only if one of these is true:
+   1. The user links `.working_items/{project}/scope.md`, `architecture.md`, or `steps/{NN}-*.md`, **or** names `{project}` and that `scope.md` exists.
+   2. A `phase-*/tasks.md` for this `{task}` already has `project:`.
+   - If neither: skip the rest of this numbered list.
+   - If attached:
+     1. Start from the linked **step** (or the next `- [ ]`/`- [o]` tracker step if only `scope.md` / `architecture.md` was named).
+     2. Follow that step’s `## Related` links to `{project}/scope.md`, `{project}/architecture.md`, and sibling steps; also read `{project}/agent_notes.md`.
+     3. If `architecture.md` is missing, create it from leftover `scope.md` `## Deep modules` / `## Quality backlog` (or `- none`) without a full rewrite — deepening and quality live on `architecture.md`.
+     4. Treat the **step** as the request. Honor the architecture slice and in-work deepening named for this step. Do not invent a different project. Do not explode the step into isolation-sized project-tracker tickets — granular checklists stay in this phase’s `tasks.md`.
+     5. If creating a new task folder, `{task}` = `{project}--{step-stem}` (step filename without `.md`). Keep that slug if already set.
+     6. Set that tracker line to `- [o]` if it was `- [ ]`.
+     7. Trust on-disk `{project}/scope.md` and `architecture.md` over chat memory. On resume, include project tracker status in the chat summary.
+4. Read existing `.working_items/{task}/phase_plan.md` if the user linked/named it or the file exists. For the next incomplete phase, read any existing `phase-{N}/implementation_plan.md` and `phase-{N}/tasks.md`. Then read `agent_notes.md`.
+5. **Research codebase**: Find relevant files, trace logical flows, and build a full understanding of the scope of changes, potential impacts, risks, and side-effects. Update `agent_notes.md` with durable paths/symbols/gotchas/commands not already in plans.
+6. **Establish baseline**: Record the current branch/base commit and any pre-existing dirty files before implementation. Preserve unrelated user changes.
+7. **Evaluate boundaries**: Identify the current public interface, complexity leaked to callers, duplicated orchestration, shallow wrappers, and invariants spread across modules. Determine which boundary should own that complexity.
+8. **Clarify blocking user decisions only**: Resolve uncertainty that materially affects externally observable behavior, architecture/module boundaries, irreversible decisions, significant dependencies, or substantial scope. If a question can be answered by exploring the codebase, explore instead; do not ask it. For reversible implementation choices, choose the locally consistent option and document any material assumption in the plan.
+   - Ask questions directly in chat. **Do not use the Q&A/AskQuestion tool.**
+   - Ask all **independent** questions in a **single chat message**. Number each with a stable id (`1.`, `2.`, …).
+   - For each question, list options alphabetically (`a)`, `b)`, `c)`, …) and mark the recommended one. Users reply with ids (e.g. `1b 2a`).
 
     ```
     1. Where should drafts persist?
@@ -128,10 +123,18 @@ Treat a module as any file, class, object, package, service, or subsystem with a
        b) Any project member
     ```
 
-  - After answers, ask only follow-up questions unlocked by those decisions or by new information that still require user judgment. Continue until no **blocking** user decisions remain.
-  - Pause for the user's response before the next pass or before planning.
-- **DO NOT proceed to phase plan or implementation plan while a blocking user decision remains unresolved**.
-- **Next step after clarify**: If `.working_items/{task}/phase_plan.md` exists with `approved: true`, proceed to **2c**. If a phase plan is needed but not yet approved, proceed to **2a**. If no phase plan is needed, skip to **2c**.
+   - After answers, ask only follow-up questions unlocked by those decisions or by new information that still require user judgment. Continue until no **blocking** user decisions remain.
+   - Pause for the user's response before the next pass or before planning.
+9. **DO NOT proceed to phase plan or implementation plan while a blocking user decision remains unresolved**.
+
+Use the first matching row. `{N}` is the next incomplete phase (`- [ ]` or `- [o]`; treat `- [o]` as current). Create or reuse `phase-{N}/` for *this* phase only; do not reuse or overwrite other phase folders.
+
+| If | `{N}` | After clarify, go to |
+| --- | --- | --- |
+| `phase-{N}/tasks.md` exists, checklist incomplete, `approved: true` | that phase | **4** Implementation (or **5** if `phase: verification`). Skip remaining clarify/planning. Read plans then `agent_notes.md` before coding. |
+| `phase_plan.md` exists (or user linked/named it) | next incomplete phase | **2c**. Chat-summarize completed phases, next title, resume point. Do not rewrite the phase plan unless the user asked. |
+| A phase plan is needed (criteria in **2a**) and `phase_plan.md` is missing | set in 2a | **2a** |
+| Else | `1` | **2c** (`phase-1/`). Still maintain `agent_notes.md`. |
 
 ### 2a. Develop a phase plan (optional)
 Create a phase plan when **any** of these apply:
@@ -142,7 +145,7 @@ Create a phase plan when **any** of these apply:
 - It is unclear which existing code to extend, **or**
 - The work is likely to span multiple context windows or has materially different rollback/risk between parts.
 
-Otherwise skip to **2c** (use `phase-1/`). If no phase plan is used, only one **APPROVED** gate is required (step 3).
+Otherwise skip to **2c** (use `phase-1/`).
 
 #### Phase size limits
 - Each phase is one **vertical slice** that can ship and verify on its own.
@@ -150,9 +153,6 @@ Otherwise skip to **2c** (use `phase-1/`). If no phase plan is used, only one **
 - Scope a phase around one coherent module boundary. It may change many files when needed to move complexity behind that boundary and update its callers atomically.
 - Split work when it spans independent behaviors, boundaries, or risk/rollback units, not merely to satisfy a file-count limit.
 - Phases must be vertical slices, not horizontal layers (e.g., "Add DB table" is bad; "Add 'Save Draft' button that writes to DB" is good).
-
-#### Rules for Brevity & Efficiency:
-1. **No Fluff**: Keep the phase plan extremely crisp and bulleted. Avoid long-winded paragraphs or verbose descriptions.
 
 #### Template `.working_items/{task}/phase_plan.md`
 ```markdown
@@ -171,20 +171,18 @@ approved: false
 
 ## Proposed phases
 
-- [ ] Phase 1: {Brief description of phase 1}
-   * Details about phase 1 
-- [ ] Phase 2: {Brief description of phase 2}
-   * Details about phase 2
+- [ ] Phase 1: {title} — {one-line vertical slice}. Verify: {how this phase is shown done}
+- [ ] Phase 2: {title} — {one-line vertical slice}. Verify: {how this phase is shown done}
 ```
 
 After drafting the phase plan, proceed to **2b**.
 
-### 2b. Phase plan review
-If a phase document is generated do the following. Otherwise skip to develop an implementation plan.
+### 2b. Phase plan chat summary
+If you wrote `phase_plan.md` in **2a**, do **2b**. Else go to **2c**.
 - Provide a highly concise, high-level summary of proposed phases **(maximum 3-4 bullets total)** in the chat, followed by a relative link to `.working_items/{task}/phase_plan.md`.
-- If the phase plan itself introduces a major architectural, scope, migration, or irreversible decision that requires separate authorization, ask the user to reply with **APPROVED** before 2c and set `approved: true` once approved.
-- If the user requests phase-plan revisions before APPROVED (or before proceeding when no separate gate), update the plan, then present **2b** again.
-- Otherwise proceed to **2c** and include the phase plan in the implementation-plan approval at step 3; do not require a second formal gate.
+- **Do not ask for APPROVED** here. The only approval gate is step **3**.
+- If the user requests phase-plan revisions, update the plan, then present **2b** again.
+- Then proceed to **2c**. Include the phase plan in the implementation-plan review at step 3.
 
 ### 2c. Develop an implementation plan
 Determine `{N}` (next incomplete phase index, or `1` if no phase plan). Create directory `.working_items/{task}/phase-{N}/` if missing.
@@ -192,9 +190,6 @@ Determine `{N}` (next incomplete phase index, or `1` if no phase plan). Create d
 **Always write fresh** `implementation_plan.md` and `tasks.md` into that phase folder. Do **not** overwrite or edit artifacts under other `phase-*` folders. If this phase folder already has incomplete work (resume mid-phase), keep existing files and continue; otherwise create new ones. If a parent project is attached, include `project:` and `step:` in `tasks.md` frontmatter.
 
 If a phase plan is being used, limit scope to phase `{N}` and change that phase’s `- [ ]` to `- [o]` in `phase_plan.md`.
-
-#### Rules for Brevity & Efficiency:
-1. **No Fluff**: Keep the implementation plan extremely crisp and bulleted. Avoid long-winded paragraphs or verbose descriptions.
 
 #### Template `.working_items/{task}/phase-{N}/implementation_plan.md`
 ```markdown
@@ -241,6 +236,9 @@ Automated Verification is the **only** place that authorizes planned new or exte
 - {extend|new}: {case} — locks: {public contract / observable behavior}
 - Ban: private-helper tests, call-count/mock interaction tests, duplicate cases for the same contract, tests whose sole job is to go red then green, snapshot/golden files unless named here
 
+**Test budget (planned)**
+- new: {N} | extended: {M} | reused only: {yes/no}
+
 ### Manual Verification
 {manual verification plan - terse bullet list; OK as primary check for low-risk plumbing when New/extended is none}
 ```
@@ -273,26 +271,53 @@ last_error: null
 After drafting `implementation_plan.md` and `tasks.md`, proceed to **3**.
 
 ### 3. User review
+The **only** APPROVED gate. Never treat 2b as approval.
 - In the chat, first a **System context** line (verbatim from the implementation plan’s Deep-module **System context** bullet): one sentence by default, two max. Name the owning boundary and its role so the user can tell what part of the system is changing; who calls it at a high level; what this slice does not own. No file tree. Always include it, even for thin wiring — still name the owning boundary.
 - Then a highly concise, high-level summary of proposed changes **(maximum 3-4 bullets total)**, followed by a relative link to `.working_items/{task}/phase-{N}/implementation_plan.md`.
-- If an unapproved phase plan is being used, include its relative link in the same review.
+- If a phase plan is being used and its frontmatter is still `approved: false`, include its relative link in the same review (one gate covers both).
 - Ask the user to reply with **APPROVED** to proceed. Repeat if revisions are requested.
-- If the user requests plan revisions before APPROVED, update the plan/`tasks.md`, then present human review again.
-- **DO NOT proceed to Implementation without explicit "APPROVED" sign-off.** Once approved, set `approved: true` and `phase: implementation` in `phase-{N}/tasks.md` frontmatter; if a phase plan is being approved in the same gate, also set `approved: true` in its frontmatter.
+- If the user requests plan revisions before APPROVED, update the plan/`tasks.md` (and phase plan if needed), then present this review again.
+- **DO NOT proceed to Implementation without explicit "APPROVED" sign-off.** Once approved, set `approved: true` and `phase: implementation` in `phase-{N}/tasks.md` frontmatter; if a phase plan is in this same review, also set `approved: true` in its frontmatter.
 
 ### 4. Implementation
 - Implement via a **Contract-first verify** loop (not mandatory red/green per step).
 - **Delegation is optional**: Use the `Task` tool (subagent) when the work is self-contained, parallelizable, mechanically large, or delegation materially protects the main agent's context budget. Keep implementation in the main agent when success depends heavily on architectural context accumulated during research or the change is tightly coupled.
-- If delegating, the **subagent prompt MUST include** (verbatim constraints — do not omit):
-  - Paths to `.working_items/{task}/phase-{N}/implementation_plan.md`, `.working_items/{task}/phase-{N}/tasks.md`, and `.working_items/{task}/agent_notes.md`
-  - Instruct: read plans/tasks first, then `agent_notes.md`, before coding
-  - The **Rules (priority order)** block from this skill
-  - The **Deep-module design standard** block from this skill
-  - The **agent_notes.md** rules (purpose, write/update, banned content, in-section edits only — no full-file rewrite)
-  - Instruct: stay within the approved plan’s scope; do not start later phases; do not introduce a new public/module boundary, dependency, externally visible concept, or major abstraction unless the plan names it. Private implementation structure may evolve when needed to realize the approved design without widening scope.
-  - Instruct: follow the approved plan’s **Automated Verification** for planned tests. Do not invent new behavioral requirements. If implementation exposes a concrete regression in an already-approved public contract, a focused new/extended regression case is allowed; record it under `## Discoveries` and report it as a verification-plan delta. Stop for re-approval only if the case changes the approved behavior, architecture, or scope.
-  - Instruct: as each checklist step completes, the **subagent** must change `- [ ]` to `- [x]` in `.working_items/{task}/phase-{N}/tasks.md`
-  - Instruct: update `agent_notes.md` in-section when durable map knowledge is learned; check the notes checklist item when done (or when intentionally confirming no new durable knowledge)
+- If delegating, copy the **subagent brief** below; fill `{task}` and `{N}`. Do not omit sections.
+
+#### Subagent brief (copy)
+```
+Implement the approved phase. Read these files first, in order:
+- .working_items/{task}/phase-{N}/implementation_plan.md
+- .working_items/{task}/phase-{N}/tasks.md
+- .working_items/{task}/agent_notes.md
+
+Stay within the approved plan’s scope. Do not start later phases. Do not introduce a new public/module boundary, dependency, externally visible concept, or major abstraction unless the plan names it. Private implementation structure may evolve when needed to realize the approved design without widening scope.
+
+Follow the approved plan’s Automated Verification for planned tests. Do not invent new behavioral requirements. If implementation exposes a concrete regression in an already-approved public contract, a focused new/extended regression case is allowed; record it under ## Discoveries and report it as a verification-plan delta. Stop for re-approval only if the case changes the approved behavior, architecture, or scope.
+
+As each checklist step completes, change `- [ ]` to `- [x]` in .working_items/{task}/phase-{N}/tasks.md. Update agent_notes.md in-section when durable map knowledge is learned; check the notes checklist item when done (or when intentionally confirming no new durable knowledge). Do not rewrite agent_notes.md in full.
+
+Return a clean summary of changes, commands run, discoveries, and Test budget (new: N | extended: M | reused only: yes/no).
+
+## Design rules (priority order)
+A module is any file, class, object, package, service, or subsystem with a boundary. Apply in this order when they conflict:
+1. Reduce system complexity: optimize for simpler callers, fewer concepts, and less coordination—not the smallest diff or fastest implementation.
+2. Deep modules: prefer small, intent-oriented interfaces that hide substantial cohesive implementation. Callers express intent without coordinating internal steps. Favor fewer, deeper modules over shallow wrappers, pass-through methods, fragmented helpers, or interfaces that mirror implementation details.
+3. Push complexity downward: keep invariants, sequencing, representation, policy, error handling, and special cases behind the module that owns them. Co-locate state, policy, invariants, and related complexity when that reduces knowledge shared across modules. Prefer eliminating invalid states and special cases over repeatedly exposing them.
+4. Prefer clear boundaries: minimize coupling, information leakage, pass-through layers, and duplicated orchestration. Organize around responsibility and knowledge, not execution order.
+5. Judge abstractions by caller complexity removed, not by size or line count. For important or reshaped boundaries, consider alternative designs. Treat excessive coordination, awkward naming, or difficult-to-describe interfaces as signs the abstraction may be wrong.
+6. Extend/reuse sound code, but do not preserve shallow abstractions or misplaced responsibilities merely to minimize changes.
+7. Keep the approved vertical slice: larger changes are allowed when required to deepen a module or simplify its boundary; no unrelated cleanup or speculative generalization. New or reshaped public/module boundaries must be named in the approved plan; private implementation structure may evolve to realize that design. Preserve public behavior and compatibility unless the approved plan includes an interface migration.
+8. Test restraint: prefer high-signal contract tests over test volume; do not add tests merely to perform a red/green loop.
+9. Comments explain what code cannot: document non-obvious intent, invariants, or rationale; avoid comments that restate understandable code.
+
+## agent_notes.md rules
+- Purpose: durable code map only (paths/symbols/commands/one-line facts). Not a second plan or walkthrough.
+- Write: edit the relevant section in place; never rewrite the whole file.
+- Banned: plan/walkthrough duplication; user-facing summaries; approval status; test pass/fail narratives; phase changelogs; speculative TODOs / design debate.
+- Prune toward ≤~30 bullets; keep all five section headers even when empty.
+```
+
 - Follow **Contract-first verify** whether implementation is performed by the main agent or a subagent:
   - **Default**: Implement the approved change, then run **Existing coverage to run**. No new test required for refactors, wiring, or plumbing.
   - **When New/extended cases lists a case**: light red→green only for that **net-new or extended public contract** — write/extend the listed case against observable boundary behavior, confirm it fails for the right reason (new) or asserts the new contract (extend), then make the smallest coherent change that passes while following the approved boundary design.
@@ -301,14 +326,13 @@ After drafting `implementation_plan.md` and `tasks.md`, proceed to **3**.
   - **Ban**: tests for private helpers, call counts, mock interaction shape, duplicates of the same contract, or any test whose sole purpose is to satisfy a red/green ritual.
 - **Discoveries**: Record only material implementation discoveries in `tasks.md` — plan adjustments, newly discovered invariants, verification deltas, or unexpected scope. Adapt autonomously to local/reversible discoveries. Pause for user guidance if a discovery changes public behavior, an approved architecture/module boundary, migration strategy, significant dependency, or substantial scope.
 - **Project report-back (optional)**: If a parent project is attached, write material tradeoffs and work pushed out of this step onto `{project}/scope.md` (`## Tradeoffs / push-outs`, `## Later`, later tracker steps / new last step). If deepening or quality work was dropped or deferred, patch `{project}/architecture.md` (`## Deep modules`, `## Quality backlog`, `## Edge cases` as needed; create the file from leftover scope headings if missing). Prefer deferring widening work over expanding this step. Pause if that changes approved project outcomes, owning boundaries, or drops/replaces a step. If no parent is attached, skip.
-- If delegated, instruct the subagent to return a clean summary of changes, commands run, discoveries, and Test budget (`new: N | extended: M | reused only: yes/no`) when finished.
 - Maintain exact indentation/formatting; avoid placeholder code.
 
 ### 5. Verification
 - **Main agent** owns verification and review artifacts (not the implementation subagent).
 - Update `phase: verification` in `phase-{N}/tasks.md`.
 - Execute all automated verification checks from the approved plan (Existing coverage + any listed New/extended cases) plus any focused regression case allowed and recorded under `## Discoveries`.
-- Confirm Test budget matches the approved plan plus any recorded regression delta (`new: N | extended: M | reused only: yes/no`).
+- Confirm Test budget matches the plan’s **Test budget (planned)** plus any recorded regression delta (`new: N | extended: M | reused only: yes/no`).
 - **Soft warn (do not block)**: if tests were added beyond the approved Verification plan and were not a recorded regression delta, note them in the walkthrough and prefer removing or folding into an amended plan next time — still allow phase completion if checks pass.
 - Verify callers use the intended simple interface and do not depend on newly private implementation details.
 - Verify the refactor removed obsolete paths and did not leave duplicate orchestration across the old and new boundaries.
@@ -338,16 +362,6 @@ After drafting `implementation_plan.md` and `tasks.md`, proceed to **3**.
 {summary - 1-2 sentences}
 
 - **System context**: {same sentence as implementation plan Deep-module **System context**}
-
-## User Review Required
-
-### RISKS
-
-1. {risk notes - terse list}
-
-### IMPORTANT
-
-1. {important notes - terse list}
 
 ## Changes made
 

@@ -46,7 +46,7 @@ For each inline or review-body issue this user already submitted, classify:
 | `stale` | outdated/unanchorable and not yet verified fixed — inspect current code this pass and upgrade to `addressed` or `still_open` |
 | `reintroduced` | previously addressed (or not present at last review) and the update brings the defect back |
 
-Do not reset `COMMENTS.md`. Mark prior submitted rows with the new status. Propose a new inline comment only for `still_open` / `reintroduced` that still meet the default bar, or for **new** defects on the update diff. Do not re-submit fingerprints already posted unless re-anchoring a `still_open` issue after approval.
+Do not reset `COMMENTS.md`. Mark prior submitted rows with the new status. Propose a new inline comment only for `still_open` / `reintroduced` that still meet the default bar, or for **new** defects on the update diff. Do not re-submit fingerprints already posted unless re-anchoring a `still_open` issue after approval. New GitHub wording follows SKILL.md rule 7 (self-contained; no claim ids or local artifact names).
 
 Print a short **Prior comments** block in intake, after specialists, and in the walkthrough (full table in the walkthrough; counts elsewhere).
 

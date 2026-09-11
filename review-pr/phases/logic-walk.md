@@ -19,7 +19,7 @@ Primary human-review units are the **claim**, important design/boundary decision
 
 ## Walkthrough
 
-1. Repeat every walked claim id and exact claim text in chat (`incremental`: walked claims only; one-line reminder for already-reviewed unchanged claims). Never require the user to open `BUSINESS_CLAIMS.md`.
+1. Repeat every walked claim id and exact claim text in chat (`incremental`: walked claims only; one-line reminder for already-reviewed unchanged claims). Never require the user to open `BUSINESS_CLAIMS.md`. Claim ids are for this chat and local artifacts only.
 2. For each confirmed claim, use this structure:
    - claim text
    - implementation path the agent traced (files/symbols/flow; cite ranges in prose)
@@ -40,7 +40,7 @@ Primary human-review units are the **claim**, important design/boundary decision
 7. Compare the traced path, callers, summarized tests, specialist evidence (including QUALITY.md correctness and maintainability), and local patterns against the claim.
 8. If `review_risk` is `high` (or a medium PR still reshaped a public/module boundary), include a **Boundary decisions** block: what changed at the boundary, why it matters, residual risk. The user confirms this in the same walkthrough turn—no extra gate.
 9. Inspect remaining core sections and summarize role and disposition. Do not paste every changed section to make coverage section-complete.
-10. Present surviving findings as a single numbered comment list. For each, include file/range, severity, confidence, concise rationale, and the exact proposed GitHub body.
+10. Present surviving findings as a single numbered comment list. For each, include file/range, severity, confidence, concise rationale (claim ids OK here), and the exact proposed GitHub body. The GitHub body must stand alone: restated expected behavior, trigger, consequence, fix direction — no `C1`/`claim c1`, no `.working_items/` or artifact/skill filenames, no “see walkthrough/coverage.”
 11. By default, include only `high` confidence `blocker` or `recommended` findings with a concrete consequence: broken logic, unintended behavior, security risk, a material test gap (including CI that never runs this project's tests), or a maintainability regression with a concrete fix direction. Exclude nits unless the user requested them.
 12. Present unresolved product intent as chat questions and record them in `HUMAN_REVIEW_PROMPTS.md`; do not turn ambiguity into an inline comment.
 13. Print the coverage table and Human oversight bullets (below). Then end the message with **Next actions** (below). Wait.
