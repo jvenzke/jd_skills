@@ -28,7 +28,7 @@ Always post a concise top-level summary in addition to inline comments:
 ## Review summary
 
 **Verdict:** <approve | request changes | comment>
-**Review risk:** <low | medium | high> — <reasons>
+**Review risk:** <low | medium | high | critical> — <reasons>
 
 ### What was reviewed
 <behaviors checked and residual uncertainty in product terms>

@@ -16,7 +16,7 @@ Read them at `base_sha`, never at `head_sha`. The file lives in the repository u
 
 Patterns resolve relative to the containing file's directory, so a repository-root file covers everything and a package-level file scopes to that package.
 
-Report the outcome in the walkthrough either way: the files applied and their matches, or that no red-zone file exists. A guardrail that reports nothing cannot be shown to have run.
+Record what discovery found in `tasks.md` `redzone_files`, or `none`, whether or not anything later matches. Report the outcome in the walkthrough either way: the files applied and their matches, or that no red-zone file exists. A guardrail that reports nothing cannot be shown to have run.
 
 ## File format
 
@@ -33,9 +33,9 @@ Glob patterns with reasons. The reason is required; the walkthrough prints it be
 
 When the active diff matches a pattern:
 
-1. Intake sets `review_risk: critical`, names the matched path in `review_risk_reasons`, and records the matches in `tasks.md` `redzone_paths` and `PR_BRIEF.md`. Never lower that risk later in the review.
+1. Intake sets `review_risk: critical`, names the matched path in `review_risk_reasons`, and records the matches in `tasks.md` `redzone_paths` and in `PR_BRIEF.md`. Never lower that risk later in the review.
 2. Every changed section in a matched path is shown in the walkthrough as a fenced `diff` hunk, finding or not. `agent_reviewed_not_shown` is not available for those rows.
 3. The walkthrough flags the path in the changed-path tree and asks the user to acknowledge the change before the submit gate.
-4. A changed red-zone section with no covering test is recorded in `TESTS.md` and raised in the walkthrough as an unresolved prompt.
+4. A changed red-zone section with no covering test is recorded in `TESTS.md`, written to `HUMAN_REVIEW_PROMPTS.md`, and raised in the walkthrough as an unresolved prompt.
 
 A red zone is not itself a finding. It sets depth and exposure; the finding bar in [`phases/skeptic.md`](phases/skeptic.md) still applies.
