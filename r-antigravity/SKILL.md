@@ -67,11 +67,11 @@ Treat a module as any script, notebook helper, class, object, package, or CLI en
 - Standardize `{task}` and create `.working_items/{task}/` if missing.
 - **Resume**: If `tasks.md` exists with `approved: true` and unchecked items, read plan + tasks, skip clarify/planning, resume at the first unchecked item, and post a short “where we left off” summary. If a plan exists but is not approved, resume at clarify or user review as appropriate.
 - **Research**: Find relevant files, flows, risks, and the intended researcher entrypoint. Identify ceremony forced on the researcher and plumbing that should move behind a simple interface.
-- **Clarify blocking decisions only**: Resolve uncertainty that materially affects success criteria, inputs/outputs, irreversible side effects (writes, external calls), or substantial scope. If a question can be answered by exploring the codebase, explore instead.
-  - Ask questions directly in chat. **Do not use the Q&A/AskQuestion tool.**
-  - Ask all **independent** questions in a **single chat message**. Number each (`1.`, `2.`, …). For each, list options alphabetically (`a)`, `b)`, …) and mark the recommended one. Users reply with ids (e.g. `1b 2a`).
-  - After answers, ask only follow-ups unlocked by those decisions. Pause for the response before the next pass or before planning.
-- **DO NOT** write the implementation plan while a blocking user decision remains unresolved.
+- **Align**: Shared understanding of forks that would change outcomes (success criteria, inputs/outputs, irreversible side effects, substantial scope)—not a minimal interrogatory. If the codebase can answer, explore instead. For reversible implementation choices, pick the locally consistent option and note it in the plan.
+  - Ask in chat. **Do not use the Q&A/AskQuestion tool.**
+  - All **independent** questions in **one** message. Number (`1.`, `2.`, …). Options as indented `- a)`, `- b)`, … alphabetically; mark **(recommended)**. Users reply with ids (e.g. `1b 2a`).
+  - After answers, ask only follow-ups an answer blocked or changed (or new facts that still need user judgment). Pause before the next pass or before planning.
+- **DO NOT** write the implementation plan while an alignment question that would change outcomes remains open.
 
 ### 2. Develop an implementation plan
 Write `.working_items/{task}/implementation_plan.md` and `.working_items/{task}/tasks.md`.

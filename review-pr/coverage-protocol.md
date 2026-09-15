@@ -19,11 +19,11 @@ The inventory unit is a **changed section** (one `@@` region). A rename with no 
 
 Percents use `changed_sections` as the denominator (exclude `not_applicable`). Presentation counts are not a measure of meaningful human review.
 
-Mark a **product** row `human_presented` only when those exact changed lines were printed as a fenced code block in chat in the same turn. Line-number mentions do not count. `human_presented` means the code was **shown**; it does not mean the user reviewed or understood it. Never label it Human-reviewed.
+Mark a **product** row `human_presented` only when those exact changed lines were printed as a fenced `diff` hunk in chat in the same turn. Line-number mentions and Cursor path citations of current files do not count. `human_presented` means the code was **shown**; it does not mean the user reviewed or understood it. Never label it Human-reviewed.
 
 Changed tests are never `human_presented`. After the agent inspects them, summarize each relevant test in chat (setup, assertion, claim/branch) and mark `agent_reviewed_not_shown` with reason `test_summarized_in_chat`.
 
-The walkthrough is claim- and decision-complete, not section-complete. Show exact product code when it is needed for human judgment (proposed findings, material public/module boundaries, ambiguous intent, user-requested expansion, or a design decision that cannot be confirmed from the traced path). After inspecting other core sections, summarize them in chat and mark `agent_reviewed_not_shown` with reason `covered_by_static_review`. Incidental changes use the most specific agent-only reason.
+The walkthrough is claim- and decision-complete, not section-complete. Show exact product diffs when they are needed for human judgment (proposed findings, material public/module boundaries, ambiguous intent, user-requested expansion, or a design decision that cannot be confirmed from the traced path). After inspecting other core sections, summarize them in chat and mark `agent_reviewed_not_shown` with reason `covered_by_static_review`. Incidental changes use the most specific agent-only reason.
 
 | path | section | + | - | count | status | reason | shown_in |
 | --- | --- | ---: | ---: | ---: | --- | --- | --- |

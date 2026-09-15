@@ -1,117 +1,95 @@
 # Phase 4 — Intent-complete logic walkthrough
 
-Walk all confirmed claims in one turn by default, ordered by risk/dependency.
-
-If `review_scope` is `incremental`, read `follow-up.md`. Walk only claims whose implementing sections are in the update diff (plus claims tied to `still_open` / `reintroduced` comments). Note unchanged claims as already reviewed at `prior_review_head_sha`. Show update product code only. Include a **Prior comments** table (addressed / still open / stale / reintroduced) before the new comment list.
+Run after adversarial verification, against current (usually draft) claims. Walk all applicable claims in one turn, ordered by risk and dependency:
 
 1. contracts, schemas, migrations, interfaces
 2. domain/service logic
 3. APIs, controllers, jobs, events
 4. persistence and integrations
 5. UI/state flows
-6. tests proving the behavior (prose summary only; do not paste test source)
+6. tests proving behavior (prose only)
 
-Do not ask the user to select slices first. They may skip a claim. Never split merely because there is more than one claim.
+If incremental, apply [`follow-up.md`](follow-up.md): walk update-affected claims and still-open/reintroduced items, show update diffs only, note unchanged claims as already reviewed, and include prior-comment statuses before new comments.
 
-Split into another turn only when the user asks or the claim paths plus commented ranges would be unreadable in one response (normally more than four core files or an unusually large paste). Explain the split before pausing.
-
-Primary human-review units are the **claim**, important design/boundary decision, unresolved ambiguity, and surviving finding—not the raw section. Do not paste large implementation spans merely to raise `human_presented`.
+Do not ask the user to select slices. Split only if requested or if more than about four core files plus comment ranges would be unreadable; explain the split and end with Next actions for the remaining walk.
 
 ## Walkthrough
 
-1. Repeat every walked claim id and exact claim text in chat (`incremental`: walked claims only; one-line reminder for already-reviewed unchanged claims). Never require the user to open `BUSINESS_CLAIMS.md`. Claim ids are for this chat and local artifacts only.
-2. For each confirmed claim, use this structure:
-   - claim text
-   - implementation path the agent traced (files/symbols/flow; cite ranges in prose)
-   - tests/evidence supporting it (prose only for tests; include Snowflake `EXPLAIN`/schema notes when the claim depends on warehouse data)
-   - architecture/boundary changes that materially matter
-   - other readers/writers of the same business data and whether this PR merged them into one location
-   - residual uncertainty
-   - surviving findings, if any
-3. Show exact changed **product** code as fenced blocks using Cursor's code citation format (`startLine:endLine:path`) when it is useful for human judgment, especially when:
-   - a proposed finding needs human evaluation
-   - an important public/module boundary changed
-   - product intent is ambiguous
-   - the user asks to expand the path
-   - direct inspection is necessary to confirm a design decision
-   Include at most five surrounding context lines. A path/line reference alone is not `human_presented`.
-4. Print every changed product range that anchors a proposed comment, even if the path was already summarized.
-5. For changed tests, do not print source. Summarize in chat: file, scenario/setup, assertions, and which claim or branch it covers.
-6. Print a **Test coverage of new code** block: which new/changed product behaviors are covered by which tests (prose), and which new ranges, branches, or claims are uncovered. Print a **CI workflow scope** block: which GitHub workflows/jobs run on this PR and whether they execute the tests that impact this project (path filters, package selectors, skipped jobs).
-7. Compare the traced path, callers, summarized tests, specialist evidence (including QUALITY.md correctness and maintainability), and local patterns against the claim.
-8. If `review_risk` is `high` (or a medium PR still reshaped a public/module boundary), include a **Boundary decisions** block: what changed at the boundary, why it matters, residual risk. The user confirms this in the same walkthrough turn—no extra gate.
-9. Inspect remaining core sections and summarize role and disposition. Do not paste every changed section to make coverage section-complete.
-10. Present surviving findings as a single numbered comment list. For each, include file/range, severity, confidence, concise rationale (claim ids OK here), and the exact proposed GitHub body. That body is only the Comment model template (`## Issue` / `## Proposed fix`); fold expected behavior, trigger, and consequence into **Issue**. Keep it short; name files/functions only to locate the work. No `C1`/`claim c1`, no `.working_items/` or artifact/skill filenames, no “see walkthrough/coverage.” For `future_work`, **Issue** is today’s limitation; **Proposed fix** is the later work and why it is out of this PR.
-11. By default, include `high` confidence `blocker` or `recommended` findings with a concrete consequence: broken logic, unintended behavior, security risk, a material test gap (including CI that never runs this project's tests), or a maintainability regression with a concrete fix. Include `future_work` when the long-term improvement is concrete (follow-up PR, better design, or ticket). Exclude nits unless the user requested them. If the user adds or edits a comment, rewrite it into the template (both headings non-empty) before treating it as approved.
-12. Present unresolved product intent as chat questions and record them in `HUMAN_REVIEW_PROMPTS.md`; do not turn ambiguity into an inline comment.
-13. Print the coverage table and Human oversight bullets (below). Then end the message with **Next actions** (below). Wait.
-14. When the reply covers every Next actions item, record it verbatim if it changes or clarifies a claim, update `COMMENTS.md`, `HUMAN_REVIEW_PROMPTS.md`, `LOGIC_WALKTHROUGH.md`, `COVERAGE.md` (including Human oversight), and `tasks.md`, then start Phase 5 immediately. If anything is missing, re-ask only those numbered items. Do not restart the walk.
+Before walking claims, print:
 
-## Coverage presentation
+1. At most four bullets covering core change, landed vs expected behavior, risk/reasons, CI state, and section totals.
+2. A nested tree of every changed path with `+adds` / `-deletes` per file and directory subtotal. Include generated files and lockfiles.
 
-Read `../coverage-protocol.md`. A **product** section becomes `human_presented` only when its exact changed lines were printed in the current turn. That is exposure, not proof of review. Test sections are summarized in this turn and marked `agent_reviewed_not_shown` / `test_summarized_in_chat`. Other inspected core sections may be summarized and marked `agent_reviewed_not_shown` / `covered_by_static_review`. Incidental changes use the most specific agent-only reason.
+For incremental review, describe only the update: commits/files, risk delta, claim delta, and prior-comment counts. Use update numstat and add a one-line full-PR totals reminder.
 
-Print presentation totals **and** oversight (do not treat shown sections as the human-review score), then **Next actions**:
+Do not dump a separate claims list; each walked claim prints its id and exact text. Present gaps and expected-vs-landed mismatches as unresolved prompts in this turn. Do not require the user to open `BUSINESS_CLAIMS.md`.
 
-```markdown
-| this turn | sections | % of PR |
-| --- | ---: | ---: |
-| shown in chat (`human_presented`) | N | N% |
-| agent-only — <reason> | N | N% |
-| still not reviewed | N | N% |
+For every walked claim, print its id and exact text, then:
 
-### Human oversight
-- claims confirmed:
-- architecture/boundary decisions reviewed:
-- findings approved/rejected/edited:
-- unresolved business questions answered:
-```
+- traced implementation path: files, symbols, callers, and flow
+- supporting evidence and tests; summarize test setup, assertions, and covered branch without pasting test source
+- material architecture/boundary changes
+- other readers/writers of the same business data and whether responsibility is consolidated
+- residual uncertainty
+- surviving findings
 
-Recompute cumulative totals in `COVERAGE.md`; do not estimate. Displayed sections are not the primary measure of meaningful human review.
+Compare the traced path, callers, tests, specialist evidence, and local patterns against the claim. For high risk—or medium risk that reshapes a public/module boundary—add **Boundary decisions** describing the changed boundary, why it matters, and residual risk.
+
+Show only the product `@@` hunks that need human judgment as unified diffs from `git diff <coverage_base>...<head_sha> -- <path>` (`coverage_base` is `base_sha`, or `prior_review_head_sha` when incremental):
+
+- a proposed finding (inside that numbered comment; [`comment-model.md`](../comment-model.md))
+- a material public/module boundary
+- ambiguous intent
+- a user-requested expansion
+- a design decision the traced path cannot settle
+
+Include removed lines and at most five context lines. Do not dump the PR or file diff, and do not use Cursor path citations (they hide deletions). Source the diff from the stored SHAs, not a dirty tree. If a hunk is unreadable, split the walk or summarize mechanical parts. Do not paste large spans to increase presentation counts. Summarize tests unless the user asks for a test diff.
+
+Reprint **Test coverage of new code** and **CI workflow scope** from `TESTS.md`; do not recompute them. Summarize remaining inspected core sections and their disposition.
+
+Present all surviving findings as one numbered list. For each show path/range, the comment-model chat snippet, severity, confidence, concise local rationale, and the exact GitHub body. Apply [`../comment-model.md`](../comment-model.md); do not restate its template or eligibility rules here.
+
+Present unresolved product intent as questions and record it in `HUMAN_REVIEW_PROMPTS.md`. Apply [`../coverage-protocol.md`](../coverage-protocol.md), print its footer and Human oversight, then end with **Next actions**.
+
+Apply [`../business-claims.md`](../business-claims.md) for Intent confirm/edit/add. After a retrigger, re-present affected walks and changed findings; unchanged walks stay already presented. Re-ask Intent.
+
+After the user resolves every action, record decisions in `COMMENTS.md`, `HUMAN_REVIEW_PROMPTS.md`, `LOGIC_WALKTHROUGH.md`, `COVERAGE.md`, and `tasks.md`, then begin phase 5. Re-ask only missing decisions.
 
 ## Next actions
 
-Last block of the walkthrough message. Actions only — do not restate claims, findings, or comment bodies. Do not ask for the review type (that is the submission gate).
+Include only decisions needed this turn:
 
-Include only items that still need a user decision this turn:
+- **Intent** (always): confirm the shown implementation matches all claims, or edit/add claims (retriggers as above). For incremental review, refer to the update and affected claims.
+- **Boundary decisions:** include only when that block was shown.
+- **Each proposed comment:** approve, reject, or edit.
+- **Each unresolved prompt:** answer or leave unresolved.
+- **Additional** (always): other inline comments or product questions.
 
-- Intent (always): confirm the shown implementation matches all claims, or edit them. On `incremental`, this is the update and affected claims only. Do not put claim ids or a claim count in **Next actions**.
-- Boundary decisions: only if that block was shown — confirm, or edit.
-- Each proposed comment: approve, reject, or edit (same words as the walkthrough gate). Omit this group when there are none.
-- Each unresolved product prompt: answer, or leave unresolved. Omit this group when there are none.
-- Additional (always): any other inline comments or product questions to add.
-
-Each item: one line of what to decide, then **Recommended:** plus the other options. Shorthand is allowed (`confirm all`, `approve all except 2`). End the block with an **Example reply** filled with this turn's recommended answers so the user can paste it.
+Do not ask for the review type. Number items contiguously. Each item names the decision, gives **Recommended:** and alternatives, then the block ends with a paste-ready example using actual recommendations.
 
 ```markdown
 ## Next actions
 Needed to start the submit gate (review type comes later). Reply by number or shorthand.
 
-1. Intent — confirm the shown implementation matches all claims, or edit them.
-   Recommended: **confirm** · other: **edit** (what to change)
-2. Boundary decisions — confirm, or edit.
-   Recommended: **confirm** · other: **edit** (what to change)
-3. Comment 1 — approve, reject, or edit.
+1. Intent — confirm the shown implementation matches all claims, or edit/add them.
+   Recommended: **confirm** · other: **edit** (what to change) · **add** (new claim)
+2. Comment 1 — approve, reject, or edit.
    Recommended: **approve** · other: **reject** · **edit**
-4. Prompt — <short label>: answer, or leave unresolved.
-   Recommended: **<answer>** · other: **leave unresolved**
-5. Additional comments or product questions?
+3. Additional comments or product questions?
    Recommended: **none** · other: provide the comment or question
 
 Example reply (recommended):
 1. confirm
-2. confirm
-3. approve
-4. <answer>
-5. none
+2. approve
+3. none
 ```
 
-Omit rows 2–4 when they do not apply. Keep numbering contiguous in the list and in the example reply. Fill the example with the actual recommended answers, not placeholders.
+Omit optional rows that do not apply and keep the example numbering aligned.
 
 ## Output lanes
 
-- Actionable, code-anchored issue → proposed comment in `COMMENTS.md`.
-- Technically valid but unclear business behavior → `HUMAN_REVIEW_PROMPTS.md`.
-- Concrete follow-up (better single-location design, later migration, open ticket) beyond this slice → `future_work` comment; not a substitute for an in-scope defect.
-- Missing PR-body or release-note on migration/deploy order when the PR has ordered steps → `blocker` (**Issue** is the missing note and risk; **Proposed fix** is the expected order to document).
-- Clean code → mark coverage and continue; do not manufacture feedback.
+- Actionable anchored issue → `COMMENTS.md`
+- Unclear business behavior → `HUMAN_REVIEW_PROMPTS.md`
+- Concrete work beyond this PR → `future_work`
+- Missing required migration/deploy-order note → `blocker`
+- Clean code → coverage disposition; do not manufacture feedback

@@ -1,49 +1,40 @@
 # Coding standards (PR review)
 
-Use this checklist in the LOGIC_QUALITY specialist. Goal: **long-term ease of maintaining the codebase**. Judge the PR by whether it leaves callers simpler, invariants localized, and complexity behind stable boundaries — not by whether the diff is small or stylish.
+The LOGIC_QUALITY specialist uses this as the sole maintainability checklist. Optimize for long-term ease of change: simple callers, localized invariants, and complexity hidden behind stable boundaries—not small diffs or stylistic preference.
 
-Do not demand speculative generalization, unrelated cleanup, or an interface migration the PR did not claim. Do not preserve shallow abstractions merely to minimize the diff. Map "approved plan" in the development standard to this PR's confirmed claims (what was done, after the user confirmed it matches expected results).
+Do not demand speculative generalization, unrelated cleanup, or an interface migration outside confirmed claims.
 
-## Maintainability rules (priority order)
+## Priorities
 
-Apply in this order when they conflict:
+1. Reduce total system complexity: fewer concepts and less caller coordination.
+2. Prefer deep modules: small intent-oriented interfaces hiding cohesive complexity.
+3. Push invariants, sequencing, representation, policy, errors, and special cases into the owning module.
+4. Minimize coupling, information leakage, pass-through layers, and duplicated orchestration; organize around knowledge/responsibility.
+5. Reuse sound code without preserving shallow or misplaced abstractions merely to minimize changes.
+6. Deliberately assess important new/reshaped boundaries; awkward coordination or a hard-to-describe interface signals a poor abstraction.
+7. Keep to the PR's vertical slice. A larger edit is justified only when it deepens an already-touched module or simplifies its boundary.
+8. Comments explain non-obvious intent, invariants, or rationale; they do not narrate obvious code.
 
-1. **Reduce system complexity**: optimize for simpler callers, fewer concepts, and less coordination—not the smallest diff or fastest implementation.
-2. **Deep modules**: prefer small, intent-oriented interfaces that hide substantial cohesive implementation complexity.
-3. **Push complexity downward**: keep invariants, sequencing, representation, policy, error handling, and special cases behind the module that owns them.
-4. **Prefer clear boundaries**: minimize coupling, information leakage, pass-through layers, and duplicated orchestration. Organize around responsibility and knowledge, not execution order.
-5. **Extend/reuse sound code**, but do not preserve shallow abstractions or misplaced responsibilities merely to minimize changes.
-6. **Design deliberately**: for important or reshaped boundaries, consider alternative designs. Treat excessive coordination, awkward naming, or difficult-to-describe interfaces as signs the abstraction may be wrong.
-7. **Keep the PR's vertical slice**: larger changes are justified when they deepen a module the PR already touches or simplify its boundary; no unrelated cleanup or speculative generalization.
-8. **Test restraint**: prefer high-signal contract tests over test volume; do not add tests merely to perform a red/green loop. (LOGIC_QUALITY does not score this — TESTS owns it.)
-9. **Comments explain what code cannot**: document non-obvious intent, invariants, or rationale; avoid comments that restate understandable code.
+## Boundary standard
 
-## Deep-module design standard
-
-Treat a module as any file, class, object, package, service, or subsystem with a boundary.
-
-* Expose the smallest practical interface for the capability. Callers should express intent without coordinating internal steps.
-* Favor fewer, deeper modules over shallow wrappers, pass-through methods, fragmented helpers, or interfaces that mirror implementation details.
-* Co-locate state, policy, invariants, and related complexity when doing so reduces knowledge shared across modules.
-* Prefer designs that eliminate invalid states and special cases rather than repeatedly exposing or handling them.
-* Judge an abstraction by the complexity it removes from callers, not by its size or line count.
-* Preserve public behavior and compatibility unless the PR's claims explicitly include an interface migration.
-* New or reshaped public/module boundaries must be named in the PR's claims/intent; private implementation structure may evolve as needed to realize that design.
+- Callers express intent without coordinating internal steps.
+- Co-locate related state, policy, and invariants when that reduces shared knowledge.
+- Eliminate invalid states and repeated special cases behind the owner.
+- Judge abstractions by complexity removed from callers, not size.
+- Preserve public compatibility unless confirmed claims include a migration.
+- Name material public/module boundary changes in the walkthrough.
 
 ## Finding bar
 
-A standards miss is a finding only with a concrete trigger (how a future change or caller is harder), the leaked or misplaced knowledge, and a fix direction.
+A maintainability finding requires:
 
-Include as `recommended` when the PR **introduces or worsens**:
+1. a change this PR introduces or worsens
+2. a concrete current/future trigger or caller
+3. leaked/misplaced knowledge and the resulting change-impact path
+4. one practical fix direction
 
-- leaked complexity (callers must know sequencing, policy, representation, or special cases)
-- a shallow boundary (wrapper, pass-through, fragmented helper, or interface that mirrors internals)
-- misplaced responsibility (invariant or orchestration split across modules, or organized by execution order instead of knowledge)
-- invalid states or special cases left in callers instead of eliminated behind the owning module
-- a hard-to-describe or awkwardly coordinated boundary that will make future change harder
-- comments that restate obvious code, or missing comments where a non-obvious invariant/rationale is required
-- a new or extra path for the same business data (entity/fields/invariants) when callers, jobs, APIs, or SQL could share one location
+Qualifying problems include leaked coordination/policy/representation, shallow pass-through boundaries, split responsibility, caller-exposed invalid states, awkward new interfaces, unjustified drive-by abstractions, and extra paths for the same business data.
 
-`blocker` only when that smell creates a concrete correctness or security failure mode. Local style, naming, and formatting are `nit` and stay out of the default comment list unless naming is evidence the abstraction itself is wrong. Test-restraint issues belong to the TESTS specialist, not this checklist.
+Search nearby readers/writers of the same entity/fields/invariants, not the repository at random. Consolidation is `recommended` when it fits this slice, `blocker` only when divergence creates a concrete correctness/security failure, and `future_work` when clearly larger than this PR.
 
-Search other readers/writers of the same business data (same entity/fields/invariants), not the whole repository at random. If a second path remains and consolidating it fits this PR’s slice, that is `recommended` (`blocker` if the paths can disagree and break a claim). If consolidation is clearly larger than the PR, emit `future_work` describing the single-location design—do not demand an unrelated rewrite in this PR.
+Naming, formatting, and local style are nits unless they reveal the abstraction problem. TESTS—not LOGIC_QUALITY—owns coverage and test-volume judgment.
