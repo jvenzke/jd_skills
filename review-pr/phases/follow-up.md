@@ -46,15 +46,15 @@ For each inline or review-body issue this user already submitted, classify:
 | `stale` | outdated/unanchorable and not yet verified fixed — inspect current code this pass and upgrade to `addressed` or `still_open` |
 | `reintroduced` | previously addressed (or not present at last review) and the update brings the defect back |
 
-Do not reset `COMMENTS.md`. Mark prior submitted rows with the new status. Propose a new inline comment only for `still_open` / `reintroduced` that still meet the default bar, or for **new** defects on the update diff. Do not re-submit fingerprints already posted unless re-anchoring a `still_open` issue after approval. New GitHub wording follows SKILL.md rule 7 (self-contained; no claim ids or local artifact names).
+Do not reset `COMMENTS.md`. Mark prior submitted rows with the new status. Propose a new inline comment only for `still_open` / `reintroduced` that still meet the default bar, or for **new** defects on the update diff. Do not re-submit fingerprints already posted unless re-anchoring a `still_open` issue after approval. When re-posting, rewrite the **new** GitHub body into the Comment model template (`## Issue` / `## Proposed fix`); do not edit already-posted GitHub threads in place. New GitHub wording follows SKILL.md rule 7 (self-contained; no claim ids or local artifact names).
 
 Print a short **Prior comments** block in intake, after specialists, and in the walkthrough (full table in the walkthrough; counts elsewhere).
 
 ## Claims
 
-Reuse confirmed claims when product intent is unchanged. Print them only as a one-line reminder, not a full re-confirmation gate.
+Reuse confirmed claims when the update does not change that landed behavior. Print them only as a one-line reminder, not a full re-confirmation gate.
 
-Ask for confirmation only when the update adds, drops, or materially changes observable behavior — and only for those added/edited claims. Unchanged confirmed claims stay confirmed.
+Ask for confirmation only when the update adds, drops, or silently changes business logic or an existing flow — and only for those added/edited claims (inferred from the update diff). Unchanged confirmed claims stay confirmed.
 
 Walk only claims whose implementing sections appear in the update diff, plus any claim tied to a `still_open` / `reintroduced` comment. Note skipped unchanged claims as already reviewed at `prior_review_head_sha`.
 
