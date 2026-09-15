@@ -19,6 +19,7 @@ Launch a specialist only when intake’s changed surface triggers that track:
 - SECURITY: auth, trust, secrets, injection, permissions, tenant isolation, sensitive data, or risky dependencies
 - TESTS: changed tests, failing checks, claim-relevant branches, or workflow/path-filter doubt
 - LOGIC_QUALITY: non-trivial product logic (not docs/copy/isolated styling/lockfile)
+- Data and warehouse: SQL, dbt/models, schemas, migrations, or warehouse query strings (do not skip solely because risk is `low`)
 
 If a track is not triggered, still write its artifact with `Skip reason` stating low-risk + absent surface. `Skip reason` is `none` when that scan ran.
 
@@ -26,13 +27,14 @@ Skeptic (phase 3) still runs on whatever candidates exist, including integrated-
 
 ### medium
 
-Launch **SECURITY**, **test coverage**, and **LOGIC_QUALITY** in parallel. Skip a track only when its surface is absent under that specialist’s skip rule below.
+Launch **SECURITY**, **test coverage**, and **LOGIC_QUALITY** in parallel. Skip a track only when its surface is absent under that specialist’s skip rule below. If the PR changes SQL, dbt/models, schemas, migrations, or warehouse query strings, the main agent also runs **Data and warehouse** (below).
 
 ### high
 
 Same parallel specialists as medium, plus:
 
 - cheaper extra evidence: inspect authoritative schema/type/model definitions, lockfiles/resolvers, workflow selectors, and relevant call sites for any candidate that needs them
+- for SQL/schema/warehouse changes, run the **Data and warehouse** checks below (required at any risk when that surface is present; high-risk PRs must not skip them)
 - run a narrow local test or command when it is cheap and would falsify a suspected path
 - note material architecture/public/module boundary changes for the walkthrough **Boundary decisions** block (no extra approval gate)
 
@@ -67,6 +69,24 @@ The main agent writes `SECURITY.md` with every heading below, even when clean:
 ```
 
 `Skip reason` is `none` when the scan ran. A skip is allowed when intake found no security-relevant surface, or when low-risk dispatch did not trigger SECURITY.
+
+## Data and warehouse
+
+Main agent owns this (LOGIC_QUALITY / SECURITY may request it). Required at any `review_risk` when the PR changes SQL, dbt/models, schemas, migrations, or query strings that hit warehouse tables.
+
+Treat migration scripts as having likely run only in **dev** databases—not proof they are safe in staging/prod.
+
+Use the existing Snowflake MCP. View-only (`select`, `describe`, `EXPLAIN` or equivalent). Check table size before heavy reads. Samples under 50 rows. If MCP is missing, blocked, or the objects are not Snowflake, do **not** hunt other connections; record residual risk or a human prompt. Do not invent EXPLAIN output.
+
+Checks:
+
+- `describe` / table metadata vs the code’s tables, columns, and joins
+- `EXPLAIN` (or equivalent) for new or changed queries
+- small samples only when needed to confirm the object is the one the code names
+
+Findings: cannot validate a data-changing query → `recommended`, or `blocker` if it can corrupt, leak, or mis-apply money/tenant data, unless schema/`EXPLAIN` evidence shows the query is sound. Missing MCP is residual risk, not a fake finding.
+
+Record objects checked and EXPLAIN notes in `QUALITY.md` **Evidence checked** (and SECURITY when injection/tenant isolation is in play). Summarize in the walkthrough tests/evidence for the claim.
 
 ## Test coverage specialist
 
@@ -110,7 +130,7 @@ The main agent writes `TESTS.md` with every heading below, even when clean:
 
 ## LOGIC_QUALITY specialist
 
-Review core product changes for claim-aligned correctness **and** long-term maintainability. Read `../coding-standards.md` before inspecting code. Do not review tests for coverage (TESTS owns that) or invent product rules the claims do not state.
+Review core product changes for claim-aligned correctness **and** long-term maintainability. Read `../coding-standards.md` before inspecting code. Do not review tests for coverage (TESTS owns that). Judge against drafted/confirmed claims (what the implementation did). If you find a silent change to business logic or an existing flow that is not yet a claim, return it so the main agent can add a claim/gap—do not invent extra product rules beyond that.
 
 Correctness:
 
@@ -118,6 +138,8 @@ Correctness:
 - invariants that the implementation does not actually preserve
 - callers, persistence, or UI that contradict a claim
 - control-flow or state updates that make a claim false under a concrete trigger
+- silent changes to business logic or an existing flow, or workarounds around existing guardrails, that are not covered by a confirmed claim
+- a second reader/writer of the same business data (entity/fields/invariants) that this slice could have merged into one location
 
 Maintainability (coding-standards.md; same bar as `/d-antigravity`; goal is easier future change, not a small diff):
 
@@ -132,9 +154,9 @@ Maintainability (coding-standards.md; same bar as `/d-antigravity`; goal is easi
 
 Require a concrete trigger, execution or change-impact path, consequence, and fix direction. Naming, formatting, and local style are not findings unless the user asked for nits.
 
-Severity: `blocker` only if the defect or smell creates a concrete correctness or security failure. `recommended` for reachable logic defects and for clear boundary/complexity regressions that will make the codebase harder to maintain. `nit` for local style.
+Severity: `blocker` only if the defect or smell creates a concrete correctness or security failure. `recommended` for reachable logic defects and for clear boundary/complexity regressions that will make the codebase harder to maintain. `future_work` when consolidation or a better single-location design is clearly larger than this PR. `nit` for local style.
 
-Return candidates with changed path/range, exact quote, trigger, consequence, evidence checked, fix direction, confidence, severity, and claim id where applicable. Tag each candidate `correctness` or `maintainability`. Claim ids are for the main agent; do not draft GitHub-facing wording that uses claim ids, `.working_items/`, or local artifact/skill filenames.
+Return candidates with changed path/range, exact quote, trigger, consequence, evidence checked, fix direction, confidence, severity, and claim id where applicable. Tag each candidate `correctness` or `maintainability`. Claim ids are for the main agent; do not draft GitHub-facing comment bodies (the main agent writes `## Issue` / `## Proposed fix`).
 
 The main agent writes `QUALITY.md` with every heading below, even when clean:
 

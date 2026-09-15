@@ -23,8 +23,9 @@ Primary human-review units are the **claim**, important design/boundary decision
 2. For each confirmed claim, use this structure:
    - claim text
    - implementation path the agent traced (files/symbols/flow; cite ranges in prose)
-   - tests/evidence supporting it (prose only for tests)
+   - tests/evidence supporting it (prose only for tests; include Snowflake `EXPLAIN`/schema notes when the claim depends on warehouse data)
    - architecture/boundary changes that materially matter
+   - other readers/writers of the same business data and whether this PR merged them into one location
    - residual uncertainty
    - surviving findings, if any
 3. Show exact changed **product** code as fenced blocks using Cursor's code citation format (`startLine:endLine:path`) when it is useful for human judgment, especially when:
@@ -40,8 +41,8 @@ Primary human-review units are the **claim**, important design/boundary decision
 7. Compare the traced path, callers, summarized tests, specialist evidence (including QUALITY.md correctness and maintainability), and local patterns against the claim.
 8. If `review_risk` is `high` (or a medium PR still reshaped a public/module boundary), include a **Boundary decisions** block: what changed at the boundary, why it matters, residual risk. The user confirms this in the same walkthrough turn—no extra gate.
 9. Inspect remaining core sections and summarize role and disposition. Do not paste every changed section to make coverage section-complete.
-10. Present surviving findings as a single numbered comment list. For each, include file/range, severity, confidence, concise rationale (claim ids OK here), and the exact proposed GitHub body. The GitHub body must stand alone: restated expected behavior, trigger, consequence, fix direction — no `C1`/`claim c1`, no `.working_items/` or artifact/skill filenames, no “see walkthrough/coverage.”
-11. By default, include only `high` confidence `blocker` or `recommended` findings with a concrete consequence: broken logic, unintended behavior, security risk, a material test gap (including CI that never runs this project's tests), or a maintainability regression with a concrete fix direction. Exclude nits unless the user requested them.
+10. Present surviving findings as a single numbered comment list. For each, include file/range, severity, confidence, concise rationale (claim ids OK here), and the exact proposed GitHub body. That body is only the Comment model template (`## Issue` / `## Proposed fix`); fold expected behavior, trigger, and consequence into **Issue**. Keep it short; name files/functions only to locate the work. No `C1`/`claim c1`, no `.working_items/` or artifact/skill filenames, no “see walkthrough/coverage.” For `future_work`, **Issue** is today’s limitation; **Proposed fix** is the later work and why it is out of this PR.
+11. By default, include `high` confidence `blocker` or `recommended` findings with a concrete consequence: broken logic, unintended behavior, security risk, a material test gap (including CI that never runs this project's tests), or a maintainability regression with a concrete fix. Include `future_work` when the long-term improvement is concrete (follow-up PR, better design, or ticket). Exclude nits unless the user requested them. If the user adds or edits a comment, rewrite it into the template (both headings non-empty) before treating it as approved.
 12. Present unresolved product intent as chat questions and record them in `HUMAN_REVIEW_PROMPTS.md`; do not turn ambiguity into an inline comment.
 13. Print the coverage table and Human oversight bullets (below). Then end the message with **Next actions** (below). Wait.
 14. When the reply covers every Next actions item, record it verbatim if it changes or clarifies a claim, update `COMMENTS.md`, `HUMAN_REVIEW_PROMPTS.md`, `LOGIC_WALKTHROUGH.md`, `COVERAGE.md` (including Human oversight), and `tasks.md`, then start Phase 5 immediately. If anything is missing, re-ask only those numbered items. Do not restart the walk.
@@ -111,4 +112,6 @@ Omit rows 2–4 when they do not apply. Keep numbering contiguous in the list an
 
 - Actionable, code-anchored issue → proposed comment in `COMMENTS.md`.
 - Technically valid but unclear business behavior → `HUMAN_REVIEW_PROMPTS.md`.
+- Concrete follow-up (better single-location design, later migration, open ticket) beyond this slice → `future_work` comment; not a substitute for an in-scope defect.
+- Missing PR-body or release-note on migration/deploy order when the PR has ordered steps → `blocker` (**Issue** is the missing note and risk; **Proposed fix** is the expected order to document).
 - Clean code → mark coverage and continue; do not manufacture feedback.

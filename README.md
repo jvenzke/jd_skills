@@ -34,7 +34,8 @@ and asks only the questions the codebase cannot answer. Irreversible work
 waits for the skill's gate: usually an explicit **APPROVED**. `/research-first`,
 `/grill-me`, and `/clean-skill` use numbered option replies instead.
 `/review-pr` submission is naming the GitHub review type after the exact
-payload is shown — not a second **APPROVED**.
+payload is shown — not a second **APPROVED**. `/open-pr` GitHub writes wait
+for **APPROVED** after the exact title and body are shown.
 
 Progress lives on disk, not in chat history. Skills write plans, task
 checklists, and walkthroughs to `.working_items/` in the target repo, so a
@@ -49,6 +50,7 @@ fresh chat resumes by reading those files instead of re-deriving context.
 | [`/d-antigravity`](d-antigravity/SKILL.md) | Real development: architecture, maintainable diffs, vertical slices |
 | [`/r-antigravity`](r-antigravity/SKILL.md) | Research spikes, throwaway tooling, analysis-backed prototypes |
 | [`/review-pr`](review-pr/SKILL.md) | GitHub pull request quality review |
+| [`/open-pr`](open-pr/SKILL.md) | Open or update a PR: Summary, Testing and Validation, Prod migration |
 | [`/grill-me`](grill-me/SKILL.md) | Stress-test a plan or design with one pass of questions |
 | [`/meta-review`](meta-review/SKILL.md) | After a session: check whether skills were followed and should change |
 | [`/clean-skill`](clean-skill/SKILL.md) | After editing a skill: flag text that is unclear for an implementing agent |
@@ -63,7 +65,7 @@ Unused skills live in [`old/`](old/). Do not invoke them; they are archive only.
 
 **Progressive disclosure.** `SKILL.md` holds the contract: when to run, artifact layout, ordered rules, task list, gates, and resume. Load detail only for the active task (`review-pr/phases/…`, templates, scripts). Keep references one level deep. Prefer `SKILL.md` well under 500 lines.
 
-**`description` is the trigger.** Third person. State what the skill does and when to use it. Set `disable-model-invocation: true` unless the skill should auto-attach from ambient context. These skills are explicit (`/name`) only.
+**`description` is the trigger.** Third person. State what the skill does and when to use it. Set `disable-model-invocation: true` unless the skill should auto-attach from ambient context. Skills in this collection are explicit (`/name`) only, except [`/open-pr`](open-pr/SKILL.md) (auto-attaches when creating or updating a GitHub PR).
 
 **Artifact-first, not chat-memory.** Persist under `.working_items/` in the target repo. A later chat resumes by reading those files. Typical pieces:
 
@@ -121,6 +123,10 @@ Single-chat GitHub PR review. Resume from artifacts in the reviewed repo at `.wo
 Tasks: intake (fewest business claims that cover the PR + `low`/`medium`/`high` review risk) → risk-adaptive SECURITY, test-coverage, and LOGIC_QUALITY review → adversarial verification → claim-and-decision walkthrough → submit. Claims come from PR text or the user—not inferred from the diff, and not from Jira. Claims are printed in chat. Always write `SECURITY.md`, `TESTS.md`, and `QUALITY.md` (findings or a written skip) before the walk continues; low risk uses integrated logic/quality plus CI/tests unless a surface triggers a specialist. LOGIC_QUALITY checks claim-aligned correctness and deep-module maintainability (easier future change, not a small diff). Tests report new-code coverage and whether GitHub Actions runs this project’s tests.
 
 Coverage inventory is **changed sections** (`@@` regions, with added and deleted line counts), not additions-only. `human_presented` means exact product code was shown; it is not “human-reviewed.” Tests are summarized in prose, never pasted. Submit keeps presentation metrics and human-oversight bullets in chat/`SUBMISSION.md`; the GitHub body is product language only (no claim ids or local artifact names). Walkthrough units are claims, material boundaries, ambiguities, and surviving findings; paste product code when judgment needs it. High confidence requires cheap falsification when tools can do it. Gates: claims, walkthrough Next actions, then naming the review type after the exact payload. A new `head_sha` is summarized then processed without a pause. Submit posts one GitHub review with event `APPROVE`, `REQUEST_CHANGES`, or `COMMENT`.
+
+## `/open-pr` (Last updated: 2026-09-15)
+
+Auto-attaches when opening a GitHub PR, editing the description, or pushing to a branch that already has an open PR. Drafts title plus **Summary**, **Testing and Validation**, and **Prod migration**. Asks what the user tested before recording not run / not validated. Shows the exact payload; **APPROVED** (or “create/update the PR”) is the GitHub write (`gh pr create` / `gh pr edit`). Does not replace `/d-antigravity` walkthroughs. Does not change `/review-pr`.
 
 ## `/grill-me`, `/meta-review`, and `/clean-skill`
 

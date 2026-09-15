@@ -2,7 +2,7 @@
 
 Use this checklist in the LOGIC_QUALITY specialist. Goal: **long-term ease of maintaining the codebase**. Judge the PR by whether it leaves callers simpler, invariants localized, and complexity behind stable boundaries — not by whether the diff is small or stylish.
 
-Do not demand speculative generalization, unrelated cleanup, or an interface migration the PR did not claim. Do not preserve shallow abstractions merely to minimize the diff. Map "approved plan" in the development standard to this PR's confirmed claims and stated intent.
+Do not demand speculative generalization, unrelated cleanup, or an interface migration the PR did not claim. Do not preserve shallow abstractions merely to minimize the diff. Map "approved plan" in the development standard to this PR's confirmed claims (what was done, after the user confirmed it matches expected results).
 
 ## Maintainability rules (priority order)
 
@@ -42,5 +42,8 @@ Include as `recommended` when the PR **introduces or worsens**:
 - invalid states or special cases left in callers instead of eliminated behind the owning module
 - a hard-to-describe or awkwardly coordinated boundary that will make future change harder
 - comments that restate obvious code, or missing comments where a non-obvious invariant/rationale is required
+- a new or extra path for the same business data (entity/fields/invariants) when callers, jobs, APIs, or SQL could share one location
 
 `blocker` only when that smell creates a concrete correctness or security failure mode. Local style, naming, and formatting are `nit` and stay out of the default comment list unless naming is evidence the abstraction itself is wrong. Test-restraint issues belong to the TESTS specialist, not this checklist.
+
+Search other readers/writers of the same business data (same entity/fields/invariants), not the whole repository at random. If a second path remains and consolidating it fits this PR’s slice, that is `recommended` (`blocker` if the paths can disagree and break a claim). If consolidation is clearly larger than the PR, emit `future_work` describing the single-location design—do not demand an unrelated rewrite in this PR.
