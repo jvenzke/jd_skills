@@ -22,6 +22,8 @@ Record what discovery found in `tasks.md` `redzone_files`, or `none`, whether or
 
 Glob patterns with reasons. The reason is required; the walkthrough prints it beside the flag, so write what breaks and why the diff does not reveal it.
 
+Read the tables and ignore everything else, so a file can open with a heading and a short explanation of what it is. Recommend one: the file sits in a repository whose readers have not read this skill.
+
 ```markdown
 | pattern | why |
 | --- | --- |
