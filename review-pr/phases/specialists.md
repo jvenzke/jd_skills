@@ -15,6 +15,7 @@ Use the stored risk; intake owns classification. Raise it only when a new SHA in
   - Data and warehouse: any SQL, dbt/model, schema, migration, or warehouse query-string change
 - **medium:** launch SECURITY, test coverage, and LOGIC_QUALITY in parallel; skip only under each track's rule. Main agent runs Data and warehouse when triggered.
 - **high:** same tracks, plus authoritative definitions/callers/workflow selectors and cheap narrow falsification. Data and warehouse cannot be skipped when triggered. Record material boundary changes for the walkthrough.
+- **critical:** everything `high` requires, and no track may be skipped for any reason. Apply the required handling in [`../redzones.md`](../redzones.md).
 
 Every absent or untriggered track still gets a complete artifact with its reason.
 
@@ -91,7 +92,8 @@ Mark each step `dev` or `prod`. Where the diff does not settle a step, write the
 3. Map changed product code and claims to tests.
 4. For new/changed behavior, record covering file, scenario/setup, assertions, claim/branch, and uncovered ranges/branches.
 5. Check changed branches; null/empty/boundary/permission/error edges; assertion specificity; bug regressions; and material invariants.
-6. Run targeted local tests only when useful and cheap; ask before expensive/full suites.
+6. Record any changed red-zone section with no covering test; the walkthrough raises it as an unresolved prompt.
+7. Run targeted local tests only when useful and cheap; ask before expensive/full suites.
 
 Passing CI is evidence, not proof. A green workflow that skipped relevant tests is a finding. Do not invent product rules or demand test volume instead of high-signal contract tests.
 

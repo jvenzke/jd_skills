@@ -44,8 +44,9 @@ pr_url: <url>
 base_sha: <full sha>
 head_sha: <full sha>
 phase: intake
-review_risk: low | medium | high
+review_risk: low | medium | high | critical
 review_risk_reasons: <one line>
+redzone_paths: none | <comma-separated matched paths>
 claims_confirmed: false
 review_scope: full | incremental
 prior_review_id: none | <id>
@@ -62,7 +63,7 @@ complete: false
 - [ ] 5. Submit
 ```
 
-Use `- [o]` for the active task and `- [x]` only when its artifact and gate are complete. Set identity/SHA/risk/scope at intake, `phase` at each task start, `claims_confirmed` only on walkthrough Intent confirm, `review_event` only at submission, and `complete` only after GitHub succeeds. Raise stored risk when a new SHA introduces a higher-risk surface.
+Use `- [o]` for the active task and `- [x]` only when its artifact and gate are complete. Set identity/SHA/risk/scope/red zones at intake, `phase` at each task start, `claims_confirmed` only on walkthrough Intent confirm, `review_event` only at submission, and `complete` only after GitHub succeeds. Raise stored risk when a new SHA introduces a higher-risk surface.
 
 Create `agent_notes.md` at intake and keep it under about 30 bullets: durable paths, symbols, flows, commands, and verified invariants not recorded elsewhere. Do not store findings, approvals, summaries, or phase logs there.
 
@@ -78,8 +79,9 @@ Create `agent_notes.md` at intake and keep it under about 30 bullets: durable pa
 8. Do not paste test source in chat unless the user asks for a diff; summarize setup, assertion, and covered claim/branch.
 9. Apply [`phases/skeptic.md`](phases/skeptic.md) to confidence and keep/drop decisions, and [`coding-standards.md`](coding-standards.md) to maintainability.
 10. For SQL/schema/warehouse changes apply **Data and warehouse** in [`phases/specialists.md`](phases/specialists.md). Derive the ordered apply procedure there; do not merely demand the author document it.
-11. Preserve unrelated user changes. Do not edit product code or tests during review.
-12. Use one chat unless the user stops or context requires a handoff.
+11. Match every changed path against [`redzones.md`](redzones.md) at intake and apply its required handling for the rest of the review.
+12. Preserve unrelated user changes. Do not edit product code or tests during review.
+13. Use one chat unless the user stops or context requires a handoff.
 
 ## Entry and resume
 

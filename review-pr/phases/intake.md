@@ -10,8 +10,9 @@
    - supporting core sections
    - incidental/generated/mechanical sections
    - change intent in at most three sentences: landed behavior and any differing PR/user expectation
-7. Write `PR_CONTEXT.md` and `PR_BRIEF.md`. Mark incidental coverage only after enough inspection to justify it.
-8. Classify and persist review risk, then apply [`../business-claims.md`](../business-claims.md). Start phase 2 as soon as draft claims exist; do not wait.
+7. Match every changed path against [`../redzones.md`](../redzones.md) by path prefix. Record matches in `tasks.md` `redzone_paths` and `PR_BRIEF.md`, or `none`. Apply that file's required handling for the rest of the review.
+8. Write `PR_CONTEXT.md` and `PR_BRIEF.md`. Mark incidental coverage only after enough inspection to justify it.
+9. Classify and persist review risk, then apply [`../business-claims.md`](../business-claims.md). Start phase 2 as soon as draft claims exist; do not wait.
 
 ## Review risk
 
@@ -31,5 +32,6 @@ Use:
 - **low:** docs, copy, isolated styling, lockfile-only, or a small self-contained change without a higher-risk surface
 - **medium:** normal product logic or mixed incidental and moderate core changes
 - **high:** one or more higher-risk surfaces, especially across modules or trust/data/money boundaries
+- **critical:** the diff touches a path listed in [`../redzones.md`](../redzones.md)
 
-Persist the rating and concrete reasons in `tasks.md` and `PR_BRIEF.md`. On incremental review, classify the update; never lower a stored `high`, and raise risk if the update adds a higher-risk surface. Risk controls specialist depth but never skips claims, walkthrough, or submission gates.
+Persist the rating and concrete reasons in `tasks.md` and `PR_BRIEF.md`. On incremental review, classify the update; never lower a stored `high` or `critical`, and raise risk if the update adds a higher-risk surface. Risk controls specialist depth but never skips claims, walkthrough, or submission gates.
