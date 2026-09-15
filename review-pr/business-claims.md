@@ -1,8 +1,8 @@
 # Business claims
 
-Write `BUSINESS_CLAIMS.md` during intake. Draft the fewest claims that cover **what the implementation did**, print all of them in chat, and start phase-2 review (risk-adaptive specialists or integrated review) while the user confirms they match expected results or edits them. The logic walkthrough remains blocked until confirmation.
+Write `BUSINESS_CLAIMS.md` during intake. Draft the fewest claims that cover **what the implementation did**, and start phase-2 review (risk-adaptive specialists or integrated review) against those drafts. Print every claim in the **one** claims-gate chat after specialist artifacts exist; wait there for the user to confirm they match expected results or edit them. End that wait with **Next:** (SKILL.md): `confirm` if **all claims** match, or edit them — never claim ids or a claim count in that line. Adversarial verification and the logic walkthrough remain blocked until confirmation.
 
-On an `incremental` follow-up, keep confirmed claims that still match the update’s behavior. Print a one-line reminder; do not re-open the claims gate unless the update adds, drops, or silently changes business logic or an existing flow (confirm only those deltas).
+On an `incremental` follow-up, keep confirmed claims that still match the update’s behavior. Print a one-line reminder; do not re-open the claims gate unless the update adds, drops, or silently changes business logic or an existing flow (confirm only those deltas; **Next:** **all new or changed claims**, not ids or a count).
 
 ```markdown
 ---
@@ -12,11 +12,7 @@ status: draft | confirmed
 
 # Business claims
 
-What was done (3 sentences, inferred from the diff; note PR/user expected results when they differ):
-
-1.
-2.
-3.
+What was done (breif bulleted notes, inferred from the diff; note PR/user expected results when they differ)
 
 | id | claim (testable) | source | implementing sections | status |
 | --- | --- | --- | --- | --- |

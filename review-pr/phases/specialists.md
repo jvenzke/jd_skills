@@ -4,7 +4,7 @@ Always write `SECURITY.md`, `TESTS.md`, and `QUALITY.md` with every required hea
 
 If `review_scope` is `incremental`, read `follow-up.md`. Limit inspection to the update diff plus unresolved/stale prior-comment locations. Open each artifact with `Update since <prior_review_head_sha>`. Do not re-derive findings on unchanged code already covered by this user’s last submitted review unless a prior comment is still open or the defect is reintroduced.
 
-Start the tracks that this risk class requires as soon as the draft claims are printed in chat. They may work while the user confirms or edits those claims.
+Start the tracks that this risk class requires as soon as draft claims exist on disk. Do not print the claims gate until this phase’s artifacts exist with every required heading.
 
 ## Risk dispatch
 
@@ -105,7 +105,7 @@ Record objects checked and EXPLAIN notes in `QUALITY.md` **Evidence checked** (a
 
 Return candidates with changed path/range, exact quote, uncovered claim/branch, concrete failure that could escape, existing evidence, fix direction, confidence, and severity. Include CI-scope misses (relevant tests not invoked by the PR's workflows) the same way. Claim ids are for the main agent; do not draft GitHub-facing wording that uses claim ids, `.working_items/`, or local artifact/skill filenames.
 
-When the main agent presents test coverage in chat, summarize tests in prose. Never paste test source into chat. After `TESTS.md` is written, print a **Test coverage of new code** block in chat (covering tests vs gaps for new/changed product code) and a **CI workflow scope** block (whether GitHub Actions runs this project's impacting tests). Repeat both in the logic walkthrough. They also go in the GitHub review body at submit.
+When the main agent presents test coverage in chat, summarize tests in prose. Never paste test source into chat. After `TESTS.md` is written, print a **Test coverage of new code** block in chat (covering tests vs gaps for new/changed product code) and a **CI workflow scope** block (whether GitHub Actions runs this project's impacting tests). That specialist presentation is otherwise unchanged; do not add findings bodies or extra sections here. Repeat both blocks in the logic walkthrough. They also go in the GitHub review body at submit.
 
 The main agent writes `TESTS.md` with every heading below, even when clean:
 
@@ -176,4 +176,6 @@ The main agent writes `QUALITY.md` with every heading below, even when clean:
 
 ## Completion gate
 
-Do not begin adversarial verification until `SECURITY.md`, `TESTS.md`, and `QUALITY.md` exist with all required headings. Do not begin the logic walkthrough until the claims are also confirmed. If a claim edit materially changes specialist scope, rerun only the affected track; otherwise remap its evidence. Main agent verifies candidate evidence and updates coverage for inspected sections; specialist output alone does not authorize a comment.
+Do not print the claims gate, and do not begin adversarial verification, until `SECURITY.md`, `TESTS.md`, and `QUALITY.md` exist with all required headings. Then send **one** combined message: intake **Output** (bullets, tree, claims), then this phase’s usual chat (test coverage of new code, CI workflow scope, chat footer, plus any findings/skip notes this phase already prints). Last line is **Next:** from SKILL.md **Stops / next step** (`confirm` if all claims match, or edit them — no claim ids or counts). Wait. Do not begin the logic walkthrough until the claims are also confirmed.
+
+If a claim edit materially changes specialist scope, rerun only the affected track; otherwise remap its evidence. Main agent verifies candidate evidence and updates coverage for inspected sections; specialist output alone does not authorize a comment.

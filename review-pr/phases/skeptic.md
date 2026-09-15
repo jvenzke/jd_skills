@@ -1,5 +1,7 @@
 # Phase 3 — Adversarial verification
 
+Run this phase only after `claims_confirmed: true` on `tasks.md`. Do not interleave skeptic notes into the claims-gate message.
+
 The main agent deduplicates specialist (and integrated-review) candidates by defect (same mechanism, overlapping lines) without judging them, then dispatches a fresh read-only skeptic for each candidate or a small related batch.
 
 If `review_scope` is `incremental`, also skeptic `still_open` / `stale` / `reintroduced` prior comments. Addressed prior items are out of scope unless the update reintroduces them.

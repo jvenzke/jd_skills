@@ -75,7 +75,7 @@ Last block of the walkthrough message. Actions only — do not restate claims, f
 
 Include only items that still need a user decision this turn:
 
-- Intent (always): confirm the shown implementation matches the claims, or edit them. On `incremental`, this is the update and affected claims only.
+- Intent (always): confirm the shown implementation matches all claims, or edit them. On `incremental`, this is the update and affected claims only. Do not put claim ids or a claim count in **Next actions**.
 - Boundary decisions: only if that block was shown — confirm, or edit.
 - Each proposed comment: approve, reject, or edit (same words as the walkthrough gate). Omit this group when there are none.
 - Each unresolved product prompt: answer, or leave unresolved. Omit this group when there are none.
@@ -87,7 +87,7 @@ Each item: one line of what to decide, then **Recommended:** plus the other opti
 ## Next actions
 Needed to start the submit gate (review type comes later). Reply by number or shorthand.
 
-1. Intent — confirm the shown implementation matches the claims, or edit them.
+1. Intent — confirm the shown implementation matches all claims, or edit them.
    Recommended: **confirm** · other: **edit** (what to change)
 2. Boundary decisions — confirm, or edit.
    Recommended: **confirm** · other: **edit** (what to change)

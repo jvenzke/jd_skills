@@ -54,7 +54,7 @@ Print a short **Prior comments** block in intake, after specialists, and in the 
 
 Reuse confirmed claims when the update does not change that landed behavior. Print them only as a one-line reminder, not a full re-confirmation gate.
 
-Ask for confirmation only when the update adds, drops, or silently changes business logic or an existing flow — and only for those added/edited claims (inferred from the update diff). Unchanged confirmed claims stay confirmed.
+Ask for confirmation only when the update adds, drops, or silently changes business logic or an existing flow — and only for those added/edited claims (inferred from the update diff). Unchanged confirmed claims stay confirmed. That wait uses **Next:** reply `confirm` if all new or changed claims match expected results, or edit them (no ids or count). If there is no claim delta, do not wait; end the specialist presentation with **Next:** continuing to adversarial verification, then the walkthrough.
 
 Walk only claims whose implementing sections appear in the update diff, plus any claim tied to a `still_open` / `reintroduced` comment. Note skipped unchanged claims as already reviewed at `prior_review_head_sha`.
 
@@ -63,7 +63,7 @@ Walk only claims whose implementing sections appear in the update diff, plus any
 - **Intake:** chat output is the update (commits, files, risk delta, claim delta, prior-comment counts), not a full-PR recap. Recompute `review_risk` from the **update** (raise if new higher-risk surfaces appear; do not lower a stored high rating just because this push is small).
 - **Specialists:** inspect update sections and lingering prior-comment locations only. Write the usual artifacts; open with an `Update since <sha>` section. Do not re-derive findings on unchanged, already-reviewed code.
 - **Skeptic:** run on new candidates and on `still_open` / `stale` / `reintroduced` prior items. Addressed items are out of scope unless the update reintroduces them.
-- **Walkthrough:** show new/changed product code needed for judgment on the update; summarize tests added/changed in the update; include **Prior comments** with addressed vs still open. Next actions cover intent only for changed claims, plus new/still-open comments.
+- **Walkthrough:** show new/changed product code needed for judgment on the update; summarize tests added/changed in the update; include **Prior comments** with addressed vs still open. Next actions cover intent for all affected claims (no ids or count in that line), plus new/still-open comments.
 - **Submit:** review body must state this is a follow-up, the prior event/SHA, and prior-comment outcomes. New inline comments are only the newly approved ones.
 
 ## PRIOR_REVIEW.md

@@ -129,7 +129,7 @@ Store only durable paths, symbols, flows, commands, and verified invariants not 
 3. Continue the first `- [o]` or `- [ ]` task. Do not restart intake or completed tasks.
 4. Re-fetch only when entering initially, before submission, or when `head_sha` may have changed.
 5. Apply Follow-up when this user already submitted a review, or when `head_sha` moved.
-6. Write `NEXT_CHAT_PROMPT.md` only when the user stops, asks to resume later, or context is exhausted.
+6. Write `NEXT_CHAT_PROMPT.md` only when the user stops, asks to resume later, or context is exhausted. That file and the last chat message both end with the same **Next:** line the user would answer at that stop (or `resume: continue from task N — <first action>` if work was mid-phase).
 
 ## Tasks
 
@@ -139,15 +139,15 @@ Specialist prompt titles (in [`{skill-dir}/phases/specialists.md`](phases/specia
 
 ### 1. Intake and business claims
 
-Read [`{skill-dir}/phases/intake.md`](phases/intake.md). Create runtime state, collect GitHub context (including this user’s submitted reviews), initialize coverage, classify core vs incidental changes, classify `review_risk` (`low` / `medium` / `high`) with reasons, and draft the fewest testable business claims that cover **what the implementation did** (often one; more only when behaviors must be judged independently). Infer those claims from the diff so silent changes to business logic or an existing flow are visible—including must-nots (no feature regression, no workaround around existing guardrails). Persist risk on `tasks.md` and in `PR_BRIEF.md`. In the claims-gate chat, print a nested changed-file tree with per-file `+adds`/`-deletes` **above** the first claim. Print the complete claims (what was done) and wait for the user to confirm they match expected results, or to edit them. Ask additional questions only when the diff is not enough to state the behavior that changed, or when implementation and PR/user expected results conflict.
+Read [`{skill-dir}/phases/intake.md`](phases/intake.md). Create runtime state, collect GitHub context (including this user’s submitted reviews), initialize coverage, classify core vs incidental changes, classify `review_risk` (`low` / `medium` / `high`) with reasons, and draft the fewest testable business claims that cover **what the implementation did** (often one; more only when behaviors must be judged independently). Infer those claims from the diff so silent changes to business logic or an existing flow are visible—including must-nots (no feature regression, no workaround around existing guardrails). Persist risk on `tasks.md` and in `PR_BRIEF.md`. Draft claims on disk and start task 2; do **not** print the claims gate or wait until specialist artifacts exist (see task 2). Ask additional questions only when the diff is not enough to state the behavior that changed, or when implementation and PR/user expected results conflict — that is a stop; end with **Next:** (below).
 
 ### 2. Required specialists
 
-Read [`{skill-dir}/phases/specialists.md`](phases/specialists.md). Depth follows stored `review_risk`. Start specialists as soon as draft claims exist; the walkthrough stays blocked until claims are confirmed. Always write `SECURITY.md`, `TESTS.md`, and `QUALITY.md` with all required sections before adversarial verification (findings or a justified skip). After tests land, print **test coverage of new code** and **CI workflow scope** in the chat footer (repeat in the walkthrough; both also go in the GitHub body).
+Read [`{skill-dir}/phases/specialists.md`](phases/specialists.md). Depth follows stored `review_risk`. Start specialists as soon as draft claims exist on disk. Always write `SECURITY.md`, `TESTS.md`, and `QUALITY.md` with all required sections before the claims-gate chat (findings or a justified skip). When those artifacts exist, print **one** combined claims-gate message: intake bullets, changed-file tree, every drafted claim, then the existing specialist chat (test coverage of new code, CI workflow scope, chat footer; findings/skip notes as that phase already specifies). End with **Next:** (below) and wait. Do not start adversarial verification until `claims_confirmed`. Repeat test coverage and CI scope in the walkthrough; both also go in the GitHub body.
 
 ### 3. Adversarial verification
 
-Read [`{skill-dir}/phases/skeptic.md`](phases/skeptic.md). Deduplicate candidates, then use a fresh skeptic to try to disprove them. Main agent verifies all survivors.
+Read [`{skill-dir}/phases/skeptic.md`](phases/skeptic.md). Run only after the claims gate (`claims_confirmed: true`). Deduplicate candidates, then use a fresh skeptic to try to disprove them. Main agent verifies all survivors.
 
 ### 4. Intent-complete logic walkthrough
 
@@ -221,16 +221,38 @@ Read [`{skill-dir}/coverage-protocol.md`](coverage-protocol.md). Initialize with
 - `human_presented` requires exact changed **product** lines in a fenced code block in that turn. It records exposure, not understanding. Never call it Human-reviewed.
 - Changed tests are never `human_presented`. After inspecting them, summarize in chat and mark `agent_reviewed_not_shown` with reason `test_summarized_in_chat`.
 - The walkthrough is claim- and decision-complete, not section-complete. Inspect remaining core sections and mark `agent_reviewed_not_shown`.
-- After each main-agent pass that inspects or presents code: update the inventory, recompute totals, keep **Human oversight** in `COVERAGE.md` in sync with explicit user decisions, and print the chat footer. On the walkthrough turn, print the chat footer, then **Next actions**.
+- After each main-agent pass that inspects or presents code: update the inventory, recompute totals, keep **Human oversight** in `COVERAGE.md` in sync with explicit user decisions, and print the chat footer. On the claims-gate turn, print the footer, then **Next:**. On the walkthrough turn, print the footer, then **Next actions**.
 - Do not call review complete while `not_reviewed` is unexplained.
 
 ## Approval gates
 
-1. **Claims**: user confirms the drafted claims (what the implementation did) match expected results, or edits them. Specialists may run against draft claims during this wait; the walkthrough remains blocked.
+1. **Claims**: after specialist artifacts exist, one combined chat (claims + specialist presentation). User confirms **all claims** (what the implementation did) match expected results, or edits them. Adversarial verification and the walkthrough remain blocked. Not a second specialist gate.
 2. **Walkthrough**: user replies to **Next actions** (see `{skill-dir}/phases/logic-walk.md`): confirms the shown implementation matches the confirmed claims (or edits claims), approves, rejects, or edits comments, answers or leaves prompts unresolved, and may add comments or questions. Not the submission gate.
-3. **Submission**: after seeing the exact review body, exact inline comments, unresolved prompts, chat footer, and Human oversight summary, the user picks one review type: **Approve PR** (`APPROVE`), **Request changes** (`REQUEST_CHANGES`), or **Comment** (`COMMENT`). Naming the type is the GitHub write. The user may edit comments first; then re-show the payload and ask for the type again. Earlier walkthrough approval never authorizes GitHub writes.
+3. **Submission**: after seeing the exact review body, exact inline comments, unresolved prompts, chat footer, and Human oversight summary, the user picks one review type: **Approve PR** (`APPROVE`), **Request changes** (`REQUEST_CHANGES`), or **Comment** (`COMMENT`). Naming the type is the GitHub write. The user may edit comments first; then re-show the payload and ask for the type again. Earlier walkthrough approval never authorizes GitHub writes. Keep this gate’s wording as in `{skill-dir}/phases/submit.md` (do not wrap it as **Next:**).
 
 Do not add other approval gates. A new `head_sha` is summarized and then processed; do not pause for permission to refresh.
+
+## Stops / next step
+
+Every turn that **waits** for the user ends with a last-line **Next:** that says what to type. One short sentence. Do not bury it above skeptic notes, coverage, or findings.
+
+Do **not** put claim ids (`C1`, `C2`) or a claim count in that line. Say **all claims**. On an incremental delta gate, say **all new or changed claims**. Chat and artifacts may still list claim ids in the claims themselves.
+
+Stops (wait, then **Next:**):
+
+- **Claims gate** (full review, or incremental when claims were added/edited): last line after the combined presentation:
+
+```markdown
+**Next:** reply `confirm` if all claims match expected results, or edit them.
+```
+
+  Incremental delta: **all new or changed claims** instead of **all claims**. Blocking gaps: **Next:** answer the questions above, or edit the claims.
+- **Incremental, no claim delta:** not a wait. Combined specialist presentation still ends with **Next:** continuing to adversarial verification, then the walkthrough.
+- **Walkthrough** (including a split): `{skill-dir}/phases/logic-walk.md` **Next actions**. If a split pauses, that message still ends with **Next actions** for the remaining walk.
+- **Stale anchor** at submit: `**Next:** re-anchor, convert to a top-level note, or drop.`
+- **Handoff:** same **Next:** (or resume line) in chat and `NEXT_CHAT_PROMPT.md`.
+
+Not a stop: `head_sha` refresh. Submission type stays the three-option ask in `submit.md`.
 
 ## Completion
 

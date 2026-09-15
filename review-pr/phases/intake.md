@@ -49,15 +49,15 @@ Do not lower a rating to save work. Risk controls specialist depth in phase 2; i
 Read `../business-claims.md`, then write `BUSINESS_CLAIMS.md`.
 
 - Draft the fewest claims that cover what the implementation did. One is enough when the PR is a single behavior. Add more only for independently testable product assertions. Do not pad to a target count. Claims must state observable product behavior: actor, trigger/state, result, and important invariant.
-- Infer those claims from the diff so they describe landed behavior. Use the PR and the user as expected results. Print them so the user can confirm what was done matches what they expected, or edit the claims.
+- Infer those claims from the diff so they describe landed behavior. Use the PR and the user as expected results. Write them to `BUSINESS_CLAIMS.md`. Do not print the claims gate until specialist artifacts exist (phase 2).
 - Cover every silent change to business logic or an existing flow with a drafted claim (including must-nots: no feature regression, no workaround around existing guardrails). Behavior-preserving refactors stay supporting/incidental.
-- Never fetch Jira. If implementation and PR/user expected results disagree, draft the claim as what the code did, note the mismatch, and wait for confirmation.
+- Never fetch Jira. If implementation and PR/user expected results disagree, draft the claim as what the code did, note the mismatch in Gaps, and include those questions in the claims-gate chat (after specialists). That chat is a stop; end with **Next:** (SKILL.md). Do not hide the implementation behind the PR description.
 - Attach the implementing sections that can make each claim true or false. Do not create claims to account for every diff region; classify other sections as supporting core code, incidental, or unexplained coverage.
-- Print the changed-file tree (below) then every drafted claim in chat. Never require the user to open `BUSINESS_CLAIMS.md` to review them.
-- Ask extra questions only when the diff is not enough to state the behavior that changed, or when expected vs done conflicts, and only when the answers materially change the verdict.
-- Start phase 2 against the draft claims while waiting for confirmation (depth follows `review_risk`). If the user edits a claim, remap findings and rerun a specialist only when the edit materially changes its scope.
-- Stop the logic walkthrough until the user confirms the claims (done matches expected) or answers every blocking gap. Then set `claims_confirmed: true` in `tasks.md`.
-- On `incremental` follow-up: reuse unchanged confirmed claims without a new confirmation gate; print a one-line reminder plus **Prior comments** counts; confirm only new or silently changed behaviors. Classify core vs incidental on the **update** diff.
+- The claims-gate chat (phase 2, after specialist artifacts) prints the changed-file tree (below) then every drafted claim. Never require the user to open `BUSINESS_CLAIMS.md` to review them.
+- Ask extra questions only when the diff is not enough to state the behavior that changed, or when expected vs done conflicts, and only when the answers materially change the verdict. If those questions must be answered before specialists can run, stop now with **Next:** answer the questions above, or edit the claims.
+- Start phase 2 against the draft claims as soon as they exist on disk (depth follows `review_risk`). Hold the claims-gate chat until `SECURITY.md`, `TESTS.md`, and `QUALITY.md` exist. If the user later edits a claim, remap findings and rerun a specialist only when the edit materially changes its scope.
+- Stop adversarial verification and the logic walkthrough until the user confirms **all claims** (done matches expected) or answers every blocking gap. Then set `claims_confirmed: true` in `tasks.md`. The **Next:** line must not list claim ids or a claim count.
+- On `incremental` follow-up: reuse unchanged confirmed claims without a new confirmation gate; print a one-line reminder plus **Prior comments** counts; confirm only new or silently changed behaviors (say **all new or changed claims** in **Next:**, not ids or a count). Classify core vs incidental on the **update** diff.
 
 ## Changed-file tree
 
@@ -70,6 +70,8 @@ Do not repeat this tree in the walkthrough unless the user asks.
 
 ## Output
 
-In at most four bullets, show the core change, what the implementation did vs any PR/user expected results, `review_risk` plus reasons, CI status, and initial section coverage (`changed_sections`, `added_lines`, `deleted_lines`). Then the changed-file tree, then every drafted claim verbatim. Ask the user to confirm the claims match expected results, or to edit them.
+Do not send this as a claims-gate wait during intake. After specialist artifacts exist, print it as the first part of the **one** combined claims-gate message (specialist chat follows; **Next:** last).
 
-On `incremental`, those bullets are the **update since last review** (commits/files/risk delta/claim delta), plus prior-comment addressed vs still-open counts. Do not recap the already-reviewed base. The file tree is the update numstat.
+In at most four bullets, show the core change, what the implementation did vs any PR/user expected results, `review_risk` plus reasons, CI status, and initial section coverage (`changed_sections`, `added_lines`, `deleted_lines`). Then the changed-file tree, then every drafted claim verbatim.
+
+On `incremental`, those bullets are the **update since last review** (commits/files/risk delta/claim delta), plus prior-comment addressed vs still-open counts. Do not recap the already-reviewed base. The file tree is the update numstat. Skip the claims wait when every claim is unchanged and already confirmed; still print the specialist presentation and end with **Next:** continuing to adversarial verification, then the walkthrough.
