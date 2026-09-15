@@ -46,6 +46,7 @@ head_sha: <full sha>
 phase: intake
 review_risk: low | medium | high | critical
 review_risk_reasons: <one line>
+redzone_files: none | <discovered red-zone files>
 redzone_paths: none | <comma-separated matched paths>
 claims_confirmed: false
 review_scope: full | incremental
@@ -79,7 +80,7 @@ Create `agent_notes.md` at intake and keep it under about 30 bullets: durable pa
 8. Do not paste test source in chat unless the user asks for a diff; summarize setup, assertion, and covered claim/branch.
 9. Apply [`phases/skeptic.md`](phases/skeptic.md) to confidence and keep/drop decisions, and [`coding-standards.md`](coding-standards.md) to maintainability.
 10. For SQL/schema/warehouse changes apply **Data and warehouse** in [`phases/specialists.md`](phases/specialists.md). Derive the ordered apply procedure there; do not merely demand the author document it.
-11. Match every changed path against [`redzones.md`](redzones.md) at intake and apply its required handling for the rest of the review.
+11. Discover the repository's red-zone files at intake and apply [`red-zone-protocol.md`](red-zone-protocol.md) for the rest of the review.
 12. Preserve unrelated user changes. Do not edit product code or tests during review.
 13. Use one chat unless the user stops or context requires a handoff.
 

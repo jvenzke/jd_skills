@@ -15,7 +15,7 @@ Use the stored risk; intake owns classification. Raise it only when a new SHA in
   - Data and warehouse: any SQL, dbt/model, schema, migration, or warehouse query-string change
 - **medium:** launch SECURITY, test coverage, and LOGIC_QUALITY in parallel; skip only under each track's rule. Main agent runs Data and warehouse when triggered.
 - **high:** same tracks, plus authoritative definitions/callers/workflow selectors and cheap narrow falsification. Data and warehouse cannot be skipped when triggered. Record material boundary changes for the walkthrough.
-- **critical:** everything `high` requires, and no track may be skipped for any reason. Apply the required handling in [`../redzones.md`](../redzones.md).
+- **critical:** everything `high` requires, and no track may be skipped for any reason. Apply the required handling in [`../red-zone-protocol.md`](../red-zone-protocol.md).
 
 Every absent or untriggered track still gets a complete artifact with its reason.
 

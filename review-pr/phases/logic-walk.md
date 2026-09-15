@@ -18,7 +18,8 @@ Do not ask the user to select slices. Split only if requested or if more than ab
 Before walking claims, print:
 
 1. At most four bullets covering core change, landed vs expected behavior, risk/reasons, CI state, and section totals.
-2. A nested tree of every changed path with `+adds` / `-deletes` per file and directory subtotal. Include generated files and lockfiles. Mark each path matched in [`../redzones.md`](../redzones.md) with a trailing `RED ZONE`, and follow the tree with one line per match naming the path and the one-line reason from that file. Print `Red zones: none touched` when there are no matches.
+2. A nested tree of every changed path with `+adds` / `-deletes` per file and directory subtotal. Include generated files and lockfiles. Mark each red-zone path with a trailing `RED ZONE`, and follow the tree with one line per match naming the path and its reason.
+3. The red-zone files discovered at intake and what they matched, or that the repository has none. Print this whether or not anything matched.
 
 For incremental review, describe only the update: commits/files, risk delta, claim delta, and prior-comment counts. Use update numstat and add a one-line full-PR totals reminder.
 
