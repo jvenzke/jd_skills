@@ -77,7 +77,7 @@ Create `agent_notes.md` at intake and keep it under about 30 bullets: durable pa
 7. Walk claims and material decisions, not raw section count. Use [`coverage-protocol.md`](coverage-protocol.md) for exposure accounting and Human oversight.
 8. Do not paste test source in chat unless the user asks for a diff; summarize setup, assertion, and covered claim/branch.
 9. Apply [`phases/skeptic.md`](phases/skeptic.md) to confidence and keep/drop decisions, and [`coding-standards.md`](coding-standards.md) to maintainability.
-10. For SQL/schema/warehouse changes apply **Data and warehouse** in [`phases/specialists.md`](phases/specialists.md). For ordered migration/deploy steps, require PR-body or linked release-note instructions.
+10. For SQL/schema/warehouse changes apply **Data and warehouse** in [`phases/specialists.md`](phases/specialists.md). Derive the ordered apply procedure there; do not merely demand the author document it.
 11. Preserve unrelated user changes. Do not edit product code or tests during review.
 12. Use one chat unless the user stops or context requires a handoff.
 

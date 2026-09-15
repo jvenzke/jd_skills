@@ -35,6 +35,8 @@ For every walked claim, print its id and exact text, then:
 
 Compare the traced path, callers, tests, specialist evidence, and local patterns against the claim. For high risk—or medium risk that reshapes a public/module boundary—add **Boundary decisions** describing the changed boundary, why it matters, and residual risk.
 
+Print `## Apply order` from `QUALITY.md` verbatim when it is not `n/a`, before the claims, and say whether the PR body or linked release notes already state it.
+
 Show only the product `@@` hunks that need human judgment as unified diffs from `git diff <coverage_base>...<head_sha> -- <path>` (`coverage_base` is `base_sha`, or `prior_review_head_sha` when incremental):
 
 - a proposed finding (inside that numbered comment; [`comment-model.md`](../comment-model.md))
@@ -60,6 +62,7 @@ After the user resolves every action, record decisions in `COMMENTS.md`, `HUMAN_
 Include only decisions needed this turn:
 
 - **Intent** (always): confirm the shown implementation matches all claims, or edit/add claims (retriggers as above). For incremental review, refer to the update and affected claims.
+- **Apply order:** include only when the block was shown. The user confirms the derived order, corrects it, or supplies the missing step.
 - **Boundary decisions:** include only when that block was shown.
 - **Each proposed comment:** approve, reject, or edit.
 - **Each unresolved prompt:** answer or leave unresolved.

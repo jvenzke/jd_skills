@@ -72,6 +72,18 @@ Treat migrations as likely applied only in dev. If MCP is missing/blocked or obj
 
 Failure to validate a data-changing query is `recommended`, or `blocker` when corruption, leakage, tenant isolation, or money can be misapplied, unless schema/plan evidence resolves it. Record objects and plan notes in `QUALITY.md` Evidence checked and in `SECURITY.md` when relevant.
 
+### Apply order
+
+When the diff contains migration DDL, dependency rebuilds, backfills, or any other step whose order matters, derive the procedure from the diff rather than waiting for the author to document it. Record it in `QUALITY.md` under `## Apply order` as a numbered list a person can follow without reading the diff:
+
+1. each DDL statement in dependency order, naming the object it touches
+2. dependent objects to rebuild or refresh afterwards: views, dbt models, materializations, downstream tables, caches
+3. backfills and one-off scripts, with the state each assumes
+4. where the code merge sits relative to those steps, and whether new code tolerates the old schema and old code tolerates the new schema
+5. the rollback for each irreversible step, or `no rollback` and what that costs
+
+Mark each step `dev` or `prod`. Where the diff does not settle a step, write the assumption and route it to `HUMAN_REVIEW_PROMPTS.md` rather than guessing.
+
 ## Test coverage
 
 1. Read CI/check results and map failures to changed files.
@@ -124,13 +136,14 @@ Write:
 ## Evidence checked
 ## Correctness
 ## Maintainability
+## Apply order
 ## Clean areas
 ## Findings
 ## Unresolved questions
 ## Skip reason
 ```
 
-Always fill Correctness and Maintainability, using `n/a` plus reason if skipped. Skip only when no core product code changed or low-risk dispatch did not trigger the track.
+Always fill Correctness, Maintainability, and Apply order, using `n/a` plus reason if skipped. Apply order is owned by the Data and warehouse track, not the LOGIC_QUALITY specialist. Skip only when no core product code changed or low-risk dispatch did not trigger the track.
 
 ## Completion gate
 

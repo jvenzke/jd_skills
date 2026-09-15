@@ -48,6 +48,7 @@ Separate from presentation counts. Record only explicit user decisions (not disp
 - architecture/boundary decisions reviewed:
 - findings approved/rejected/edited:
 - unresolved business questions answered:
+- apply order confirmed or corrected:
 
 ## Agent-only reasons
 
