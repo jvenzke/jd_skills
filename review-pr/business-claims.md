@@ -1,8 +1,8 @@
 # Business claims
 
-Write `BUSINESS_CLAIMS.md` during intake. Draft the fewest claims that cover **what the implementation did**, and start phase-2 review (risk-adaptive specialists or integrated review) against those drafts. Print every claim in the **one** claims-gate chat after specialist artifacts exist; wait there for the user to confirm they match expected results or edit them. End that wait with **Next:** (SKILL.md): `confirm` if **all claims** match, or edit them — never claim ids or a claim count in that line. Adversarial verification and the logic walkthrough remain blocked until confirmation.
+Write `BUSINESS_CLAIMS.md` during intake. Claims describe what the diff actually implemented; PR text and the user describe expected results. Phases 2–3 review draft claims. The walkthrough presents claims and asks whether landed behavior matches expectations.
 
-On an `incremental` follow-up, keep confirmed claims that still match the update’s behavior. Print a one-line reminder; do not re-open the claims gate unless the update adds, drops, or silently changes business logic or an existing flow (confirm only those deltas; **Next:** **all new or changed claims**, not ids or a count).
+On incremental review, preserve unchanged confirmed claims. Walk added, removed, or materially changed behavior as new or changed claims.
 
 ```markdown
 ---
@@ -12,27 +12,27 @@ status: draft | confirmed
 
 # Business claims
 
-What was done (breif bulleted notes, inferred from the diff; note PR/user expected results when they differ)
+## What was done
+<brief diff-derived bullets; note differing PR/user expectations>
 
 | id | claim (testable) | source | implementing sections | status |
 | --- | --- | --- | --- | --- |
 | C1 | | diff / pr / user | | draft, confirmed, or gap |
 
 ## Gaps
-
-Questions the user must answer before review continues (including expected vs done mismatches). Empty if claims are confirmed.
+<blocking questions or expected-vs-landed mismatches>
 
 ## Non-goals / out of scope
-
-Quoted from the PR or user, or inferred as unchanged when the diff clearly does not touch them. Do not invent unrelated non-goals.
+<quoted from PR/user, or clearly unchanged; do not invent>
 ```
 
-Rules:
+## Rules
 
-- Use as few claims as possible to cover what the implementation did. Prefer one claim. Add another only when it is an independently testable product assertion (different actor, trigger, result, or must-not) that would be judged separately if it failed. Do not split a single feature into several claims, pad toward a count, or invent claims to occupy leftover diff sections. A claim is a product assertion you could be wrong about (who, when, what data, what must not happen). "Code compiles" is not a claim.
-- Infer claims from the implementation (diff vs `base_sha`) so they describe what actually landed. Use the PR body and the user as expected results. The claims gate is where the user confirms that what was done matches what they expected. Do not search Jira.
-- Every silent change to business logic or an existing flow must appear as a drafted claim (source `diff`) so the user can accept, rewrite, or reject it. That includes must-nots: no unintended feature regression, and no workaround around existing guardrails (validation, permissions, flags, invariants). Pure refactors, formatting, generated files, and comments that preserve behavior stay supporting or incidental and do not get their own claims.
-- If the PR/user expected results and the implementation disagree, draft the claim as what the code did, call out the mismatch in Gaps, and wait. Do not hide the implementation behind the PR description.
-- Status `gap` means the change cannot be judged yet. Ask before walking that code. An unconfirmed silent change to business logic, an existing flow, or a guardrail stays a gap and stays eligible as a blocker until the user confirms it is intended. Confirmed claims can drop a “unexpected change” finding; they do not skip walking the path.
-- Claims describe observable behavior of this PR; they are not an inventory of diff sections. Attach only the core implementing sections that can make each claim true or false.
-- Classify remaining changes as supporting core code, incidental changes, or unexplained coverage. Do not create another claim merely to map a leftover section. Unclear behavior becomes a human prompt.
+- Use the fewest independently testable product assertions—often one. Each claim states actor, trigger/state, observable result, and important invariant or must-not.
+- Infer claims from the diff against `base_sha`. Include every silent change to business logic, an existing flow, or a guardrail. Do not hide landed behavior behind the PR description.
+- Use separate claims only when behavior could be judged independently. Pure refactors, formatting, generated files, and behavior-preserving support code are not claims.
+- Attach only sections that can make a claim true or false. Classify the rest as supporting core, incidental, or unexplained coverage.
+- When expected and landed behavior differ, describe landed behavior, record the mismatch under Gaps, and ask the user. `gap` remains potentially blocking until resolved.
+- Ask only questions that materially affect judgment and cannot be answered from code. Never search Jira.
+- Start specialists once drafts exist. On walkthrough edit/add, set `claims_confirmed: false`; if scope changes materially, rerun only affected specialist and skeptic tracks; otherwise remap evidence.
+- After Intent **confirm**, set artifact status and `tasks.md claims_confirmed: true`. Confirmation removes “unexpected change” as a finding; it does not authorize GitHub writes.

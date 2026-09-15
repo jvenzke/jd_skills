@@ -1,70 +1,59 @@
-# Follow-up review (prior submitted review)
+# Follow-up review
 
-Use this file when the **current GitHub user** already submitted a review on this PR with event `APPROVE`, `REQUEST_CHANGES`, or `COMMENT`. Detect from GitHub (source of truth), not only local `SUBMISSION.md`. Pending/unsubmitted reviews do not count.
-
-This is not a sixth task. It changes how tasks 1–5 run: every phase reviews the **update since that submission**, and reports whether **prior comments were addressed**.
+Apply when the current GitHub user already submitted `APPROVE`, `REQUEST_CHANGES`, or `COMMENT` on this PR. This modifies phases 1–5; it is not a sixth task.
 
 ## Detect
 
-During intake (and on `head_sha` refresh), fetch:
+Fetch the current user, their submitted reviews newest-first, and review threads/comments with resolved/outdated status. Pending reviews do not count. GitHub is source of truth.
 
-- `gh api user --jq .login`
-- this user's submitted PR reviews (newest first): id, event, `submitted_at`, `commit_id`
-- review threads/comments (inline + body), including resolved/outdated flags
-
-If none exist, `review_scope: full` and skip the rest of this file.
-
-If one or more exist, set on `tasks.md`:
+If found, use the latest submitted review and set:
 
 ```yaml
 review_scope: incremental
 prior_review_id: <id>
 prior_review_event: APPROVE | REQUEST_CHANGES | COMMENT
-prior_review_head_sha: <commit_id of that review>
+prior_review_head_sha: <review commit_id>
 ```
 
-Use the latest submitted review by this user. Also persist `PRIOR_REVIEW.md` (below).
+Write `PRIOR_REVIEW.md`. With no submitted review by this user, use `review_scope: full` even if others reviewed. Explicit “full re-review” also uses `full`. Pending reviews, issue comments, and unsubmitted inlines do not set scope.
 
-## Update diff
+## Scope
 
-The review surface is `prior_review_head_sha...head_sha` (GitHub three-dot compare / `git diff A...B` after fetch).
+Review `prior_review_head_sha...head_sha`:
 
-- Initialize `COVERAGE.md` from that update diff, not the full PR diff.
-- Core vs incidental, specialists, skeptic, walkthrough, and proposed **new** comments are limited to update sections, plus any file still carrying an unresolved or stale prior comment.
-- Fetch full PR metadata as usual so claims and prior-comment context stay accurate; do not re-present the already-reviewed base in chat.
+- initialize coverage from this update diff
+- classify core/incidental, risk, specialists, skeptic, walkthrough, and new findings from update sections
+- additionally inspect unresolved/stale prior-comment locations
+- fetch full metadata for context, but do not re-present the reviewed base
 
-If the update diff is empty (no new commits), do not re-walk the old implementation. Report “no new changes,” re-check prior comments against current code, and continue to submit only if the user still wants a new review event (common after fixes that GitHub already included in the last `commit_id`).
+For an empty update, report no new changes and re-check prior comments. Do not re-walk old code. Continue to submission only if the user wants another review event.
 
 ## Prior comments
 
-For each inline or review-body issue this user already submitted, classify:
+Classify each prior issue:
 
 | status | meaning |
 | --- | --- |
-| `addressed` | thread resolved **or** current code no longer has the defect (quote/anchor stale and the failure path is gone) |
-| `still_open` | unresolved and the defect still applies; re-anchor if the section moved |
-| `stale` | outdated/unanchorable and not yet verified fixed — inspect current code this pass and upgrade to `addressed` or `still_open` |
-| `reintroduced` | previously addressed (or not present at last review) and the update brings the defect back |
+| `addressed` | resolved or current code removes the failure |
+| `still_open` | defect remains; re-anchor if needed |
+| `stale` | unanchorable and not yet verified |
+| `reintroduced` | update restores a previously absent/addressed defect |
 
-Do not reset `COMMENTS.md`. Mark prior submitted rows with the new status. Propose a new inline comment only for `still_open` / `reintroduced` that still meet the default bar, or for **new** defects on the update diff. Do not re-submit fingerprints already posted unless re-anchoring a `still_open` issue after approval. When re-posting, rewrite the **new** GitHub body into the Comment model template (`## Issue` / `## Proposed fix`); do not edit already-posted GitHub threads in place. New GitHub wording follows SKILL.md rule 7 (self-contained; no claim ids or local artifact names).
+Never reset `COMMENTS.md`. Apply `../comment-model.md` to new, still-open, reintroduced, or re-anchored findings. Do not edit posted threads in place or re-submit a fingerprint unless approved re-anchoring is needed.
 
-Print a short **Prior comments** block in intake, after specialists, and in the walkthrough (full table in the walkthrough; counts elsewhere).
+Show prior-comment counts in the walkthrough preamble and the full status list before new comments.
 
 ## Claims
 
-Reuse confirmed claims when the update does not change that landed behavior. Print them only as a one-line reminder, not a full re-confirmation gate.
+Reuse unchanged confirmed claims with a one-line reminder. Walk only affected claims and claims tied to still-open/reintroduced findings. Added, removed, or materially changed update behavior is walked as new or changed claims.
 
-Ask for confirmation only when the update adds, drops, or silently changes business logic or an existing flow — and only for those added/edited claims (inferred from the update diff). Unchanged confirmed claims stay confirmed. That wait uses **Next:** reply `confirm` if all new or changed claims match expected results, or edit them (no ids or count). If there is no claim delta, do not wait; end the specialist presentation with **Next:** continuing to adversarial verification, then the walkthrough.
+## Phase application
 
-Walk only claims whose implementing sections appear in the update diff, plus any claim tied to a `still_open` / `reintroduced` comment. Note skipped unchanged claims as already reviewed at `prior_review_head_sha`.
-
-## Phase constraints
-
-- **Intake:** chat output is the update (commits, files, risk delta, claim delta, prior-comment counts), not a full-PR recap. Recompute `review_risk` from the **update** (raise if new higher-risk surfaces appear; do not lower a stored high rating just because this push is small).
-- **Specialists:** inspect update sections and lingering prior-comment locations only. Write the usual artifacts; open with an `Update since <sha>` section. Do not re-derive findings on unchanged, already-reviewed code.
-- **Skeptic:** run on new candidates and on `still_open` / `stale` / `reintroduced` prior items. Addressed items are out of scope unless the update reintroduces them.
-- **Walkthrough:** show new/changed product code needed for judgment on the update; summarize tests added/changed in the update; include **Prior comments** with addressed vs still open. Next actions cover intent for all affected claims (no ids or count in that line), plus new/still-open comments.
-- **Submit:** review body must state this is a follow-up, the prior event/SHA, and prior-comment outcomes. New inline comments are only the newly approved ones.
+- **Intake:** update commits/files, risk delta, claim delta, and prior-comment counts; never lower stored high risk.
+- **Specialists:** update sections plus lingering comment locations; artifacts begin `Update since <sha>`.
+- **Skeptic:** new candidates and still-open/stale/reintroduced prior items.
+- **Walkthrough:** affected claims, update diffs (tests summarized unless asked), and prior-comment statuses.
+- **Submit:** summary identifies prior event/SHA and comment outcomes; only newly approved comments post.
 
 ## PRIOR_REVIEW.md
 
@@ -80,7 +69,7 @@ current_head_sha: <sha>
 # Prior review
 
 ## Update since last review
-<commits, files, one-paragraph summary>
+<commits, files, summary>
 
 ## Prior comments
 

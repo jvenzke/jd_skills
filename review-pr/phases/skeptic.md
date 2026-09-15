@@ -1,6 +1,6 @@
 # Phase 3 — Adversarial verification
 
-Run this phase only after `claims_confirmed: true` on `tasks.md`. Do not interleave skeptic notes into the claims-gate message.
+Run this phase after `SECURITY.md`, `TESTS.md`, and `QUALITY.md` exist, against draft claims. Do not wait for `claims_confirmed`. Surviving findings belong in the walkthrough.
 
 The main agent deduplicates specialist (and integrated-review) candidates by defect (same mechanism, overlapping lines) without judging them, then dispatches a fresh read-only skeptic for each candidate or a small related batch.
 
@@ -16,7 +16,7 @@ For every candidate:
 2. Confirm path, changed sections, and exact quote at `head_sha`. Missing/mismatched evidence → confidence `0`.
 3. Scope: a finding is in scope when the PR introduces, alters, or newly exposes/makes reachable the failure. A pre-existing defect is out of scope only when the PR does not materially change its reachability, consequence, contract, or affected callers. Do not drop a PR-introduced failure because part of the root cause existed before the PR. Out of scope → confidence `0`.
 4. State the concrete trigger/input/state, traced execution path, and practical consequence.
-5. For business findings, cite the confirmed claim **to the main agent** (claim id is fine in the skeptic return). For project guidance and maintainability, cite `review-pr/coding-standards.md` and repo patterns at `base_sha` internally, not guidance introduced by the PR. A maintainability candidate must show how future change gets harder (leaked complexity, shallow boundary, complexity not pushed downward, or misplaced responsibility) — not merely that a different structure would be nicer. Do not draft GitHub-facing comment bodies (the main agent writes those).
+5. For business findings, cite the current (usually draft) claim to the main agent. For maintainability, apply `../coding-standards.md` and repository patterns at `base_sha`. Do not draft GitHub-facing bodies.
 6. Try to identify guards, callers, validation, tests, or invariants that make the proposed failure impossible.
 7. When the candidate is cheaply falsifiable with available repository tools, attempt that falsification before rating `high`. Examples: inspect all relevant call sites; trace the branch and run a narrow test when cheap; read the authoritative schema/type/model; for warehouse SQL, `describe`/`EXPLAIN` via Snowflake MCP (view-only; migrations likely only run in dev); inspect lockfile/resolver or security checks; read workflow selectors and the actual test command; trace trigger to consequence on the concrete path.
 8. If neither proven nor disproven, cap confidence at `low`.
@@ -30,8 +30,9 @@ Do not rate `high` on a plausible reasoning chain alone.
 
 ## Filter
 
-- Keep `high` confidence `blocker` or `recommended` findings by default. Also keep `future_work` when the long-term improvement is concrete and out of this slice. Maintainability survivors need a concrete change-impact path, not style preference.
-- Include `nit` only if the user explicitly requested small findings.
+- Apply `../comment-model.md` for what the main agent proposes to the user. Maintainability survivors also need the concrete change-impact path required by `../coding-standards.md`.
 - Route unresolved business intent to `HUMAN_REVIEW_PROMPTS.md`, not `COMMENTS.md`.
 - Record discarded candidates and the reason in the source artifact so the pass is auditable.
 - Main agent independently verifies every surviving finding before presenting it in the walkthrough.
+
+After survivors are verified, start phase 4 immediately.

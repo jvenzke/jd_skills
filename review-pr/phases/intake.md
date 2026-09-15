@@ -1,77 +1,35 @@
-# Phase 1 — Intake and business claims
-
-## Intake
+# Phase 1 — Intake
 
 1. Accept a GitHub PR URL/number. If omitted, resume from the review workspace or ask for it.
-2. Fetch with `gh`: title, body, author, state, draft status, base/head branches and SHAs, commits, changed files, full diff, review threads/comments, checks, the current GitHub user, and that user’s submitted reviews (`APPROVE` / `REQUEST_CHANGES` / `COMMENT`).
-3. Create the review workspace and initialize the artifacts required by `SKILL.md`. Do not search Jira or other ticket trackers for product intent.
-4. If this user already submitted a review, read `follow-up.md`, set `review_scope: incremental`, write `PRIOR_REVIEW.md`, and initialize coverage from the update diff. Otherwise `review_scope: full` and run:
-
-   `gh pr diff <n> | python3 <skill-dir>/scripts/init_coverage.py --head-sha <head_sha> > <workspace>/COVERAGE.md`
-
-   Incremental coverage (after fetch of both SHAs):
-
-   `git diff <prior_review_head_sha>...<head_sha> | python3 <skill-dir>/scripts/init_coverage.py --head-sha <head_sha> > <workspace>/COVERAGE.md`
-
-5. Identify:
-   - core change: the few files/sections that can make the drafted claims (what the implementation did) true or false
-   - incidental changes: generated files, lockfiles, formatting, styling, boilerplate, and unrelated mechanical edits
-   - supporting core sections that matter to the implementation but need not become separate claims
-   - change intent in three sentences: what the implementation did, plus PR/user expected results when they differ
-   - `review_risk`: `low`, `medium`, or `high`, with concrete reasons from changed surfaces and affected boundaries
-6. Persist `review_risk` and `review_risk_reasons` on `tasks.md`. Repeat the classification and reasons in `PR_BRIEF.md` so a cold resume does not re-derive them.
-7. Write `PR_CONTEXT.md` and `PR_BRIEF.md`. Mark an incidental section `agent_reviewed_not_shown / peripheral_change` only after enough inspection to justify it.
+2. Fetch with `gh`: title, body, author, state, draft status, base/head branches and SHAs, commits, changed files, full diff, review threads/comments, checks, current GitHub user, and that user's submitted reviews.
+3. Create the review workspace, `tasks.md`, required artifact stubs, and an `agent_notes.md` containing only durable paths, flows, commands, and invariants.
+4. If this user has a submitted review, set `review_scope: incremental` and apply [`follow-up.md`](follow-up.md). Otherwise set `review_scope: full` even if others reviewed. Explicit “full re-review” uses `full`.
+5. Initialize `COVERAGE.md` as directed by [`../coverage-protocol.md`](../coverage-protocol.md).
+6. From the active diff, identify:
+   - core files/sections that make product behavior true or false
+   - supporting core sections
+   - incidental/generated/mechanical sections
+   - change intent in at most three sentences: landed behavior and any differing PR/user expectation
+7. Write `PR_CONTEXT.md` and `PR_BRIEF.md`. Mark incidental coverage only after enough inspection to justify it.
+8. Classify and persist review risk, then apply [`../business-claims.md`](../business-claims.md). Start phase 2 as soon as draft claims exist; do not wait.
 
 ## Review risk
 
-Classify from the coverage inventory’s diff (full PR or update), not the PR’s self-description. If unsure, use `medium`. On `incremental`, recompute from the **update**; raise if new higher-risk surfaces appear; do not lower a stored `high` just because this push is small.
+Classify from the active coverage diff, not the PR description. If unsure use `medium`.
 
-Higher-risk surfaces (any one can raise above `low`; several, or a trust/data/money boundary, usually mean `high`):
+Higher-risk surfaces:
 
-- authentication / authorization
-- security or trust boundaries
+- authentication, authorization, security, or trust boundaries
 - persistence, schemas, migrations, or destructive data changes
-- concurrency / state coordination
+- concurrency or state coordination
 - public APIs, external contracts, or compatibility-sensitive boundaries
 - money, billing, permissions, tenant isolation, or sensitive data
 - broad cross-module orchestration
 
-**low**: docs, copy, isolated styling, lockfile-only, or a small self-contained change with no higher-risk surface.
+Use:
 
-**medium**: default. Typical product logic without the high list, or mixed incidental + moderate core.
+- **low:** docs, copy, isolated styling, lockfile-only, or a small self-contained change without a higher-risk surface
+- **medium:** normal product logic or mixed incidental and moderate core changes
+- **high:** one or more higher-risk surfaces, especially across modules or trust/data/money boundaries
 
-**high**: one or more higher-risk surfaces above, especially across modules.
-
-Do not lower a rating to save work. Risk controls specialist depth in phase 2; it does not skip claims, walkthrough, or submit gates.
-
-## Business claims
-
-Read `../business-claims.md`, then write `BUSINESS_CLAIMS.md`.
-
-- Draft the fewest claims that cover what the implementation did. One is enough when the PR is a single behavior. Add more only for independently testable product assertions. Do not pad to a target count. Claims must state observable product behavior: actor, trigger/state, result, and important invariant.
-- Infer those claims from the diff so they describe landed behavior. Use the PR and the user as expected results. Write them to `BUSINESS_CLAIMS.md`. Do not print the claims gate until specialist artifacts exist (phase 2).
-- Cover every silent change to business logic or an existing flow with a drafted claim (including must-nots: no feature regression, no workaround around existing guardrails). Behavior-preserving refactors stay supporting/incidental.
-- Never fetch Jira. If implementation and PR/user expected results disagree, draft the claim as what the code did, note the mismatch in Gaps, and include those questions in the claims-gate chat (after specialists). That chat is a stop; end with **Next:** (SKILL.md). Do not hide the implementation behind the PR description.
-- Attach the implementing sections that can make each claim true or false. Do not create claims to account for every diff region; classify other sections as supporting core code, incidental, or unexplained coverage.
-- The claims-gate chat (phase 2, after specialist artifacts) prints the changed-file tree (below) then every drafted claim. Never require the user to open `BUSINESS_CLAIMS.md` to review them.
-- Ask extra questions only when the diff is not enough to state the behavior that changed, or when expected vs done conflicts, and only when the answers materially change the verdict. If those questions must be answered before specialists can run, stop now with **Next:** answer the questions above, or edit the claims.
-- Start phase 2 against the draft claims as soon as they exist on disk (depth follows `review_risk`). Hold the claims-gate chat until `SECURITY.md`, `TESTS.md`, and `QUALITY.md` exist. If the user later edits a claim, remap findings and rerun a specialist only when the edit materially changes its scope.
-- Stop adversarial verification and the logic walkthrough until the user confirms **all claims** (done matches expected) or answers every blocking gap. Then set `claims_confirmed: true` in `tasks.md`. The **Next:** line must not list claim ids or a claim count.
-- On `incremental` follow-up: reuse unchanged confirmed claims without a new confirmation gate; print a one-line reminder plus **Prior comments** counts; confirm only new or silently changed behaviors (say **all new or changed claims** in **Next:**, not ids or a count). Classify core vs incidental on the **update** diff.
-
-## Changed-file tree
-
-Immediately **above** the first business claim in the claims-gate chat, print a nested directory tree of every changed path with `+adds` / `-deletes` per file and directory subtotals (from `gh`/`git` numstat). Include lockfiles and generated files so impact is honest; core vs incidental stays in the bullets.
-
-- Full review: entire PR numstat.
-- Incremental: **update** since last review only, plus a one-line full-PR totals reminder.
-
-Do not repeat this tree in the walkthrough unless the user asks.
-
-## Output
-
-Do not send this as a claims-gate wait during intake. After specialist artifacts exist, print it as the first part of the **one** combined claims-gate message (specialist chat follows; **Next:** last).
-
-In at most four bullets, show the core change, what the implementation did vs any PR/user expected results, `review_risk` plus reasons, CI status, and initial section coverage (`changed_sections`, `added_lines`, `deleted_lines`). Then the changed-file tree, then every drafted claim verbatim.
-
-On `incremental`, those bullets are the **update since last review** (commits/files/risk delta/claim delta), plus prior-comment addressed vs still-open counts. Do not recap the already-reviewed base. The file tree is the update numstat. Skip the claims wait when every claim is unchanged and already confirmed; still print the specialist presentation and end with **Next:** continuing to adversarial verification, then the walkthrough.
+Persist the rating and concrete reasons in `tasks.md` and `PR_BRIEF.md`. On incremental review, classify the update; never lower a stored `high`, and raise risk if the update adds a higher-risk surface. Risk controls specialist depth but never skips claims, walkthrough, or submission gates.

@@ -108,24 +108,22 @@ Plans are bullets, not paragraphs.
 5. **Research codebase**: Find relevant files, trace logical flows, and build a full understanding of the scope of changes, potential impacts, risks, and side-effects. Update `agent_notes.md` with durable paths/symbols/gotchas/commands not already in plans.
 6. **Establish baseline**: Record the current branch/base commit and any pre-existing dirty files before implementation. Preserve unrelated user changes.
 7. **Evaluate boundaries**: Identify the current public interface, complexity leaked to callers, duplicated orchestration, shallow wrappers, and invariants spread across modules. Determine which boundary should own that complexity.
-8. **Clarify blocking user decisions only**: Resolve uncertainty that materially affects externally observable behavior, architecture/module boundaries, irreversible decisions, significant dependencies, or substantial scope. If a question can be answered by exploring the codebase, explore instead; do not ask it. For reversible implementation choices, choose the locally consistent option and document any material assumption in the plan.
-   - Ask questions directly in chat. **Do not use the Q&A/AskQuestion tool.**
-   - Ask all **independent** questions in a **single chat message**. Number each with a stable id (`1.`, `2.`, …).
-   - For each question, list options alphabetically (`a)`, `b)`, `c)`, …) and mark the recommended one. Users reply with ids (e.g. `1b 2a`).
+8. **Align**: Shared understanding of forks that would change outcomes (externally observable behavior, architecture/module boundaries, irreversible decisions, significant dependencies, substantial scope)—not a minimal interrogatory. If the codebase can answer, explore instead. For reversible implementation choices, pick the locally consistent option and note it in the plan.
+   - Ask in chat. **Do not use the Q&A/AskQuestion tool.**
+   - All **independent** questions in **one** message. Number (`1.`, `2.`, …). Options as indented `- a)`, `- b)`, … alphabetically; mark **(recommended)**. Users reply with ids (e.g. `1b 2a`).
 
-    ```
-    1. Where should drafts persist?
-       a) Existing documents table
-       b) (recommended) New drafts table
-       c) Local files only
-    2. Who can edit drafts?
-       a) (recommended) Author only
-       b) Any project member
-    ```
+     ```
+     1. Where should drafts persist?
+        - a) Existing documents table
+        - b) (recommended) New drafts table
+        - c) Local files only
+     2. Who can edit drafts?
+        - a) (recommended) Author only
+        - b) Any project member
+     ```
 
-   - After answers, ask only follow-up questions unlocked by those decisions or by new information that still require user judgment. Continue until no **blocking** user decisions remain.
-   - Pause for the user's response before the next pass or before planning.
-9. **DO NOT proceed to phase plan or implementation plan while a blocking user decision remains unresolved**.
+   - After answers, ask only follow-ups an answer blocked or changed (or new facts that still need user judgment). Pause before the next pass or before planning.
+9. **DO NOT** write the phase plan or implementation plan while an alignment question that would change outcomes remains open.
 
 Use the first matching row. `{N}` is the next incomplete phase (`- [ ]` or `- [o]`; treat `- [o]` as current). Create or reuse `phase-{N}/` for *this* phase only; do not reuse or overwrite other phase folders.
 
