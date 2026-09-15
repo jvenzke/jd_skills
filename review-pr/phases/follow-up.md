@@ -49,10 +49,10 @@ Reuse unchanged confirmed claims with a one-line reminder. Walk only affected cl
 
 ## Phase application
 
-- **Intake:** update commits/files, risk delta, claim delta, and prior-comment counts; never lower stored high risk.
+- **Intake:** update commits/files, risk delta, claim delta, and prior-comment counts; never lower stored `high` or `critical` risk. Re-run red-zone discovery and match the update's changed paths; a new match adds to `redzone_paths` and existing matches stay.
 - **Specialists:** update sections plus lingering comment locations; artifacts begin `Update since <sha>`.
 - **Skeptic:** new candidates and still-open/stale/reintroduced prior items.
-- **Walkthrough:** affected claims, update diffs (tests summarized unless asked), and prior-comment statuses.
+- **Walkthrough:** affected claims, update diffs (tests summarized unless asked), and prior-comment statuses. Red-zone sections in the update are shown in full.
 - **Submit:** summary identifies prior event/SHA and comment outcomes; only newly approved comments post.
 
 ## PRIOR_REVIEW.md

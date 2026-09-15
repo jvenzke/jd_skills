@@ -18,7 +18,8 @@ Do not ask the user to select slices. Split only if requested or if more than ab
 Before walking claims, print:
 
 1. At most four bullets covering core change, landed vs expected behavior, risk/reasons, CI state, and section totals.
-2. A nested tree of every changed path with `+adds` / `-deletes` per file and directory subtotal. Include generated files and lockfiles.
+2. A nested tree of every changed path with `+adds` / `-deletes` per file and directory subtotal. Include generated files and lockfiles. Mark each red-zone path with a trailing `RED ZONE`, and follow the tree with one line per match naming the path and its reason.
+3. The red-zone files discovered at intake and what they matched, or that the repository has none. Print this whether or not anything matched.
 
 For incremental review, describe only the update: commits/files, risk delta, claim delta, and prior-comment counts. Use update numstat and add a one-line full-PR totals reminder.
 
@@ -35,7 +36,9 @@ For every walked claim, print its id and exact text, then:
 
 Compare the traced path, callers, tests, specialist evidence, and local patterns against the claim. For high risk—or medium risk that reshapes a public/module boundary—add **Boundary decisions** describing the changed boundary, why it matters, and residual risk.
 
-Show only the product `@@` hunks that need human judgment as unified diffs from `git diff <coverage_base>...<head_sha> -- <path>` (`coverage_base` is `base_sha`, or `prior_review_head_sha` when incremental):
+Print `## Apply order` from `QUALITY.md` verbatim when it is not `n/a`, before the claims, and say whether the PR body or linked release notes already state it.
+
+Show every changed section in a red-zone path as a fenced `diff` hunk, finding or not. Beyond those, show only the product `@@` hunks that need human judgment, as unified diffs from `git diff <coverage_base>...<head_sha> -- <path>` (`coverage_base` is `base_sha`, or `prior_review_head_sha` when incremental):
 
 - a proposed finding (inside that numbered comment; [`comment-model.md`](../comment-model.md))
 - a material public/module boundary
@@ -60,6 +63,8 @@ After the user resolves every action, record decisions in `COMMENTS.md`, `HUMAN_
 Include only decisions needed this turn:
 
 - **Intent** (always): confirm the shown implementation matches all claims, or edit/add claims (retriggers as above). For incremental review, refer to the update and affected claims.
+- **Red zones:** include only when a path matched. The user acknowledges each changed red-zone path, or names what else to inspect.
+- **Apply order:** include only when the block was shown. The user confirms the derived order, corrects it, or supplies the missing step.
 - **Boundary decisions:** include only when that block was shown.
 - **Each proposed comment:** approve, reject, or edit.
 - **Each unresolved prompt:** answer or leave unresolved.
