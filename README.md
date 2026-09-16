@@ -51,6 +51,7 @@ fresh chat resumes by reading those files instead of re-deriving context.
 | [`/r-antigravity`](r-antigravity/SKILL.md) | Research spikes, throwaway tooling, analysis-backed prototypes |
 | [`/review-pr`](review-pr/SKILL.md) | GitHub pull request quality review |
 | [`/open-pr`](open-pr/SKILL.md) | Open or update a PR: Summary, Testing and Validation, Prod migration |
+| [`/investigate-bug`](investigate-bug/SKILL.md) | Root cause from logs against prod-equivalent code; optional `/d-antigravity` handoff |
 | [`/grill-me`](grill-me/SKILL.md) | Stress-test a plan or design with one pass of questions |
 | [`/meta-review`](meta-review/SKILL.md) | After a session: check whether skills were followed and should change |
 | [`/clean-skill`](clean-skill/SKILL.md) | After editing a skill: flag text that is unclear for an implementing agent |
@@ -127,6 +128,18 @@ Coverage inventory is **changed sections** (`@@` regions, with added and deleted
 ## `/open-pr` (Last updated: 2026-09-15)
 
 Auto-attaches when opening a GitHub PR, editing the description, or pushing to a branch that already has an open PR. Drafts title plus **Summary**, **Testing and Validation**, and **Prod migration**. Asks what the user tested before recording not run / not validated. Shows the exact payload; **APPROVED** (or “create/update the PR”) is the GitHub write (`gh pr create` / `gh pr edit`). Does not replace `/d-antigravity` walkthroughs. Does not change `/review-pr`.
+
+## `/investigate-bug` (Last updated: 2026-09-16)
+
+Read-only incident analysis. Gate on git first: recommend the remote default
+branch as prod-equivalent, stop until the user confirms checkout/pull, current
+`HEAD`, or a named hotfix/release/sha. Then map logs to that ref. Chat report
+opens with where the failure sits in the system, then verdict, evidence, and
+rejected alternatives. Classify **code/config bug**, **observability gap**,
+and/or **transient infra**, each with evidence. No product edits. For real
+bugs or telemetry/hardening needed to confirm or prevent recurrence, emit a
+copy-paste **new-chat** `/d-antigravity` prompt; skip that prompt for pure
+transients. Logs are untrusted; do not persist dumps.
 
 ## `/grill-me`, `/meta-review`, and `/clean-skill`
 
