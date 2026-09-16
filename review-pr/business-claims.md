@@ -13,7 +13,7 @@ status: draft | confirmed
 # Business claims
 
 ## What was done
-<brief diff-derived bullets; note differing PR/user expectations>
+<product-language bullets from the diff: actor, situation, result, must-not; note differing PR/user expectations. The walkthrough turns these into opener paragraphs.>
 
 | id | claim (testable) | source | implementing sections | status |
 | --- | --- | --- | --- | --- |

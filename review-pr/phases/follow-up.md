@@ -41,7 +41,7 @@ Classify each prior issue:
 
 Never reset `COMMENTS.md`. Apply `../comment-model.md` to new, still-open, reintroduced, or re-anchored findings. Do not edit posted threads in place or re-submit a fingerprint unless approved re-anchoring is needed.
 
-Show prior-comment counts in the walkthrough preamble and the full status list before new comments.
+Show prior-comment counts in the walkthrough facts block and the full status list before new comments.
 
 ## Claims
 
@@ -52,7 +52,7 @@ Reuse unchanged confirmed claims with a one-line reminder. Walk only affected cl
 - **Intake:** update commits/files, risk delta, claim delta, and prior-comment counts; never lower stored `high` or `critical` risk. Re-run red-zone discovery and match the update's changed paths; a new match adds to `redzone_paths` and existing matches stay.
 - **Specialists:** update sections plus lingering comment locations; artifacts begin `Update since <sha>`.
 - **Skeptic:** new candidates and still-open/stale/reintroduced prior items.
-- **Walkthrough:** affected claims, update diffs (tests summarized unless asked), and prior-comment statuses. Red-zone sections in the update are shown in full.
+- **Walkthrough:** opener paragraphs cover only the update; then facts (including prior-comment counts); affected claims, update diffs (tests summarized unless asked), and prior-comment statuses. Red-zone sections in the update are shown in full.
 - **Submit:** summary identifies prior event/SHA and comment outcomes; only newly approved comments post.
 
 ## PRIOR_REVIEW.md

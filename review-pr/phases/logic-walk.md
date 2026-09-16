@@ -15,13 +15,12 @@ Do not ask the user to select slices. Split only if requested or if more than ab
 
 ## Walkthrough
 
-Before walking claims, print:
+Print in this order, then walk claims:
 
-1. At most four bullets covering core change, landed vs expected behavior, risk/reasons, CI state, and section totals.
-2. A nested tree of every changed path with `+adds` / `-deletes` per file and directory subtotal. Include generated files and lockfiles. Mark each red-zone path with a trailing `RED ZONE`, and follow the tree with one line per match naming the path and its reason.
-3. The red-zone files discovered at intake and what they matched, or that the repository has none. Print this whether or not anything matched.
-
-For incremental review, describe only the update: commits/files, risk delta, claim delta, and prior-comment counts. Use update numstat and add a one-line full-PR totals reminder.
+1. **Opener (1–3 short paragraphs).** Landed behavior from the diff: actor, situation, observable result, and any important must-not. Independently judgeable behaviors each get a short paragraph. Tighten intake’s three-sentence intent and `BUSINESS_CLAIMS.md` **What was done**; do not treat PR title/body as the story. No claim ids, coverage or artifact names, file paths, type/symbol names, or SQL/table names. If expected and landed differ, add one plain sentence; otherwise omit. Incremental: describe only what this update changes relative to this user’s last submitted review; omit unchanged behavior.
+2. **Facts.** Short bullets: risk and reasons, CI state, section totals. Incremental: risk delta, claim delta, prior-comment counts, and a one-line full-PR totals reminder. Do not retell the opener.
+3. **Changed-path tree.** Nested tree of every changed path with `+adds` / `-deletes` per file and directory subtotal. Include generated files and lockfiles. Mark each red-zone path with a trailing `RED ZONE`. Incremental: update numstat only.
+4. **Red zones.** The red-zone files discovered at intake and what they matched, or that the repository has none. After the tree, one line per match naming the path and its reason. Print this whether or not anything matched.
 
 Do not dump a separate claims list; each walked claim prints its id and exact text. Present gaps and expected-vs-landed mismatches as unresolved prompts in this turn. Do not require the user to open `BUSINESS_CLAIMS.md`.
 
@@ -56,7 +55,7 @@ Present unresolved product intent as questions and record it in `HUMAN_REVIEW_PR
 
 Apply [`../business-claims.md`](../business-claims.md) for Intent confirm/edit/add. After a retrigger, re-present affected walks and changed findings; unchanged walks stay already presented. Re-ask Intent.
 
-After the user resolves every action, record decisions in `COMMENTS.md`, `HUMAN_REVIEW_PROMPTS.md`, `LOGIC_WALKTHROUGH.md`, `COVERAGE.md`, and `tasks.md`, then begin phase 5. Re-ask only missing decisions.
+After the user resolves every action, record decisions in `COMMENTS.md`, `HUMAN_REVIEW_PROMPTS.md`, `LOGIC_WALKTHROUGH.md`, `COVERAGE.md`, and `tasks.md`, then begin phase 5. Re-ask only missing decisions. Put the same opener paragraphs at the top of `LOGIC_WALKTHROUGH.md`. If Intent edit/add changes the landed-behavior story, rewrite and reprint the opener with the affected walks.
 
 ## Next actions
 
