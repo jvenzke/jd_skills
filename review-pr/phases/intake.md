@@ -9,7 +9,7 @@
    - core files/sections that make product behavior true or false
    - supporting core sections
    - incidental/generated/mechanical sections
-   - change intent in at most three sentences: landed behavior and any differing PR/user expectation
+   - change intent in at most three sentences of product language: landed behavior (actor, situation, result, must-not) and any differing PR/user expectation. No paths or symbols. The walkthrough reuses this as its opener.
 7. Apply [`../red-zone-protocol.md`](../red-zone-protocol.md): discover the repository's red-zone files, match every changed path against their patterns, and record both in `tasks.md` `redzone_files` and `redzone_paths` and in `PR_BRIEF.md`, or `none`.
 8. Write `PR_CONTEXT.md` and `PR_BRIEF.md`. Mark incidental coverage only after enough inspection to justify it.
 9. Classify and persist review risk, then apply [`../business-claims.md`](../business-claims.md). Start phase 2 as soon as draft claims exist; do not wait.
