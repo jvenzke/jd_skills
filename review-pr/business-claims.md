@@ -13,7 +13,7 @@ status: draft | confirmed
 # Business claims
 
 ## What was done
-<product-language bullets from the diff: actor, situation, result, must-not; note differing PR/user expectations. The walkthrough turns these into opener paragraphs.>
+<product-language bullets from the diff: actor, situation, result, must-not; note differing PR/user expectations. The walkthrough turns these into 2–4 product-named opener `###` headings plus optional Residual. Table cells stay one testable sentence.>
 
 | id | claim (testable) | source | implementing sections | status |
 | --- | --- | --- | --- | --- |

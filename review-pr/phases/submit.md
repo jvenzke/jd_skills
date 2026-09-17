@@ -31,7 +31,7 @@ Always post a concise top-level summary in addition to inline comments:
 **Review risk:** <low | medium | high | critical> — <reasons>
 
 ### What was reviewed
-<behaviors checked and residual uncertainty in product terms>
+<paste the walkthrough opener headings and bodies verbatim — same text as chat, including Residual when present. Do not paraphrase into a third prose wall. Do not use the inline Issue / Proposed fix template.>
 
 ### Presentation
 - Changed sections: N (added lines: N, deleted lines: N)
@@ -51,7 +51,7 @@ Always post a concise top-level summary in addition to inline comments:
 Inline comments below are separate findings.
 ```
 
-Do not paste code or use claim ids/local artifact names, and do not name red zones or other internal review terms in the body. Presentation is exposure, not Human review. For incremental review, add **Follow-up** with prior event/SHA and addressed/still-open/stale/reintroduced counts in product language; presentation values cover the update diff.
+Do not paste code or use claim ids/local artifact names, and do not name red zones or other internal review terms in the body. Presentation is exposure, not Human review. **What was reviewed** is the headed opener copied from the walkthrough, not a new summary. Nested `###` opener headings under that slot are allowed. For incremental review, add **Follow-up** with prior event/SHA and addressed/still-open/stale/reintroduced counts in product language; presentation values cover the update diff.
 
 ## Review type gate
 
