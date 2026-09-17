@@ -17,23 +17,34 @@ Do not ask the user to select slices. Split only if requested or if more than ab
 
 Print in this order, then walk claims:
 
-1. **Opener (1–3 short paragraphs).** Landed behavior from the diff: actor, situation, observable result, and any important must-not. Independently judgeable behaviors each get a short paragraph. Tighten intake’s three-sentence intent and `BUSINESS_CLAIMS.md` **What was done**; do not treat PR title/body as the story. No claim ids, coverage or artifact names, file paths, type/symbol names, or SQL/table names. If expected and landed differ, add one plain sentence; otherwise omit. Incremental: describe only what this update changes relative to this user’s last submitted review; omit unchanged behavior.
+1. **Opener (headed story).** 2–4 `###` headings named in product language (one independently judgeable behavior each), plus `### Residual` only when something is still unproven. Each heading body is ≤ 4 sentences. Landed behavior from the diff: actor, situation, observable result, and any important must-not. Tighten intake’s three-sentence intent and `BUSINESS_CLAIMS.md` **What was done**; do not treat PR title/body as the story. Story headings never include claim ids, coverage or artifact names, file paths, type/symbol names, or SQL/table names. If expected and landed differ, add one plain sentence under Residual (or under the affected heading); otherwise omit Residual. Incremental: describe only what this update changes relative to this user’s last submitted review; omit unchanged behavior. Do not use HTML `<details>`. Facts, the path tree, Apply order, Boundary decisions, and inline comments keep their current labels.
 2. **Facts.** Short bullets: risk and reasons, CI state, section totals. Incremental: risk delta, claim delta, prior-comment counts, and a one-line full-PR totals reminder. Do not retell the opener.
 3. **Changed-path tree.** Nested tree of every changed path with `+adds` / `-deletes` per file and directory subtotal. Include generated files and lockfiles. Mark each red-zone path with a trailing `RED ZONE`. Incremental: update numstat only.
 4. **Red zones.** The red-zone files discovered at intake and what they matched, or that the repository has none. After the tree, one line per match naming the path and its reason. Print this whether or not anything matched.
 
-Do not dump a separate claims list; each walked claim prints its id and exact text. Present gaps and expected-vs-landed mismatches as unresolved prompts in this turn. Do not require the user to open `BUSINESS_CLAIMS.md`.
+Do not dump a separate claims list. Present gaps and expected-vs-landed mismatches as unresolved prompts in this turn. Do not require the user to open `BUSINESS_CLAIMS.md`.
 
-For every walked claim, print its id and exact text, then:
+For every walked claim, print exactly:
 
-- traced implementation path: files, symbols, callers, and flow
-- supporting evidence and tests; summarize test setup, assertions, and covered branch without pasting test source
-- material architecture/boundary changes
-- other readers/writers of the same business data and whether responsibility is consolidated
-- residual uncertainty
-- surviving findings
+```markdown
+## C1
 
-Compare the traced path, callers, tests, specialist evidence, and local patterns against the claim. For high risk—or medium risk that reshapes a public/module boundary—add **Boundary decisions** describing the changed boundary, why it matters, and residual risk.
+<exact claim sentence from BUSINESS_CLAIMS.md>
+
+### What happens
+<product language; ≤ 4 sentences; no paths, type/symbol names, or SQL/table names>
+
+### How we know
+<≤ 4 bullets: test/CI prose — setup, assertion, covered branch; no test source>
+
+### Where in the code
+<≤ 6 bullets: files, symbols, callers, flow — last so a non-expert can skip it>
+
+### Residual
+<uncertainty, other readers/writers of the same data, and whether responsibility is consolidated>
+```
+
+Omit `### Residual` when there is none. Do not put surviving findings under the claim; they belong in the numbered comment list after all claims. Compare the traced path, callers, tests, specialist evidence, and local patterns against the claim. For high risk—or medium risk that reshapes a public/module boundary—add **Boundary decisions** describing the changed boundary, why it matters, and residual risk.
 
 Print `## Apply order` from `QUALITY.md` verbatim when it is not `n/a`, before the claims, and say whether the PR body or linked release notes already state it.
 
@@ -55,7 +66,7 @@ Present unresolved product intent as questions and record it in `HUMAN_REVIEW_PR
 
 Apply [`../business-claims.md`](../business-claims.md) for Intent confirm/edit/add. After a retrigger, re-present affected walks and changed findings; unchanged walks stay already presented. Re-ask Intent.
 
-After the user resolves every action, record decisions in `COMMENTS.md`, `HUMAN_REVIEW_PROMPTS.md`, `LOGIC_WALKTHROUGH.md`, `COVERAGE.md`, and `tasks.md`, then begin phase 5. Re-ask only missing decisions. Put the same opener paragraphs at the top of `LOGIC_WALKTHROUGH.md`. If Intent edit/add changes the landed-behavior story, rewrite and reprint the opener with the affected walks.
+After the user resolves every action, record decisions in `COMMENTS.md`, `HUMAN_REVIEW_PROMPTS.md`, `LOGIC_WALKTHROUGH.md`, `COVERAGE.md`, and `tasks.md`, then begin phase 5. Re-ask only missing decisions. Put the same opener headings at the top of `LOGIC_WALKTHROUGH.md`. If Intent edit/add changes the landed-behavior story, rewrite and reprint the opener with the affected walks.
 
 ## Next actions
 

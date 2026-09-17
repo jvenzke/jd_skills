@@ -136,7 +136,7 @@ Use [`comment-model.md`](comment-model.md) for `COMMENTS.md`, public wording, el
 
 - **Chat footer:** shown, agent-only by reason, remaining section counts/percentages, and Human oversight. Print after each coverage turn; never post it to GitHub.
 - **`COVERAGE.md`:** source of truth for those values. Never call coverage Human-reviewed.
-- **GitHub body:** product language only. No claim ids, artifact/skill names, or coverage-accounting jargon. The review summary does not use the inline template.
+- **GitHub body:** product language only. No claim ids, artifact/skill names, or coverage-accounting jargon. The review summary does not use the inline template. **What was reviewed** is the headed walkthrough opener, copied verbatim.
 
 Initialize `COVERAGE.md` with `scripts/init_coverage.py` from the full PR diff, or the follow-up update diff when incremental. Apply [`coverage-protocol.md`](coverage-protocol.md) after every main-agent pass that inspects or presents code. Do not complete with unexplained `not_reviewed` sections.
 
