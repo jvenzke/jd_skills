@@ -26,10 +26,12 @@ All planning artifacts live under `.working_items/{task}/`:
   implementation_plan.md
   tasks.md
   walkthrough.md          # written after verification
+  verify.sql | verify.py  # optional; human post-pipeline checks
 ```
 
-`{task}` is a lowercase kebab-case slug. **Never** put runnable code only under
-`.working_items/` — that folder is plans/tasks/walkthrough only.
+`{task}` is a lowercase kebab-case slug. **Never** put runnable product code
+under `.working_items/` — that folder is plans/tasks/walkthrough only, plus
+optional `verify.sql` / `verify.py` (named exception; read-only human checks).
 
 ## Rules (priority order)
 
@@ -67,6 +69,7 @@ Treat a module as any script, notebook helper, class, object, package, or CLI en
 - Standardize `{task}` and create `.working_items/{task}/` if missing.
 - **Resume**: If `tasks.md` exists with `approved: true` and unchecked items, read plan + tasks, skip clarify/planning, resume at the first unchecked item, and post a short “where we left off” summary. If a plan exists but is not approved, resume at clarify or user review as appropriate.
 - **Research**: Find relevant files, flows, risks, and the intended researcher entrypoint. Identify ceremony forced on the researcher and plumbing that should move behind a simple interface.
+- **Establish baseline**: Record the current branch/base commit and any pre-existing dirty files before implementation. Preserve unrelated user changes. The step-6 path tree diffs this pass against that baseline (not GitHub).
 - **Align**: Shared understanding of forks that would change outcomes (success criteria, inputs/outputs, irreversible side effects, substantial scope)—not a minimal interrogatory. If the codebase can answer, explore instead. For reversible implementation choices, pick the locally consistent option and note it in the plan.
   - Ask in chat. **Do not use the Q&A/AskQuestion tool.**
   - All **independent** questions in **one** message. Number (`1.`, `2.`, …). Options as indented `- a)`, `- b)`, … alphabetically; mark **(recommended)**. Users reply with ids (e.g. `1b 2a`).
@@ -119,7 +122,12 @@ Write `.working_items/{task}/implementation_plan.md` and `.working_items/{task}/
 - **How to run**: {exact entrypoint — command / notebook cell / function call}
 - **Inputs**: {required inputs}
 - **Expected output**: {shape / what “success” looks like}
-{any other manual checks - terse bullets}
+{any other numbered human checks}
+
+**Human verify file** (optional; in addition to smoke/unit checks)
+- {`none` | `verify.sql` | `verify.py` | both} — assert: {observable post-run result}
+- Write the file only when the new behavior is fully visible only after a pipeline, job, warehouse, or similar remote run that smoke/unit checks do not exercise. Often `none` when How to run *is* the human check.
+- Plan names whether a file is expected. Write the actual script during Verification/Review from **landed** behavior.
 ```
 
 #### Template `.working_items/{task}/tasks.md`
@@ -164,23 +172,29 @@ last_error: null
 - Update `phase: verification` in `tasks.md`.
 - Run planned Automated Verification (prefer researcher-path smoke / one happy-path check). Automated tests only when they lock a helper you will call again soon; otherwise Manual Verification is enough.
 - Confirm **How to run** works: researcher reaches results through the intended entrypoint without coordinating hidden plumbing.
+- **Human verify file**: If Manual Verification named `verify.sql` and/or `verify.py` (or landed behavior now requires one), write it under `.working_items/{task}/` from landed behavior. One file matching how a human inspects the result: SQL when the proof is warehouse rows/state; Python when the proof is API/files/logs/local artifacts. Both only if those proofs are independent. Names must be exactly `verify.sql` and/or `verify.py`. Script is read-only checks with comments stating expected rows/shape/invariants; exit non-zero or print a clear fail. Do not mutate data or trigger the pipeline from the script. Do **not** run warehouse/pipeline verify scripts (do not substitute Snowflake MCP). If not applicable, omit the file.
 - If checks fail: increment `verification_attempts`, record the error in `last_error`, apply fixes, and re-run.
 - If unresolved after **3** attempts, halt, report logs, and ask for user guidance.
 - **DO NOT** proceed to review until planned Automated Verification checks pass (or were planned as none and Manual Verification / How to run succeeded).
 
 ### 6. Review changes
 - Create `.working_items/{task}/walkthrough.md`.
-- Provide a brief chat summary:
-  - **Summary of Changes**: 1-2 sentences
-  - **Verification**: what was smoked / run
-  - **Code Overview**: numbered logical steps completed
-  - **User Review**: relative link to the walkthrough
+- Print the chat wrap-up in this order (do not use GitHub; only this implementation pass vs the recorded baseline, or the working tree if no baseline was stored):
+  1. **Change story.** 1–3 `###` headings named in product language (one independently judgeable behavior each), plus `### Residual` only when something is still unproven. Each heading body is 1–3 sentences: actor, situation, observable result, and any important must-not. Never include file paths, type/symbol names, SQL/table names, artifact names, or coverage jargon. Do not use HTML `<details>`.
+  2. **Changed-path tree (chat only).** Nested tree of every path this pass changed, with `+adds` / `-deletes` per file and directory subtotals. Include generated files and lockfiles. Do not use GitHub.
+  3. **Human verify.** Numbered steps. When How to run *is* the human check, make it step 1 (entrypoint, inputs, expected output). Include a relative link to `verify.sql` and/or `verify.py` when those files exist. Do not trigger the pipeline from the agent.
+  4. Relative link to the walkthrough file.
+- Copy the same change-story headings into `walkthrough.md`. Automated smoke/results live in the walkthrough only. Path tree stays in chat.
 
 #### Walkthrough Template `.working_items/{task}/walkthrough.md`
 ```markdown
 # Walkthrough: {title}
 
-{summary - 1-2 sentences}
+### {behavior in product language}
+{1–3 sentences: actor, situation, observable result, must-not. No paths, types, or SQL/table names.}
+
+### Residual
+{only if something is still unproven; otherwise omit this heading}
 
 ## User Review Required
 
@@ -192,18 +206,10 @@ last_error: null
 
 1. {important notes - terse list}
 
-## Changes made
-
-{code changes - terse bulleted list of completed changes}
-
-## Verification Results
-
 ### Automated Verification
 {results of planned smoke / automated checks}
 
 ### Manual Verification
-- **How to run**: {exact entrypoint — command / notebook cell / function call}
-- **Inputs**: {required inputs}
-- **Expected output**: {shape / what “success” looks like}
-{any other manual verification notes}
+1. {How to run — entrypoint, inputs, expected output}
+2. {run verify.sql / verify.py with relative link when present; or omit this step}
 ```
