@@ -25,6 +25,7 @@ hide cohesive implementation complexity. All artifacts live under
     implementation_plan.md
     tasks.md
     walkthrough.md              # written after that phase verifies
+    verify.sql | verify.py      # optional; human post-pipeline checks
 ```
 
 `{N}` is the 1-based phase index from `phase_plan.md` (or `1` when skipping phases). **Never overwrite** a completed phase folder — always create a new `phase-{N}/` for the next incomplete phase.
@@ -238,7 +239,12 @@ Automated Verification is the **only** place that authorizes planned new or exte
 - new: {N} | extended: {M} | reused only: {yes/no}
 
 ### Manual Verification
-{manual verification plan - terse bullet list; OK as primary check for low-risk plumbing when New/extended is none}
+{numbered human steps to confirm landed behavior; OK as primary check for low-risk plumbing when New/extended is none}
+
+**Human verify file** (optional; in addition to unit tests)
+- {`none` | `verify.sql` | `verify.py` | both} — assert: {observable post-run result}
+- Write the file only when the new behavior is fully visible only after a pipeline, job, warehouse, or similar remote run that unit tests do not exercise. Skip for pure refactors, local UI, and in-process contracts already locked by tests unless a human still cannot see the result without a post-run check.
+- Plan names whether a file is expected and what it will assert. Write the actual script during Verification/Review from **landed** behavior (not a stub at plan time).
 ```
 
 #### Template `.working_items/{task}/phase-{N}/tasks.md`
@@ -332,6 +338,7 @@ A module is any file, class, object, package, service, or subsystem with a bound
 - Execute all automated verification checks from the approved plan (Existing coverage + any listed New/extended cases) plus any focused regression case allowed and recorded under `## Discoveries`.
 - Confirm Test budget matches the plan’s **Test budget (planned)** plus any recorded regression delta (`new: N | extended: M | reused only: yes/no`).
 - **Soft warn (do not block)**: if tests were added beyond the approved Verification plan and were not a recorded regression delta, note them in the walkthrough and prefer removing or folding into an amended plan next time — still allow phase completion if checks pass.
+- **Human verify file**: If Manual Verification named `verify.sql` and/or `verify.py` (or landed behavior now requires one), write it under `phase-{N}/` from landed behavior. One file matching how a human inspects the result: SQL when the proof is warehouse rows/state; Python when the proof is API/files/logs/local artifacts. Both only if those proofs are independent. Names must be exactly `verify.sql` and/or `verify.py`. Script is read-only checks with comments stating expected rows/shape/invariants; exit non-zero or print a clear fail. Do not mutate data or trigger the pipeline from the script. Do **not** run warehouse/pipeline verify scripts (do not substitute Snowflake MCP). Local unit tests still run here as today. If not applicable, write `none` in the walkthrough and omit the file.
 - Verify callers use the intended simple interface and do not depend on newly private implementation details.
 - Verify the refactor removed obsolete paths and did not leave duplicate orchestration across the old and new boundaries.
 - **Diff-to-plan check**: Review the final git diff against the recorded baseline. Confirm changed files and behavior match the approved vertical slice, unrelated user changes remain intact, and no unplanned public/module boundary or dependency was introduced.
@@ -344,12 +351,14 @@ A module is any file, class, object, package, service, or subsystem with a bound
 
 ### 6. Review changes
 - **Main agent** creates `.working_items/{task}/phase-{N}/walkthrough.md` (new file for this phase; never overwrite another phase’s walkthrough).
-- Provide a very brief summary in the chat including:
-  - **System context**: The same sentence as the implementation plan (copy into the walkthrough). Owning boundary and role in the system — what part of the system changed. No file tree.
-  - **Summary of Changes**: A 1-2 sentence high level overview.
-  - **Verification**: Commands/suites run and contracts covered; **Test budget** `new: N | extended: M | reused only: yes/no` (must match the approved plan plus any recorded regression delta). Mention new/extended cases only if the plan listed them or they were a recorded regression delta. Soft-warn if other extras were added.
-  - **Code Overview**: A numbered list of completed logical steps.
-  - **User Review**: A relative link to the walkthrough file.
+- Print the chat wrap-up in this order (do not use GitHub; only this implementation pass vs the recorded baseline):
+  1. **Change story.** 1–3 `###` headings named in product language (one independently judgeable behavior each), plus `### Residual` only when something is still unproven. Each heading body is 1–3 sentences: actor, situation, observable result, and any important must-not. Never include file paths, type/symbol names, SQL/table names, artifact names, or coverage jargon. Do not use HTML `<details>`. Omit unchanged behavior from earlier phases.
+  2. **Changed-path tree (chat only).** Nested tree of every path this pass changed vs the recorded baseline, with `+adds` / `-deletes` per file and directory subtotals. Include generated files and lockfiles. Do not use GitHub or a full-PR diff.
+  3. **How we know it works.** 1–3 sentences, same bans as the change story: what was checked (contracts/tests in product language), not commands or file names. If tests were added beyond the approved plan and were not a recorded regression delta, add one short extras soft-warn sentence here (do not print command/budget otherwise).
+  4. **Human verify.** Numbered steps the user can run to confirm landed behavior after any required pipeline/job. Include a relative link to `verify.sql` and/or `verify.py` when those files exist. Do not trigger the pipeline from the agent.
+  5. Relative link to the walkthrough file.
+- Do not print System context, Summary of Changes, Code Overview, or test-budget/commands in chat.
+- Copy the same change-story headings into `walkthrough.md`. Automated commands, contracts, test budget, and extras live in the walkthrough only. Path tree and **How we know it works** stay in chat; do not duplicate them in the walkthrough.
 - **Next phase (new chat)**: If `phase_plan.md` has remaining `- [ ]` phases, end with a short prompt to start a **new chat** for the next phase, and include a relative link to `.working_items/{task}/phase_plan.md` (and the next phase title). Do **not** implement the next phase in this chat — the next chat must create a new `phase-{N+1}/` with its own plan, tasks, and walkthrough.
 - **Next project step (new chat)**: If a parent project is attached, this step is `- [x]`, and `scope.md` has later `- [ ]` steps, also prompt a **new chat** with `/d-antigravity` and a relative link to the next step file. Do not start that step here.
 
@@ -357,15 +366,11 @@ A module is any file, class, object, package, service, or subsystem with a bound
 ```markdown
 # Walkthrough: {title} (Phase {N})
 
-{summary - 1-2 sentences}
+### {behavior in product language}
+{1–3 sentences: actor, situation, observable result, must-not. No paths, types, or SQL/table names.}
 
-- **System context**: {same sentence as implementation plan Deep-module **System context**}
-
-## Changes made
-
-{code changes - terse bulleted list of completed changes}
-
-## Verification Results
+### Residual
+{only if something is still unproven; otherwise omit this heading}
 
 ### Automated Verification
 - Commands/suites run: {terse}
@@ -375,5 +380,6 @@ A module is any file, class, object, package, service, or subsystem with a bound
 - Extras beyond plan (soft warn): {none | list}
 
 ### Manual Verification
-{manual verification plan - brief steps for the user}
+1. {trigger pipeline/job or other human action — or `none`}
+2. {run verify.sql / verify.py with relative link when present; what pass looks like}
 ```
