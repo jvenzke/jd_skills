@@ -1,4 +1,4 @@
-# Skills for Cursor and Claude Code
+# Skills for Cursor, Claude Code, and Codex
 
 Author: Joel DeVenzke
 
@@ -10,17 +10,17 @@ cd jd_skills
 ./install.sh
 ```
 
-Copies active skills (everything except [`old/`](old/)) into `~/.cursor/skills/`. Re-run the same command after `git pull` to update.
+Copies active skills (everything except [`old/`](old/)) into each present environment at `$HOME`: `.cursor`, `.claude`, and/or `.codex` → `~/.<env>/skills/`. Re-run the same command after `git pull` to update. If none of those markers exist, the script exits and lists `--cursor --claude --codex`.
 
 ```bash
 ./install.sh grill-me review-pr              # named skills only
-./install.sh --project                       # current directory (Cursor)
-./install.sh --project ~/code/my-app         # a project root (Cursor)
-./install.sh --claude                        # Claude Code: ~/.claude/skills/
-./install.sh --claude --project ~/code/my-app
+./install.sh --project                       # current directory (present envs)
+./install.sh --project ~/code/my-app         # that project root’s markers
+./install.sh --claude                        # Claude only: ~/.claude/skills/
+./install.sh --cursor --codex --project ~/code/my-app
 ```
 
-`--project` installs into `<dir>/.cursor/skills/` (or `<dir>/.claude/skills/` with `--claude`) so only that repo sees them. Named skills can include folders under `old/`. `--claude` does not also write Cursor dests.
+`--project` uses markers and dests under that directory so only that repo sees them. Named skills can include folders under `old/`. `--cursor`, `--claude`, and `--codex` limit the run to those dests and create them even if the marker is missing.
 
 ## Overview
 
