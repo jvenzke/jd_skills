@@ -5,16 +5,22 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 usage() {
   cat <<EOF
-Usage: ./install.sh [skill...] [--project [dir]] [--claude]
+Usage: ./install.sh [skill...] [--project [dir]] [--cursor] [--claude] [--codex]
 
-Copy skills from this repo into Cursor (default) or Claude Code (--claude).
+Copy skills from this repo into Cursor, Claude Code, and/or Codex dests
+present at the install root (\$HOME, or --project dir).
 
-  (no args)              active skills (not old/) → ~/.cursor/skills/
+  (no args)              active skills (not old/) → each present env
   skill ...              those skills only (old/ allowed by name)
-  --project              → \$PWD/.cursor/skills/
-  --project DIR          → DIR/.cursor/skills/
-  --claude               use ~/.claude/skills/ (or .claude/skills/ with --project)
+  --project              install root is \$PWD
+  --project DIR          install root is DIR
+  --cursor --claude --codex
+                         only those dests (create even if marker missing)
 
+Markers: .cursor .claude .codex (directories at the install root)
+Dests:   <root>/.cursor/skills  <root>/.claude/skills  <root>/.codex/skills
+
+If no markers and no flags, exits with an error listing the flags.
 Re-run after git pull to update. Does not remove other installed skills.
 EOF
 }
@@ -29,7 +35,10 @@ is_project_dir_arg() {
 
 project_mode=0
 project_dir=""
-claude_mode=0
+want_cursor=0
+want_claude=0
+want_codex=0
+any_override=0
 skills=()
 
 while [[ $# -gt 0 ]]; do
@@ -52,8 +61,19 @@ while [[ $# -gt 0 ]]; do
         shift
       fi
       ;;
+    --cursor)
+      want_cursor=1
+      any_override=1
+      shift
+      ;;
     --claude)
-      claude_mode=1
+      want_claude=1
+      any_override=1
+      shift
+      ;;
+    --codex)
+      want_codex=1
+      any_override=1
       shift
       ;;
     -*)
@@ -74,18 +94,25 @@ if [[ "$project_mode" -eq 1 ]]; then
     echo "Project directory does not exist: $project_dir" >&2
     exit 1
   fi
-  project_dir="$(cd "$project_dir" && pwd)"
-  if [[ "$claude_mode" -eq 1 ]]; then
-    dest="$project_dir/.claude/skills"
-  else
-    dest="$project_dir/.cursor/skills"
-  fi
+  install_root="$(cd "$project_dir" && pwd)"
 else
-  if [[ "$claude_mode" -eq 1 ]]; then
-    dest="${HOME}/.claude/skills"
-  else
-    dest="${HOME}/.cursor/skills"
-  fi
+  install_root="$HOME"
+fi
+
+dests=()
+if [[ "$any_override" -eq 1 ]]; then
+  [[ "$want_cursor" -eq 1 ]] && dests+=("$install_root/.cursor/skills")
+  [[ "$want_claude" -eq 1 ]] && dests+=("$install_root/.claude/skills")
+  [[ "$want_codex" -eq 1 ]] && dests+=("$install_root/.codex/skills")
+else
+  [[ -d "$install_root/.cursor" ]] && dests+=("$install_root/.cursor/skills")
+  [[ -d "$install_root/.claude" ]] && dests+=("$install_root/.claude/skills")
+  [[ -d "$install_root/.codex" ]] && dests+=("$install_root/.codex/skills")
+fi
+
+if [[ ${#dests[@]} -eq 0 ]]; then
+  echo "No install dests. Present .cursor, .claude, or .codex at $install_root, or pass --cursor --claude --codex." >&2
+  exit 1
 fi
 
 default_skills() {
@@ -120,18 +147,21 @@ if [[ ${#skills[@]} -eq 0 ]]; then
   exit 1
 fi
 
-mkdir -p "$dest"
-
 installed=()
 for name in "${skills[@]}"; do
   src="$(resolve_skill "$name")" || {
     echo "Unknown skill: $name" >&2
     exit 1
   }
-  rm -rf "$dest/$name"
-  cp -R "$src" "$dest/$name"
+  for dest in "${dests[@]}"; do
+    mkdir -p "$dest"
+    rm -rf "$dest/$name"
+    cp -R "$src" "$dest/$name"
+  done
   installed+=("$name")
 done
 
-echo "Installed ${#installed[@]} skill(s) → $dest"
+echo "Installed ${#installed[@]} skill(s)"
 printf '  %s\n' "${installed[@]}"
+echo "→ ${#dests[@]} dest(s)"
+printf '  %s\n' "${dests[@]}"
