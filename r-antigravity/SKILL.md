@@ -82,21 +82,29 @@ Write `.working_items/{task}/implementation_plan.md` and `.working_items/{task}/
 #### Rules for Brevity & Efficiency:
 1. **No Fluff**: Keep the plan extremely crisp and bulleted.
 
+Implementation-plan format:
+- Omit **RISKS** and **IMPORTANT** independently when empty; do not add `none` placeholders. Risks cover possible breaking changes caused by the work. Important covers other key, potentially non-obvious implications the user should know. If an item fits both, put it only under Risks.
+- Under **Proposed changes**, use a numbered list with short product-language headings and bullets beneath each. Mix file/function references with direct behavior descriptions as useful; neither style is required for every change. Use references only as labels for new or existing files/functions, with nested bullets describing expected changes. All headings and change notes use product language.
+
 #### Template `.working_items/{task}/implementation_plan.md`
 ```markdown
 # Implementation Plan: {title}
 
-{summary - 1-2 sentences}
+{one sentence summarizing what should be done, in product language; no paths, symbols, or implementation details}
+
+## Problem statement
+
+- {1–3 bullets highlighting the ask: the need or requested outcome, in product language; no paths, symbols, or implementation details}
 
 ## User Review Required
 
 ### RISKS
 
-1. {risk notes - terse list}
+1. {possible breaking change caused by this work — terse; omit this section when none}
 
 ### IMPORTANT
 
-1. {important notes - terse list}
+1. {key implication the user should be aware of that may not be obvious — terse; omit this section when none}
 
 ### Decisions from clarify
 
@@ -104,7 +112,12 @@ Write `.working_items/{task}/implementation_plan.md` and `.working_items/{task}/
 
 ## Proposed changes
 
-{change description - terse bulleted list of impacted files and logic changes}
+1. **{short product-language change heading}**
+   - **{new or existing file/function reference, when useful}**
+     - {expected change in product language}
+   - {expected behavior change in product language}
+2. **{next short product-language change heading}**
+   - {expected behavior change in product language}
 
 ## Deep-module design (research load)
 
