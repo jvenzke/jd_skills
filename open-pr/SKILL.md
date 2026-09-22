@@ -11,7 +11,7 @@ description: >-
 
 Public PR description for operators. Auto-attach whenever this chat would create a PR, edit the PR body, or push to a branch that already has an open PR. Do not wait for `/open-pr`.
 
-GitHub writes wait for **APPROVED** (or “create/update the PR”) after the exact title and body are shown. Draft edits → re-show → wait again.
+Do not add approval gates or other blocking ceremonies. When the user asks to open a PR, draft from the available evidence and open it immediately. Afterward, show the posted title and body with the PR URL. Treat the body as editable: if the user requests changes after the PR is open, update it directly and show the revised body. The original request to open or update the PR authorizes that write; do not ask for a second confirmation.
 
 `/d-antigravity` (and similar) still write `walkthrough.md`. Do not skip it. Do not link `.working_items/` on GitHub.
 
@@ -19,7 +19,7 @@ GitHub writes wait for **APPROVED** (or “create/update the PR”) after the ex
 
 1. `gh pr create`, or the user asks to open a PR.
 2. `gh pr edit` of the description, or the user asks to update it.
-3. About to `git push` to a branch that already has an open PR (`gh pr view --json url,title,body` for the current branch). Refresh the three sections for the new diff; if new work is not covered by recorded testing, prompt first.
+3. About to `git push` to a branch that already has an open PR (`gh pr view --json url,title,body` for the current branch). Refresh the three sections for the new diff. If new work is not covered by recorded testing, state that plainly without blocking the push or update.
 
 ## Draft
 
@@ -27,9 +27,9 @@ Infer Summary from the branch diff vs the PR base (or default base). Prefer an e
 
 Title: short, from Summary. Use conventional commits only if this repo already does.
 
-If Testing and Validation would say not run / not validated (or omit new work), **ask what the user tested** before writing that. Then record honestly. Never invent commands, DBs, CI, or results. Opening is still allowed after they approve.
+Record only testing and validation supported by the session or repository evidence. If nothing was run, say so plainly and open the PR without stopping to ask. Never invent commands, DBs, CI, or results.
 
-DB name = the env actually queried this session (e.g. Snowflake database/schema). If unknown, ask once at the draft gate. No warehouse/SQL work: `N/A — no database changes`.
+DB name = the env actually queried this session (e.g. Snowflake database/schema). If it is unknown, say `Not specified`. No warehouse/SQL work: `N/A — no database changes`.
 
 Prod migration: ordered **prod** risk only (SQL/schema/dbt applied out-of-band, expand/contract, dual-write, flags, merge-vs-deploy timing). Checked-in scripts are likely proven only in **dev**. Keep the checklist short and easy to follow. Rollback only as a gotcha when it is not trivial. No generic “deploy as usual” runbook. No extra top-level headings.
 
@@ -54,6 +54,8 @@ Use these headings, this order, verbatim. No other top-level sections unless the
 4. {gotchas / notes — include rollback only if not trivial}
 ```
 
-## Gate then write
+## Open, then refine
 
-Show exact title and body. Wait for **APPROVED** or “create/update the PR”. Then `git push -u` if needed and `gh pr create` or `gh pr edit`. Return the PR URL.
+Use `git push -u` if needed, then `gh pr create` without a separate draft-approval round. Return the PR URL and the exact title and body that were posted.
+
+For later feedback, revise the title or body with `gh pr edit` as requested. Do not reopen the approval cycle or require magic words such as **APPROVED**. Return the PR URL and the revised content.
