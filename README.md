@@ -97,7 +97,7 @@ Cycle: resume notes → codebase research (web allowed) + `agent_notes.md` → a
 
 Artifacts: `.working_items/{project}/scope.md`, `architecture.md`, `agent_notes.md`, `adversarial.md`, `steps/`.
 
-## `/d-antigravity` (Last updated: 2026-09-11)
+## `/d-antigravity` (Last updated: 2026-09-25)
 
 Phased development when architecture and long-lived quality matter. Prefer over `/r-antigravity` for product code. Works with no `/scope-project` output.
 
@@ -107,21 +107,21 @@ Optional project attach: only if the user links `scope.md` / `architecture.md` /
 
 Artifacts: `.working_items/{task}/phase_plan.md` (optional), `agent_notes.md`, and `.working_items/{task}/phase-{N}/{implementation_plan,tasks,walkthrough}.md`.
 
-Clarify is blocking: independent questions in one numbered pass with recommended options; do not plan while user decisions remain open. Deep-module rules apply: small interfaces, complexity behind the boundary, contract-first tests (no red/green ritual).
+Clarify is blocking: independent questions in one numbered pass with recommended options; do not plan while user decisions remain open. Deep-module rules apply: small interfaces, complexity behind the boundary, contract-first tests (no red/green ritual). Internal code trusts callers; new validation only at plan-named trust boundaries. Verification removes unplanned guards and formatting-only hunks, and stops if the diff excluding tests exceeds about 3× the planned size.
 
-## `/r-antigravity` (Last updated: 2026-08-27)
+## `/r-antigravity` (Last updated: 2026-09-25)
 
 Spike-light cycle for research tools and throwaway prototypes. Same clarify → plan → **APPROVED** → implement → smoke verify → walkthrough shape, without phases or `agent_notes`.
 
 Artifacts: `.working_items/{task}/{implementation_plan,tasks,walkthrough}.md`. Runnable code stays in repo conventions (`src/`, notebooks, `scratch/{task}/`), not under `.working_items/`.
 
-Optimize for a simple researcher entrypoint and hidden plumbing. Prefer `/d-antigravity` once the work should live as maintained software.
+Optimize for a simple researcher entrypoint and hidden plumbing. Implementation trusts internal callers and matches surrounding style. Prefer `/d-antigravity` once the work should live as maintained software.
 
-## `/review-pr` (Last updated: 2026-09-11)
+## `/review-pr` (Last updated: 2026-09-25)
 
 Single-chat GitHub PR review. Resume from artifacts in the reviewed repo at `.working_items/pr-review/<owner>-<repo>-<number>/`. If this user already submitted approve / request changes / comment, later runs are **incremental**: only the update since that review, plus prior-comment status.
 
-Tasks: intake (fewest business claims that cover the PR + `low`/`medium`/`high` review risk) → risk-adaptive SECURITY, test-coverage, and LOGIC_QUALITY review → adversarial verification → claim-and-decision walkthrough → submit. Claims come from PR text or the user—not inferred from the diff, and not from Jira. Claims are printed in chat. Always write `SECURITY.md`, `TESTS.md`, and `QUALITY.md` (findings or a written skip) before the walk continues; low risk uses integrated logic/quality plus CI/tests unless a surface triggers a specialist. LOGIC_QUALITY checks claim-aligned correctness and deep-module maintainability (easier future change, not a small diff). Tests report new-code coverage and whether GitHub Actions runs this project’s tests.
+Tasks: intake (fewest business claims that cover the PR + `low`/`medium`/`high` review risk) → risk-adaptive SECURITY, test-coverage, and LOGIC_QUALITY review → adversarial verification → claim-and-decision walkthrough → submit. Claims come from PR text or the user—not inferred from the diff, and not from Jira. Claims are printed in chat. Always write `SECURITY.md`, `TESTS.md`, and `QUALITY.md` (findings or a written skip) before the walk continues; low risk uses integrated logic/quality plus CI/tests unless a surface triggers a specialist. LOGIC_QUALITY checks claim-aligned correctness and deep-module maintainability (easier future change, not a small diff). Speculative defensive validation is a maintainability finding; the fix is to remove those guards. Tests report new-code coverage and whether GitHub Actions runs this project’s tests.
 
 Coverage inventory is **changed sections** (`@@` regions, with added and deleted line counts), not additions-only. `human_presented` means exact product code was shown; it is not “human-reviewed.” Tests are summarized in prose, never pasted. Submit keeps presentation metrics and human-oversight bullets in chat/`SUBMISSION.md`; the GitHub body is product language only (no claim ids or local artifact names). Walkthrough units are claims, material boundaries, ambiguities, and surviving findings; paste product code when judgment needs it. High confidence requires cheap falsification when tools can do it. Gates: claims, walkthrough Next actions, then naming the review type after the exact payload. A new `head_sha` is summarized then processed without a pause. Submit posts one GitHub review with event `APPROVE`, `REQUEST_CHANGES`, or `COMMENT`.
 

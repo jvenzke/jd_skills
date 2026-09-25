@@ -70,15 +70,16 @@ Agent-facing code map. Paths/symbols/commands/one-line facts only. No plan dupli
 
 A module is any file, class, object, package, service, or subsystem with a boundary. Apply in this order when they conflict:
 
-1. **Reduce system complexity**: optimize for simpler callers, fewer concepts, and less coordination—not the smallest diff or fastest implementation.
+1. **Reduce system complexity**: optimize for simpler callers, fewer concepts, and less coordination—not the smallest diff or fastest implementation. Lines that simplify no caller (guards, wrappers, reformatting, redundant tests) are complexity, not thoroughness.
 2. **Deep modules**: prefer small, intent-oriented interfaces that hide substantial cohesive implementation. Callers express intent without coordinating internal steps. Favor fewer, deeper modules over shallow wrappers, pass-through methods, fragmented helpers, or interfaces that mirror implementation details.
-3. **Push complexity downward**: keep invariants, sequencing, representation, policy, error handling, and special cases behind the module that owns them. Co-locate state, policy, invariants, and related complexity when that reduces knowledge shared across modules. Prefer eliminating invalid states and special cases over repeatedly exposing them.
+3. **Push complexity downward**: keep invariants, sequencing, representation, policy, and special cases behind the module that owns them. Owning error handling means the module absorbs or surfaces errors that already arise there — not adding new guards. Co-locate state, policy, invariants, and related complexity when that reduces knowledge shared across modules. Prefer eliminating invalid states and special cases over repeatedly exposing them.
 4. **Prefer clear boundaries**: minimize coupling, information leakage, pass-through layers, and duplicated orchestration. Organize around responsibility and knowledge, not execution order.
 5. **Judge abstractions by caller complexity removed**, not by size or line count. For important or reshaped boundaries, consider alternative designs. Treat excessive coordination, awkward naming, or difficult-to-describe interfaces as signs the abstraction may be wrong.
 6. **Extend/reuse sound code**, but do not preserve shallow abstractions or misplaced responsibilities merely to minimize changes.
 7. **Keep the approved vertical slice**: larger changes are allowed when required to deepen a module or simplify its boundary; no unrelated cleanup or speculative generalization. New or reshaped public/module boundaries must be named in the approved plan; private implementation structure may evolve to realize that design. Preserve public behavior and compatibility unless the approved plan includes an interface migration.
-8. **Test restraint**: prefer high-signal contract tests over test volume; do not add tests merely to perform a red/green loop.
-9. **Comments explain what code cannot**: document non-obvious intent, invariants, or rationale; avoid comments that restate understandable code.
+8. **Trust internal callers**: validate only at trust boundaries the plan names (user input, external I/O, warehouse rows, config). Inside the boundary, trust callers and the type system and let existing errors propagate. No new guards, wrappers, re-validation of already-checked data, or new exception types (e.g. `isinstance`, `None` checks, `try/except`) unless the plan names them.
+9. **Test restraint**: prefer high-signal contract tests over test volume; do not add tests merely to perform a red/green loop.
+10. **Comments explain what code cannot**: document non-obvious intent, invariants, or rationale; avoid comments that restate understandable code.
 
 ## Tasks
 
@@ -193,12 +194,16 @@ If a phase plan is being used, limit scope to phase `{N}` and change that phase�
 Implementation-plan format:
 - Omit **RISKS** and **IMPORTANT** independently when empty; do not add `none` placeholders. Risks cover possible breaking changes caused by the work. Important covers other key, potentially non-obvious implications the user should know. If an item fits both, put it only under Risks.
 - Under **Proposed changes**, use a numbered list with short product-language headings and bullets beneath each. Mix file/function references with direct behavior descriptions as useful; neither style is required for every change. Use references only as labels for new or existing files/functions, with nested bullets describing expected changes. All headings and change notes use product language.
+- **Error handling / validation** under Deep-module design is the only authorization for new guards or validation. Default `none — trust callers; existing errors propagate`. Anything not named there is unplanned.
+- **Expected diff** estimates product-code size excluding tests: `~{lines} lines across {files} files`. Use `{lines}` and `{files}` here — `{N}` is the phase index.
 
 #### Template `.working_items/{task}/phase-{N}/implementation_plan.md`
 ```markdown
 # Implementation Plan: {title} (Phase {N})
 
 {one sentence summarizing what should be done, in product language; no paths, symbols, or implementation details}
+
+**Expected diff**: ~{lines} lines across {files} files (excluding tests)
 
 ## Problem statement
 
@@ -232,6 +237,7 @@ Implementation-plan format:
 - **System context**: {owning boundary and its role in the system; who calls it, at a high level; what this slice does not own. One sentence default, two max. No file tree. Same sentence as the Step 3 chat line.}
 - **Interface**: {small public surface callers will use}
 - **Hidden complexity**: {sequencing, invariants, representation, errors, or dependencies moved behind it}
+- **Error handling / validation**: {named trust boundaries, or `none — trust callers; existing errors propagate`}
 - **Caller impact**: {coordination or concepts removed from callers}
 - **Boundary rationale**: {why this module should own the complexity}
 
@@ -318,15 +324,20 @@ Return a clean summary of changes, commands run, discoveries, and Test budget (n
 
 ## Design rules (priority order)
 A module is any file, class, object, package, service, or subsystem with a boundary. Apply in this order when they conflict:
-1. Reduce system complexity: optimize for simpler callers, fewer concepts, and less coordination—not the smallest diff or fastest implementation.
+1. Reduce system complexity: optimize for simpler callers, fewer concepts, and less coordination—not the smallest diff or fastest implementation. Lines that simplify no caller (guards, wrappers, reformatting, redundant tests) are complexity, not thoroughness.
 2. Deep modules: prefer small, intent-oriented interfaces that hide substantial cohesive implementation. Callers express intent without coordinating internal steps. Favor fewer, deeper modules over shallow wrappers, pass-through methods, fragmented helpers, or interfaces that mirror implementation details.
-3. Push complexity downward: keep invariants, sequencing, representation, policy, error handling, and special cases behind the module that owns them. Co-locate state, policy, invariants, and related complexity when that reduces knowledge shared across modules. Prefer eliminating invalid states and special cases over repeatedly exposing them.
+3. Push complexity downward: keep invariants, sequencing, representation, policy, and special cases behind the module that owns them. Owning error handling means the module absorbs or surfaces errors that already arise there — not adding new guards. Co-locate state, policy, invariants, and related complexity when that reduces knowledge shared across modules. Prefer eliminating invalid states and special cases over repeatedly exposing them.
 4. Prefer clear boundaries: minimize coupling, information leakage, pass-through layers, and duplicated orchestration. Organize around responsibility and knowledge, not execution order.
 5. Judge abstractions by caller complexity removed, not by size or line count. For important or reshaped boundaries, consider alternative designs. Treat excessive coordination, awkward naming, or difficult-to-describe interfaces as signs the abstraction may be wrong.
 6. Extend/reuse sound code, but do not preserve shallow abstractions or misplaced responsibilities merely to minimize changes.
 7. Keep the approved vertical slice: larger changes are allowed when required to deepen a module or simplify its boundary; no unrelated cleanup or speculative generalization. New or reshaped public/module boundaries must be named in the approved plan; private implementation structure may evolve to realize that design. Preserve public behavior and compatibility unless the approved plan includes an interface migration.
-8. Test restraint: prefer high-signal contract tests over test volume; do not add tests merely to perform a red/green loop.
-9. Comments explain what code cannot: document non-obvious intent, invariants, or rationale; avoid comments that restate understandable code.
+8. Trust internal callers: validate only at trust boundaries the plan names (user input, external I/O, warehouse rows, config). Inside the boundary, trust callers and the type system and let existing errors propagate. No new guards, wrappers, re-validation of already-checked data, or new exception types (e.g. `isinstance`, `None` checks, `try/except`) unless the plan names them.
+9. Test restraint: prefer high-signal contract tests over test volume; do not add tests merely to perform a red/green loop.
+10. Comments explain what code cannot: document non-obvious intent, invariants, or rationale; avoid comments that restate understandable code.
+
+## Diff hygiene
+- New validation only where the plan’s **Error handling / validation** bullet names a trust boundary. No new guards, wrappers, re-validation, or exception types beyond that bullet.
+- Match surrounding style. Only lines with a semantic change may differ from the recorded baseline. Run the repo formatter on a file only when that file was already formatter-clean at baseline (the format run must add no churn). Never run a whole-file or whole-repo formatter otherwise. No import reordering, quote-style, trailing-comma, or line-wrap edits on untouched lines.
 
 ## agent_notes.md rules
 - Purpose: durable code map only (paths/symbols/commands/one-line facts). Not a second plan or walkthrough.
@@ -343,7 +354,8 @@ A module is any file, class, object, package, service, or subsystem with a bound
   - **Ban**: tests for private helpers, call counts, mock interaction shape, duplicates of the same contract, or any test whose sole purpose is to satisfy a red/green ritual.
 - **Discoveries**: Record only material implementation discoveries in `tasks.md` — plan adjustments, newly discovered invariants, verification deltas, or unexpected scope. Adapt autonomously to local/reversible discoveries. Pause for user guidance if a discovery changes public behavior, an approved architecture/module boundary, migration strategy, significant dependency, or substantial scope.
 - **Project report-back (optional)**: If a parent project is attached, write material tradeoffs and work pushed out of this step onto `{project}/scope.md` (`## Tradeoffs / push-outs`, `## Later`, later tracker steps / new last step). If deepening or quality work was dropped or deferred, patch `{project}/architecture.md` (`## Deep modules`, `## Quality backlog`, `## Edge cases` as needed; create the file from leftover scope headings if missing). Prefer deferring widening work over expanding this step. Pause if that changes approved project outcomes, owning boundaries, or drops/replaces a step. If no parent is attached, skip.
-- Maintain exact indentation/formatting; avoid placeholder code.
+- **Trust internal callers** (design rule 8): new validation only at trust boundaries named in the plan’s **Error handling / validation** bullet. Otherwise trust callers and let existing errors propagate. No new guards, wrappers, re-validation, or exception types (e.g. `isinstance`, `None` checks, `try/except`) beyond that bullet.
+- **Formatting**: match surrounding style. Only lines with a semantic change may differ from the recorded baseline. Run the repo formatter on a file only when that file was already formatter-clean at baseline (the format run must add no churn). Never run a whole-file or whole-repo formatter otherwise. No import reordering, quote-style, trailing-comma, or line-wrap edits on untouched lines. Avoid placeholder code.
 
 ### 5. Verification
 - **Main agent** owns verification and review artifacts (not the implementation subagent).
@@ -355,10 +367,14 @@ A module is any file, class, object, package, service, or subsystem with a bound
 - Verify callers use the intended simple interface and do not depend on newly private implementation details.
 - Verify the refactor removed obsolete paths and did not leave duplicate orchestration across the old and new boundaries.
 - **Diff-to-plan check**: Review the final git diff against the recorded baseline. Confirm changed files and behavior match the approved vertical slice, unrelated user changes remain intact, and no unplanned public/module boundary or dependency was introduced.
+- **Unplanned validation (hard)**: If the diff adds guards, wrappers, re-validation, or exception types not named in **Error handling / validation**, remove them before the phase can complete. If one is actually required, stop for re-approval instead of keeping it. Do not count that stop as a repair attempt.
+- **Formatting-noise check (hard)**: Compare `git diff` to `git diff -w --ignore-blank-lines` against the recorded baseline. Revert any hunk that disappears under `-w`, and any hunk whose only change is quotes, import order, wrapping, or trailing commas, before the phase can complete.
+- **Expected-diff check (hard)**: If the plan has an **Expected diff** and the actual diff excluding tests exceeds about 3× that size, stop and report planned vs actual and what the extra lines are. Do not complete the phase. Do not count this stop as a repair attempt. Skip this check when the plan has no **Expected diff** line.
+- When the phase completes, list removed unplanned validation and reverted formatting-only hunks on the walkthrough **Extras beyond plan** line.
 - **agent_notes hard check**: Re-read `.working_items/{task}/agent_notes.md`. Confirm it reflects this phase’s durable map/gotchas (prune superseded bullets; soft cap ~30). Ensure the `tasks.md` notes checkbox is checked. If there was no new durable knowledge, checking the box alone is enough — do **not** add meta status lines into `agent_notes.md`. Do **not** mark the phase complete until this check passes. If a parent project is attached, also patch `{project}/agent_notes.md` in-section for durable facts that outlive this step (same rules; no full-file rewrite).
 - If checks fail: increment `verification_attempts`, classify the failure (`environment`, `existing baseline`, `implementation defect`, `verification defect`, or `plan invalidated`), and record the concise error/classification in `last_error` in `phase-{N}/tasks.md` frontmatter. Apply fixes and re-run when the failure is within the approved scope.
 - If the same material failure class remains unresolved after **3 repair attempts**, halt and report logs. Halt earlier if resolution requires changing an approved behavioral/architectural decision or substantial scope. Do not treat unrelated sequential failures (e.g. compile, then lint) as the same stuck loop.
-- **DO NOT proceed to review changes until all Automated Verification checks pass.**
+- **DO NOT proceed to review changes until Automated Verification passes and the unplanned-validation, formatting-noise, and expected-diff checks are clear.**
 - If a phase plan is being used, change `- [o]` to `- [x]` in `phase_plan.md` for phase `{N}`.
 - **Project tracker (optional)**: If attached: leave the project step `- [o]` while `phase_plan.md` still has `- [ ]` phases. If this completes the last phase (or there is no phase plan), set that tracker line to `- [x]` and the step file `status: done`.
 
@@ -390,7 +406,7 @@ A module is any file, class, object, package, service, or subsystem with a bound
 - Contracts covered: {terse}
 - Test budget: new: {N} | extended: {M} | reused only: {yes/no}
 - Regression deltas: {none | list}
-- Extras beyond plan (soft warn): {none | list}
+- Extras beyond plan (soft warn): {none | extra tests}. Removed before completion: {none | unplanned validation}. Reverted formatting-only hunks: {none | list}
 
 ### Manual Verification
 1. {trigger pipeline/job or other human action — or `none`}

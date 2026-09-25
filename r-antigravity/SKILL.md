@@ -176,10 +176,13 @@ last_error: null
   - The **Rules (priority order)** block from this skill
   - The **Deep-module design standard (research tools)** block from this skill
   - Instruct: stay within the approved plan; optimize for a simple researcher interface; do not productize or over-abstract beyond what reduces research load
+  - Instruct: trust internal callers — validate only at plan-named trust boundaries (user input, external I/O, warehouse rows, config); no new guards, wrappers, re-validation, or exception types (e.g. `isinstance`, `None` checks, `try/except`)
+  - Instruct: match surrounding style; only semantically changed lines may differ from baseline; run the repo formatter on a file only when it was already formatter-clean at baseline; no import, quote, wrap, or trailing-comma edits on untouched lines
   - Instruct: as each checklist step completes, change `- [ ]` to `- [x]` in `tasks.md`
 - As each step completes (main agent or subagent), change `- [ ]` to `- [x]` in `tasks.md`.
 - **Discoveries**: Record material discoveries under `## Discoveries` in `tasks.md`. Adapt autonomously to local/reversible discoveries. Pause and revise the plan for re-**APPROVED** only if success criteria, inputs/outputs, or irreversible side effects change.
-- Maintain exact indentation/formatting; avoid placeholder code.
+- **Trust internal callers**: validate only at trust boundaries the plan names (user input, external I/O, warehouse rows, config). Inside the boundary, trust callers and the type system and let existing errors propagate. No new guards, wrappers, re-validation of already-checked data, or new exception types (e.g. `isinstance`, `None` checks, `try/except`) unless the plan names them.
+- **Formatting**: match surrounding style. Only lines with a semantic change may differ from the recorded baseline. Run the repo formatter on a file only when that file was already formatter-clean at baseline (the format run must add no churn). Never run a whole-file or whole-repo formatter otherwise. No import reordering, quote-style, trailing-comma, or line-wrap edits on untouched lines. Avoid placeholder code.
 
 ### 5. Verification
 - Update `phase: verification` in `tasks.md`.
