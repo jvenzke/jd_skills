@@ -10,4 +10,6 @@ Keep entries compact. Store only critical details needed to spot repeated skill 
 
 ## Resolved
 
+- 2026-09-25 | skill: d-antigravity | fixed: trust-internal-callers rule, plan-named validation only, formatting-noise check, and expected-diff stop so defensive guards and format-only hunks cannot inflate a small change; same caller/format rules in r-antigravity step 4; speculative defensive validation is a review-pr maintainability finding | commit: this change | compressed: 0 entries
+
 - 2026-05-08 | skill: logic-walkthrough | fixed: tightened "exact wording" directive at the user-approval gate to require the verbatim PR-comment body (including code blocks/quoted code) alongside summary, so the user no longer has to ask "show me the actual comment text" to see what would post | commit: 3b2743e logic-walkthrough: require verbatim comment body at approval gate | compressed: 0 entries

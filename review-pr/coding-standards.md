@@ -8,7 +8,7 @@ Do not demand speculative generalization, unrelated cleanup, or an interface mig
 
 1. Reduce total system complexity: fewer concepts and less caller coordination.
 2. Prefer deep modules: small intent-oriented interfaces hiding cohesive complexity.
-3. Push invariants, sequencing, representation, policy, errors, and special cases into the owning module.
+3. Push invariants, sequencing, representation, policy, and special cases into the owning module. Owning errors means absorbing or surfacing errors that already arise there, not adding new guards.
 4. Minimize coupling, information leakage, pass-through layers, and duplicated orchestration; organize around knowledge/responsibility.
 5. Reuse sound code without preserving shallow or misplaced abstractions merely to minimize changes.
 6. Deliberately assess important new/reshaped boundaries; awkward coordination or a hard-to-describe interface signals a poor abstraction.
@@ -33,7 +33,9 @@ A maintainability finding requires:
 3. leaked/misplaced knowledge and the resulting change-impact path
 4. one practical fix direction
 
-Qualifying problems include leaked coordination/policy/representation, shallow pass-through boundaries, split responsibility, caller-exposed invalid states, awkward new interfaces, unjustified drive-by abstractions, and extra paths for the same business data.
+Qualifying problems include leaked coordination/policy/representation, shallow pass-through boundaries, split responsibility, caller-exposed invalid states, awkward new interfaces, unjustified drive-by abstractions, extra paths for the same business data, and speculative defensive validation (new guards, wrappers, re-validation, or exception types on internal callers — e.g. `isinstance`, `None` checks, `try/except` — that simplify no caller).
+
+Do not demand new validation on internal callers. A finding for speculative defensive validation asks for those guards to be removed.
 
 Search nearby readers/writers of the same entity/fields/invariants, not the repository at random. Consolidation is `recommended` when it fits this slice, `blocker` only when divergence creates a concrete correctness/security failure, and `future_work` when clearly larger than this PR.
 
