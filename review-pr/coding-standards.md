@@ -37,6 +37,6 @@ Qualifying problems include leaked coordination/policy/representation, shallow p
 
 Do not demand new validation on internal callers. A finding for speculative defensive validation asks for those guards to be removed.
 
-Search nearby readers/writers of the same entity/fields/invariants, not the repository at random. Consolidation is `recommended` when it fits this slice, `blocker` only when divergence creates a concrete correctness/security failure, and `future_work` when clearly larger than this PR.
+Search nearby readers/writers of the same entity/fields/invariants, not the repository at random. Consolidation is `recommended` when this PR introduces or worsens the problem and the fix fits this slice, `blocker` only when the PR-caused divergence meets the production-impact definition in `phases/skeptic.md`, and `future_work` when the work is clearly larger than the confirmed slice or fixes an unchanged pre-existing problem. State explicitly when the PR did not introduce or worsen a `future_work` concern.
 
 Naming, formatting, and local style are nits unless they reveal the abstraction problem. TESTS—not LOGIC_QUALITY—owns coverage and test-volume judgment.
