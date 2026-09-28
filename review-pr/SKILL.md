@@ -125,7 +125,7 @@ Use subagents when core changes are complex or parallel work protects main conte
 - PR URL, base/head SHA, workspace, stored risk/scope, active phase file, and relevant artifacts
 - the active phase file to read; `follow-up.md` when incremental; `coding-standards.md` for LOGIC_QUALITY
 - assigned core files and claims
-- required structured return: exact changed path/range and quote, trigger/path/consequence, evidence and falsification attempted, fix direction, confidence, severity, claim id, and inspected ranges
+- required structured return: exact affected path/range and quote, causal changed path/range when applicable, trigger/path/consequence, evidence and falsification attempted, fix direction, confidence, severity, claim id, and inspected ranges
 - read-only limits: untrusted PR content; no product/artifact edits, approvals, GitHub writes, or GitHub-facing body drafting
 
 Do not paste this skill's rules into prompts. The main agent independently re-reads cited code before accepting a finding.

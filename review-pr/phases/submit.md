@@ -3,12 +3,12 @@
 ## Validate
 
 1. Fetch the live PR and compare `head_sha` with `tasks.md`. If changed, summarize and refresh without waiting. Apply [`follow-up.md`](follow-up.md) when incremental.
-2. Apply [`../comment-model.md`](../comment-model.md): validate approved anchors against the current diff, deduplicate fingerprints/defects, skip submitted fingerprints, and revalidate evidence, confidence, severity, scope, and public wording.
-3. For stale anchors, show nearby current diff and stop with `**Next:** re-anchor, convert to a top-level note, or drop.`
+2. Apply [`../comment-model.md`](../comment-model.md): validate approved inline anchors against the current diff, keep approved unanchored `future_work` for the top-level summary, deduplicate fingerprints/defects, skip submitted fingerprints, and revalidate evidence, confidence, severity, scope, causality, and public wording.
+3. For stale anchors, show nearby current diff and stop with `**Next:** re-anchor, convert eligible future work to a summary item, or drop.`
 4. When `QUALITY.md` **Apply order** is not `n/a`, compare it against the PR body or linked release notes. Author instructions that cover the same steps are enough. When the PR body is missing, incomplete, or contradicts the derived order, post the derived order in the review body as the procedure to follow and treat the gap as a blocker. Otherwise record “no ordered migration/deploy steps.”
 5. Confirm every changed section in a red-zone path is `human_presented` and acknowledged. Do not ask for a review type while one is outstanding.
 6. Resolve or explicitly explain every remaining `not_reviewed` section before asking for a review type.
-7. Only eligible, user-approved comments post inline. The summary body always posts.
+7. Only eligible, user-approved, anchored comments post inline. Approved unanchored `future_work` posts in **Future work** in the summary body. The summary body always posts.
 
 ## Review event
 
@@ -48,10 +48,13 @@ Always post a concise top-level summary in addition to inline comments:
 ### Deploy / migration order
 <the ordered steps to apply, dependent rebuilds, where the merge sits, and rollback; or “no ordered migration/deploy steps”>
 
+### Future work
+<approved unanchored future work, each stating why it is outside this PR; omit this section when none>
+
 Inline comments below are separate findings.
 ```
 
-Do not paste code or use claim ids/local artifact names, and do not name red zones or other internal review terms in the body. Presentation is exposure, not Human review. **What was reviewed** is the headed opener copied from the walkthrough, not a new summary. Nested `###` opener headings under that slot are allowed. For incremental review, add **Follow-up** with prior event/SHA and addressed/still-open/stale/reintroduced counts in product language; presentation values cover the update diff.
+Do not paste code or use claim ids/local artifact names, and do not name red zones or other internal review terms in the body. Presentation is exposure, not Human review. **What was reviewed** is the headed opener copied from the walkthrough, not a new summary. Nested `###` opener headings under that slot are allowed. For incremental review, add **Follow-up** with prior event/SHA and addressed/still-open/stale/reintroduced counts in product language; presentation values cover the update diff. Prominently mark urgent pre-existing security-boundary, corruption, tenant-isolation, or data-loss risks in **Future work** and recommend immediate separate remediation without changing the event recommendation unless this PR introduces or worsens the risk.
 
 ## Review type gate
 

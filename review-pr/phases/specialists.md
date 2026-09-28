@@ -23,7 +23,7 @@ Every absent or untriggered track still gets a complete artifact with its reason
 
 Specialists return structured candidates, not GitHub bodies:
 
-- changed path/range and exact quote
+- affected path/range and exact quote; include the causal changed path/range when the PR introduces or worsens the problem
 - trigger, execution/change-impact path, and practical consequence
 - evidence checked and cheap falsification attempted
 - one fix direction, confidence, severity, claim id when applicable

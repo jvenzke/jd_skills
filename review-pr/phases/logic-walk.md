@@ -60,7 +60,7 @@ Include removed lines and at most five context lines. Do not dump the PR or file
 
 Reprint **Test coverage of new code** and **CI workflow scope** from `TESTS.md`; do not recompute them. Summarize remaining inspected core sections and their disposition.
 
-Present all surviving findings as one numbered list. For each show path/range, the comment-model chat snippet, severity, confidence, concise local rationale, and the exact GitHub body. Apply [`../comment-model.md`](../comment-model.md); do not restate its template or eligibility rules here.
+Present all surviving findings as one numbered list. For each show affected path/range, placement, severity, confidence, concise local rationale, and exact GitHub text. For inline comments include the comment-model chat snippet; for unanchored `future_work` use `summary` placement and do not invent an `@@` hunk. Apply [`../comment-model.md`](../comment-model.md); do not restate its template or eligibility rules here.
 
 Present unresolved product intent as questions and record it in `HUMAN_REVIEW_PROMPTS.md`. Apply [`../coverage-protocol.md`](../coverage-protocol.md), print its footer and Human oversight, then end with **Next actions**.
 
@@ -105,6 +105,8 @@ Omit optional rows that do not apply and keep the example numbering aligned.
 
 - Actionable anchored issue → `COMMENTS.md`
 - Unclear business behavior → `HUMAN_REVIEW_PROMPTS.md`
-- Concrete work beyond this PR → `future_work`
+- Verified unchanged pre-existing defect or concrete capability beyond the confirmed slice → `future_work`; state why the PR did not cause it, and mark severe security/data risks urgent
+- Ambiguous whether behavior belongs in this PR → `HUMAN_REVIEW_PROMPTS.md` until intent is resolved
+- Missing or contradicted confirmed behavior → in-scope `blocker` or `recommended`, based on consequence
 - Missing required migration/deploy-order note → `blocker`
 - Clean code → coverage disposition; do not manufacture feedback
