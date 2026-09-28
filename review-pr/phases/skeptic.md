@@ -14,12 +14,14 @@ For every candidate:
 
 1. Re-read the actual diff and necessary surrounding code; never score from the candidate summary alone.
 2. Confirm path, changed sections, and exact quote at `head_sha`. Missing/mismatched evidence → confidence `0`.
-3. Scope: a finding is in scope when the PR introduces, alters, or newly exposes/makes reachable the failure. A pre-existing defect is out of scope only when the PR does not materially change its reachability, consequence, contract, or affected callers. Do not drop a PR-introduced failure because part of the root cause existed before the PR. Out of scope → confidence `0`.
+3. Scope: a finding is in scope when the PR introduces, alters, or newly exposes/makes reachable the failure. A pre-existing defect is out of scope only when the PR does not materially change its reachability, consequence, contract, or affected callers. Do not drop a PR-introduced failure because part of the root cause existed before the PR. Out of scope → confidence `0`. Compare against `git show <base_sha>:<file>` to tell a PR-introduced problem from one that already existed.
 4. State the concrete trigger/input/state, traced execution path, and practical consequence.
 5. For business findings, cite the current (usually draft) claim to the main agent. For maintainability, apply `../coding-standards.md` and repository patterns at `base_sha`. Do not draft GitHub-facing bodies.
 6. Try to identify guards, callers, validation, tests, or invariants that make the proposed failure impossible.
 7. When the candidate is cheaply falsifiable with available repository tools, attempt that falsification before rating `high`. Examples: inspect all relevant call sites; trace the branch and run a narrow test when cheap; read the authoritative schema/type/model; for warehouse SQL, `describe`/`EXPLAIN` via Snowflake MCP (view-only; migrations likely only run in dev); inspect lockfile/resolver or security checks; read workflow selectors and the actual test command; trace trigger to consequence on the concrete path.
 8. If neither proven nor disproven, cap confidence at `low`.
+9. For an off-path trigger (catch-up, restatement, rerun, dead config branch; see `../off-path-risks.md`), count how often it occurs in real data before rating severity.
+10. Split each candidate into its mechanism claim ("this join fans out on duplicate keys") and its premise claim ("the lookup table has duplicate keys", "this column can be NULL", "this path runs in prod"). Confirm the mechanism by reading the code; settle the premise with data (a Snowflake MCP count or an `information_schema` read). A mechanism-correct finding with a false premise gets confidence `low`. Before rating severity, read `information_schema.tables` row count and bytes for every table the finding touches; table size often changes the ranking more than the code does.
 
 Score independently:
 
