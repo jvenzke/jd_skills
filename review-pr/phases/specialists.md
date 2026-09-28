@@ -83,6 +83,11 @@ When the diff contains migration DDL, dependency rebuilds, backfills, or any oth
 4. where the code merge sits relative to those steps, and whether new code tolerates the old schema and old code tolerates the new schema
 5. the rollback for each irreversible step, or `no rollback` and what that costs
 
+For each `ADD COLUMN`:
+
+- A view that reads the table with `SELECT *` breaks: Snowflake stores the expanded column list in the view definition, so the view fails the next time it is queried. List those views and add a `CREATE OR REPLACE VIEW` step per environment.
+- A writer that selects an explicit column list fails in old code once the column exists, so the ALTER comes after the deploy. A writer that fills missing columns with NULL tolerates the ALTER first. Name each writer and its order.
+
 Mark each step `dev` or `prod`. Where the diff does not settle a step, write the assumption and route it to `HUMAN_REVIEW_PROMPTS.md` rather than guessing.
 
 ## Test coverage
@@ -93,6 +98,7 @@ Mark each step `dev` or `prod`. Where the diff does not settle a step, write the
 4. For new/changed behavior, record covering file, scenario/setup, assertions, claim/branch, and uncovered ranges/branches.
 5. Check changed branches; null/empty/boundary/permission/error edges; assertion specificity; bug regressions; and material invariants.
 6. Record any changed red-zone section with no covering test; the walkthrough raises it as an unresolved prompt.
+6a. Apply the test-side items of [`../off-path-risks.md`](../off-path-risks.md): property tests for recorded-versus-enacted and dead config branches, a test for each input that removed code handled, a false-pass and a false-fail case for each changed comparator, fixtures with duplicate keys and an out-of-scope row where the code assumes neither, the inverse test for each new validation (what still works when it fires), and the claim-evidence table from item 14.
 7. Run targeted local tests only when useful and cheap; ask before expensive/full suites.
 
 Passing CI is evidence, not proof. A green workflow that skipped relevant tests is a finding. Do not invent product rules or demand test volume instead of high-signal contract tests.
@@ -128,7 +134,7 @@ Read `../coding-standards.md`. Review core product changes for claim-aligned cor
 - silent changed behavior or guardrail workaround missing from draft claims
 - conflicting readers/writers of the same business data
 
-Apply `../coding-standards.md` as the sole maintainability checklist. Do not assess test coverage. Return unclaimed behavior for the main agent to add as a claim/gap.
+Apply `../coding-standards.md` as the sole maintainability checklist, and `../off-path-risks.md` for paths steady state never takes. Do not assess test coverage. Return unclaimed behavior for the main agent to add as a claim/gap.
 
 Write:
 
