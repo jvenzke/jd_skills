@@ -28,7 +28,7 @@ hide cohesive implementation complexity. All artifacts live under
     verify.sql | verify.py      # optional; human post-pipeline checks
 ```
 
-`{N}` is the 1-based phase index from `phase_plan.md` (or `1` when skipping phases). **Never overwrite** a completed phase folder — always create a new `phase-{N}/` for the next incomplete phase.
+`{N}` is the 1-based phase index from `phase_plan.md` (or `1` when there is no phase plan). **Never overwrite** a completed phase folder — always create a new `phase-{N}/` for the phase this chat is working.
 
 ## agent_notes.md (agent code map)
 
@@ -88,7 +88,7 @@ Plans are bullets, not paragraphs.
 **Trackers**
 - **TODO tool**: which *skill* step this chat is on (`1`, `2a`, `2b`, `2c`, `3`, `4`, `5`, `6`). Update it as you enter each step.
 - **`phase-{N}/tasks.md`**: implementation work for the current phase (source of truth for coding steps).
-- **`phase_plan.md` checkboxes**: phase-level `- [ ]` / `- [o]` / `- [x]`.
+- **`phase_plan.md` checkboxes**: phase-level `- [ ]` / `- [o]` / `- [x]`. `- [o]` is in progress. A `- [ ]` with a later `- [o]` or `- [x]` is skipped (computed, not stored). Any other `- [ ]` is open.
 
 ### 1. Review request, research & clarify
 
@@ -106,8 +106,8 @@ Plans are bullets, not paragraphs.
      5. If creating a new task folder, `{task}` = `{project}--{step-stem}` (step filename without `.md`). Keep that slug if already set.
      6. Set that tracker line to `- [o]` if it was `- [ ]`.
      7. Trust on-disk `{project}/scope.md` and `architecture.md` over chat memory. On resume, include project tracker status in the chat summary.
-4. Read existing `.working_items/{task}/phase_plan.md` if the user linked/named it or the file exists. For the next incomplete phase, read any existing `phase-{N}/implementation_plan.md` and `phase-{N}/tasks.md`. Then read `agent_notes.md`.
-5. **Research codebase**: Find relevant files, trace logical flows, and build a full understanding of the scope of changes, potential impacts, risks, and side-effects. Update `agent_notes.md` with durable paths/symbols/gotchas/commands not already in plans.
+4. Read existing `.working_items/{task}/phase_plan.md` if the user linked/named it or the file exists. If it exists, resolve `{N}` with **Phase choice** before research, planning, or edits. Then read that phase’s `phase-{N}/implementation_plan.md` and `phase-{N}/tasks.md` if present, then `agent_notes.md`. If phase choice asked a question, stop this step until the user answers. If there is no phase plan, skip phase choice.
+5. **Research codebase** (only after `{N}` is resolved): Find relevant files, trace logical flows, and build a full understanding of the scope of changes, potential impacts, risks, and side-effects. Update `agent_notes.md` with durable paths/symbols/gotchas/commands not already in plans.
 6. **Establish baseline**: Record the current branch/base commit and any pre-existing dirty files before implementation. Preserve unrelated user changes.
 7. **Evaluate boundaries**: Identify the current public interface, complexity leaked to callers, duplicated orchestration, shallow wrappers, and invariants spread across modules. Determine which boundary should own that complexity.
 8. **Align**: Shared understanding of forks that would change outcomes (externally observable behavior, architecture/module boundaries, irreversible decisions, significant dependencies, substantial scope)—not a minimal interrogatory. If the codebase can answer, explore instead. For reversible implementation choices, pick the locally consistent option and note it in the plan.
@@ -125,14 +125,43 @@ Plans are bullets, not paragraphs.
      ```
 
    - After answers, ask only follow-ups an answer blocked or changed (or new facts that still need user judgment). Pause before the next pass or before planning.
-9. **DO NOT** write the phase plan or implementation plan while an alignment question that would change outcomes remains open.
+9. **DO NOT** write the phase plan or implementation plan while a phase-choice question or an alignment question that would change outcomes remains open.
 
-Use the first matching row. `{N}` is the next incomplete phase (`- [ ]` or `- [o]`; treat `- [o]` as current). Create or reuse `phase-{N}/` for *this* phase only; do not reuse or overwrite other phase folders.
+#### Phase choice
+
+Run only when `phase_plan.md` exists. Status comes from its checkboxes only. An incomplete `phase-{N}/tasks.md` does not change status. Do not store a skipped mark.
+
+Classify each phase in order:
+
+- `- [x]` — complete. Not a candidate.
+- `- [o]` — in progress. Label `[In progress]`.
+- `- [ ]` with any later phase `- [o]` or `- [x]` — skipped. Label `[skipped]`.
+- Any other `- [ ]` — open. Label `[open]`.
+
+The **next open** phase is the first open phase. Candidates, in phase order, are every in-progress phase, every skipped phase, and the next open phase when one exists. Do not list complete phases, or open phases after the next open one.
+
+- If the user names a phase (its number, its title, or a link to that phase’s files), that phase is `{N}`. Do not ask. If that phase is `- [x]`, do not overwrite its folder; tell the user it is complete.
+- If there are no candidates, stop. The phase plan is complete. Do not open another phase.
+- If there is one candidate, that phase is `{N}`. Do not ask. A finished `- [x]` prefix followed only by `- [ ]` phases is this case: start the first open phase.
+- If there are two or more candidates, ask and stop. Do not research, plan, edit checkboxes, or take the routing table until the user answers. The question is the whole message. No “(recommended)” mark. Each option is the phase title only (`Phase {N}: {title}`), not the slice or `Verify:` clause.
+
+  ```
+  1. Which phase should I work on next?
+     a. Phase 1 [In progress]: {title}
+     b. Phase 2 [open]: {title}
+  Respond `1a` to start on phase 1
+  ```
+
+  The reply line names option `a` and that option’s phase number. `1a` selects option `a`.
+
+After the answer, `{N}` is the chosen phase. Leave every other phase’s checkbox unchanged.
+
+Use the first matching row. When `phase_plan.md` existed at the start of this step, `{N}` is the phase from **Phase choice**. Otherwise the row sets `{N}`. Create or reuse `phase-{N}/` for *this* phase only; do not reuse or overwrite other phase folders.
 
 | If | `{N}` | After clarify, go to |
 | --- | --- | --- |
 | `phase-{N}/tasks.md` exists, checklist incomplete, `approved: true` | that phase | **4** Implementation (or **5** if `phase: verification`). Skip remaining clarify/planning. Read plans then `agent_notes.md` before coding. |
-| `phase_plan.md` exists (or user linked/named it) | next incomplete phase | **2c**. Chat-summarize completed phases, next title, resume point. Do not rewrite the phase plan unless the user asked. |
+| `phase_plan.md` exists (or user linked/named it) | chosen phase | **2c**. Chat-summarize completed phases, next title, resume point. Do not rewrite the phase plan unless the user asked. |
 | A phase plan is needed (criteria in **2a**) and `phase_plan.md` is missing | set in 2a | **2a** |
 | Else | `1` | **2c** (`phase-1/`). Still maintain `agent_notes.md`. |
 
@@ -185,7 +214,7 @@ If you wrote `phase_plan.md` in **2a**, do **2b**. Else go to **2c**.
 - Then proceed to **2c**. Include the phase plan in the implementation-plan review at step 3.
 
 ### 2c. Develop an implementation plan
-Determine `{N}` (next incomplete phase index, or `1` if no phase plan). Create directory `.working_items/{task}/phase-{N}/` if missing.
+Use `{N}` from **Phase choice**. If this chat just wrote `phase_plan.md` in **2a**, `{N}` is its first `- [ ]` phase (do not ask; a new plan is all open). If there is no phase plan, `{N}` is `1`. Create directory `.working_items/{task}/phase-{N}/` if missing.
 
 **Always write fresh** `implementation_plan.md` and `tasks.md` into that phase folder. Do **not** overwrite or edit artifacts under other `phase-*` folders. If this phase folder already has incomplete work (resume mid-phase), keep existing files and continue; otherwise create new ones. If a parent project is attached, include `project:` and `step:` in `tasks.md` frontmatter.
 
