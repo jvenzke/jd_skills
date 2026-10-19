@@ -97,17 +97,17 @@ Cycle: resume notes → codebase research (web allowed) + `agent_notes.md` → a
 
 Artifacts: `.working_items/{project}/scope.md`, `architecture.md`, `agent_notes.md`, `adversarial.md`, `steps/`.
 
-## `/d-antigravity` (Last updated: 2026-09-25)
+## `/d-antigravity` (Last updated: 2026-10-16)
 
 Phased development when architecture and long-lived quality matter. Prefer over `/r-antigravity` for product code. Works with no `/scope-project` output.
 
-Cycle: research and blocking clarify → optional phase plan → implementation plan + `tasks.md` → **APPROVED** → implement (delegation optional) → main-agent verification → walkthrough. One phase per chat when a phase plan exists; never overwrite a completed `phase-{N}/`.
+Cycle: research and blocking clarify → optional phase plan → implementation plan + `tasks.md` → **APPROVED** → implement (delegation optional) → main-agent verification → walkthrough. One phase per chat when a phase plan exists; never overwrite a completed `phase-{N}/`. A phase plan is for multiple shippable behaviors, a migration or compatibility transition, or work that spans context windows.
 
-Optional project attach: only if the user links `scope.md` / `architecture.md` / a step file (or `tasks.md` already has `project:`). Treat the step as the request (follow its links to architecture and sibling steps); still write phase and implementation plans. Report tradeoffs to `scope.md` and dropped/deferred deepening to `architecture.md`; update the project tracker when the step finishes.
+Optional project attach: only if the user links `scope.md` / `architecture.md` / a step file (or `tasks.md` already has `project:`). Treat the step as the request (follow its links to architecture and sibling steps). The implementation plan links that step and `architecture.md` and records this phase’s diff, scope limits, and verification. Report tradeoffs to `scope.md` and dropped/deferred deepening to `architecture.md`; update the project tracker when the step finishes.
 
 Artifacts: `.working_items/{task}/phase_plan.md` (optional), `agent_notes.md`, and `.working_items/{task}/phase-{N}/{implementation_plan,tasks,walkthrough}.md`.
 
-Clarify is blocking: independent questions in one numbered pass with recommended options; do not plan while user decisions remain open. Deep-module rules apply: small interfaces, complexity behind the boundary, contract-first tests (no red/green ritual). Internal code trusts callers; new validation only at plan-named trust boundaries. Verification removes unplanned guards and formatting-only hunks, and stops if the diff excluding tests exceeds about 3× the planned size.
+Clarify is blocking: independent questions in one numbered pass with recommended options; do not plan while user decisions remain open. Implementation plans stay short. Agent-proposed deepening goes under **Refactor**, relates to the asked outcome, and stays within about 10–20% of the effort. Deep-module rules apply inside that approved slice. Internal code trusts callers; new validation only at trust boundaries named in **Scope limits**. Verification removes unplanned guards and formatting-only hunks. Expected diff is advisory.
 
 ## `/r-antigravity` (Last updated: 2026-09-25)
 

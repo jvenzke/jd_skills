@@ -84,7 +84,7 @@ Write `.working_items/{task}/implementation_plan.md` and `.working_items/{task}/
 
 Implementation-plan format:
 - Omit **RISKS** and **IMPORTANT** independently when empty; do not add `none` placeholders. Risks cover possible breaking changes caused by the work. Important covers other key, potentially non-obvious implications the user should know. If an item fits both, put it only under Risks.
-- Under **Proposed changes**, use a numbered list with short product-language headings and bullets beneath each. Mix file/function references with direct behavior descriptions as useful; neither style is required for every change. Use references only as labels for new or existing files/functions, with nested bullets describing expected changes. All headings and change notes use product language.
+- Write **Proposed changes** as the answer to "Walk me through how this fixes the issue step by step." Use numbered steps. Under each step, list the files or functions it touches as sub-bullets.
 
 #### Template `.working_items/{task}/implementation_plan.md`
 ```markdown
@@ -112,12 +112,10 @@ Implementation-plan format:
 
 ## Proposed changes
 
-1. **{short product-language change heading}**
-   - **{new or existing file/function reference, when useful}**
-     - {expected change in product language}
-   - {expected behavior change in product language}
-2. **{next short product-language change heading}**
-   - {expected behavior change in product language}
+1. **{step in how this fixes the issue}**
+   - {file or function}
+2. **{next step}**
+   - {file or function}
 
 ## Deep-module design (research load)
 
@@ -165,7 +163,7 @@ last_error: null
 ```
 
 ### 3. User review
-- Provide a highly concise summary of proposed changes **(maximum 3-4 bullets)** in chat, plus a relative link to `.working_items/{task}/implementation_plan.md`.
+- In chat, answer "Walk me through how this fixes the issue step by step." from **Proposed changes**. Show the steps and their related notes; leave out the file and function sub-bullets. End with a relative link to `.working_items/{task}/implementation_plan.md`.
 - Ask the user to reply with **APPROVED** to proceed. Repeat if revisions are requested.
 - **DO NOT** implement without explicit **APPROVED**. Once approved, set `approved: true` and `phase: implementation` in `tasks.md` frontmatter.
 
@@ -196,21 +194,18 @@ last_error: null
 ### 6. Review changes
 - Create `.working_items/{task}/walkthrough.md`.
 - Print the chat wrap-up in this order (do not use GitHub; only this implementation pass vs the recorded baseline, or the working tree if no baseline was stored):
-  1. **Change story.** 1–3 `###` headings named in product language (one independently judgeable behavior each), plus `### Residual` only when something is still unproven. Each heading body is 1–3 sentences: actor, situation, observable result, and any important must-not. Never include file paths, type/symbol names, SQL/table names, artifact names, or coverage jargon. Do not use HTML `<details>`.
+  1. **How this fixes the issue.** Answer "Walk me through how this fixes the issue step by step." for what landed.
   2. **Changed-path tree (chat only).** Nested tree of every path this pass changed, with `+adds` / `-deletes` per file and directory subtotals. Include generated files and lockfiles. Do not use GitHub.
   3. **Human verify.** Numbered steps. When How to run *is* the human check, make it step 1 (entrypoint, inputs, expected output). Include a relative link to `verify.sql` and/or `verify.py` when those files exist. Do not trigger the pipeline from the agent.
   4. Relative link to the walkthrough file.
-- Copy the same change-story headings into `walkthrough.md`. Automated smoke/results live in the walkthrough only. Path tree stays in chat.
+- Copy the same step-by-step answer into `walkthrough.md`. Automated smoke/results live in the walkthrough only. Path tree stays in chat.
 
 #### Walkthrough Template `.working_items/{task}/walkthrough.md`
 ```markdown
 # Walkthrough: {title}
 
-### {behavior in product language}
-{1–3 sentences: actor, situation, observable result, must-not. No paths, types, or SQL/table names.}
-
-### Residual
-{only if something is still unproven; otherwise omit this heading}
+### How this fixes the issue
+{same step-by-step answer as chat}
 
 ## User Review Required
 
