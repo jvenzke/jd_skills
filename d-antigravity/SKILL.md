@@ -12,7 +12,9 @@ disable-model-invocation: true
 # Antigravity workflow (development)
 
 Ship one approved vertical slice at a time with simple, stable interfaces that
-hide cohesive implementation complexity. All artifacts live under
+hide cohesive implementation complexity. The asked outcome takes the effort.
+Agent-proposed deepening must relate to that outcome, appear under **Refactor**,
+and stay within about 10–20% of the effort. All artifacts live under
 `.working_items/{task}/`. Follow **Tasks** in order.
 
 ## Artifact layout
@@ -68,7 +70,7 @@ Agent-facing code map. Paths/symbols/commands/one-line facts only. No plan dupli
 
 ## Design rules (priority order)
 
-A module is any file, class, object, package, service, or subsystem with a boundary. Apply in this order when they conflict:
+A module is any file, class, object, package, service, or subsystem with a boundary. Apply in this order when they conflict. Rules 1–6 shape the approved design. They do not authorize work outside the asked task. Agent-proposed deepening must relate to that task, appear in **Refactor**, be approved with the plan, and stay within about 10–20% of the effort. Deepening the user or an attached step already asked for is part of the asked outcome.
 
 1. **Reduce system complexity**: optimize for simpler callers, fewer concepts, and less coordination—not the smallest diff or fastest implementation. Lines that simplify no caller (guards, wrappers, reformatting, redundant tests) are complexity, not thoroughness.
 2. **Deep modules**: prefer small, intent-oriented interfaces that hide substantial cohesive implementation. Callers express intent without coordinating internal steps. Favor fewer, deeper modules over shallow wrappers, pass-through methods, fragmented helpers, or interfaces that mirror implementation details.
@@ -76,14 +78,19 @@ A module is any file, class, object, package, service, or subsystem with a bound
 4. **Prefer clear boundaries**: minimize coupling, information leakage, pass-through layers, and duplicated orchestration. Organize around responsibility and knowledge, not execution order.
 5. **Judge abstractions by caller complexity removed**, not by size or line count. For important or reshaped boundaries, consider alternative designs. Treat excessive coordination, awkward naming, or difficult-to-describe interfaces as signs the abstraction may be wrong.
 6. **Extend/reuse sound code**, but do not preserve shallow abstractions or misplaced responsibilities merely to minimize changes.
-7. **Keep the approved vertical slice**: larger changes are allowed when required to deepen a module or simplify its boundary; no unrelated cleanup or speculative generalization. New or reshaped public/module boundaries must be named in the approved plan; private implementation structure may evolve to realize that design. Preserve public behavior and compatibility unless the approved plan includes an interface migration.
-8. **Trust internal callers**: validate only at trust boundaries the plan names (user input, external I/O, warehouse rows, config). Inside the boundary, trust callers and the type system and let existing errors propagate. No new guards, wrappers, re-validation of already-checked data, or new exception types (e.g. `isinstance`, `None` checks, `try/except`) unless the plan names them.
+7. **Keep the approved vertical slice**: deliver the asked outcome. Related deepening belongs under **Proposed changes** → **Refactor** and is allowed only after **APPROVED**. Private restructuring happens only as that section names it, inside its named files or boundary. With no **Refactor** section, do not move complexity, remove paths, or redesign a boundary. Preserve public behavior and compatibility unless the approved plan includes an interface migration. No unrelated cleanup or speculative generalization.
+8. **Trust internal callers**: validate only at trust boundaries named in **Scope limits** (user input, external I/O, warehouse rows, config). Inside the boundary, trust callers and the type system and let existing errors propagate. No new guards, wrappers, re-validation of already-checked data, or new exception types (e.g. `isinstance`, `None` checks, `try/except`) beyond that.
 9. **Test restraint**: prefer high-signal contract tests over test volume; do not add tests merely to perform a red/green loop.
 10. **Comments explain what code cannot**: document non-obvious intent, invariants, or rationale; avoid comments that restate understandable code.
 
+## Diff hygiene
+
+- Validation follows design rule 8.
+- Match surrounding style. Only lines with a semantic change may differ from the recorded baseline. Run the repo formatter on a file only when that file was already formatter-clean at baseline (the format run must add no churn). Never run a whole-file or whole-repo formatter otherwise. No import reordering, quote-style, trailing-comma, or line-wrap edits on untouched lines.
+
 ## Tasks
 
-Plans are bullets, not paragraphs.
+Plans are bullets, not paragraphs. Keep each plan as short as it can be. Omit a section that adds nothing.
 
 **Trackers**
 - **TODO tool**: which *skill* step this chat is on (`1`, `2a`, `2b`, `2c`, `3`, `4`, `5`, `6`). Update it as you enter each step.
@@ -102,14 +109,14 @@ Plans are bullets, not paragraphs.
      1. Start from the linked **step** (or the next `- [ ]`/`- [o]` tracker step if only `scope.md` / `architecture.md` was named).
      2. Follow that step’s `## Related` links to `{project}/scope.md`, `{project}/architecture.md`, and sibling steps; also read `{project}/agent_notes.md`.
      3. If `architecture.md` is missing, create it from leftover `scope.md` `## Deep modules` / `## Quality backlog` (or `- none`) without a full rewrite — deepening and quality live on `architecture.md`.
-     4. Treat the **step** as the request. Honor the architecture slice and in-work deepening named for this step. Do not invent a different project. Do not explode the step into isolation-sized project-tracker tickets — granular checklists stay in this phase’s `tasks.md`.
+     4. Treat the **step** as the request. Honor the architecture slice and in-work deepening named for this step, and put that named deepening in **Refactor** as part of the asked outcome. Do not invent a different project. Do not explode the step into isolation-sized project-tracker tickets — granular checklists stay in this phase’s `tasks.md`.
      5. If creating a new task folder, `{task}` = `{project}--{step-stem}` (step filename without `.md`). Keep that slug if already set.
      6. Set that tracker line to `- [o]` if it was `- [ ]`.
      7. Trust on-disk `{project}/scope.md` and `architecture.md` over chat memory. On resume, include project tracker status in the chat summary.
 4. Read existing `.working_items/{task}/phase_plan.md` if the user linked/named it or the file exists. If it exists, resolve `{N}` with **Phase choice** before research, planning, or edits. Then read that phase’s `phase-{N}/implementation_plan.md` and `phase-{N}/tasks.md` if present, then `agent_notes.md`. If phase choice asked a question, stop this step until the user answers. If there is no phase plan, skip phase choice.
-5. **Research codebase** (only after `{N}` is resolved): Find relevant files, trace logical flows, and build a full understanding of the scope of changes, potential impacts, risks, and side-effects. Update `agent_notes.md` with durable paths/symbols/gotchas/commands not already in plans.
+5. **Research codebase** (only after `{N}` is resolved): Find the files and flows this task changes, and note impacts on that outcome. Update `agent_notes.md` with durable paths, symbols, gotchas, and commands not already in plans. Related deepening is a **Refactor** proposal, not extra implementation.
 6. **Establish baseline**: Record the current branch/base commit and any pre-existing dirty files before implementation. Preserve unrelated user changes.
-7. **Evaluate boundaries**: Identify the current public interface, complexity leaked to callers, duplicated orchestration, shallow wrappers, and invariants spread across modules. Determine which boundary should own that complexity.
+7. **Evaluate boundaries**: Identify the owning boundary and any related deepening worth proposing under **Refactor**. Evaluation is not approval to change that boundary.
 8. **Align**: Shared understanding of forks that would change outcomes (externally observable behavior, architecture/module boundaries, irreversible decisions, significant dependencies, substantial scope)—not a minimal interrogatory. If the codebase can answer, explore instead. For reversible implementation choices, pick the locally consistent option and note it in the plan.
    - Ask in chat. **Do not use the Q&A/AskQuestion tool.**
    - All **independent** questions in **one** message. Number (`1.`, `2.`, …). Options as indented `- a)`, `- b)`, … alphabetically; mark **(recommended)**. Users reply with ids (e.g. `1b 2a`).
@@ -166,21 +173,18 @@ Use the first matching row. When `phase_plan.md` existed at the start of this st
 | Else | `1` | **2c** (`phase-1/`). Still maintain `agent_notes.md`. |
 
 ### 2a. Develop a phase plan (optional)
-Create a phase plan when **any** of these apply:
-- Work contains multiple independently verifiable behaviors or slices, **or**
-- Work crosses multiple architectural/module boundaries, **or**
+Create a phase plan only when one of these applies:
+- Work contains multiple independently shippable behaviors, **or**
 - A migration or compatibility transition is required, **or**
-- A new module/package is required, **or**
-- It is unclear which existing code to extend, **or**
-- The work is likely to span multiple context windows or has materially different rollback/risk between parts.
+- The work is likely to span multiple context windows.
 
-Otherwise skip to **2c** (use `phase-1/`).
+A new module, several boundaries, or uncertainty about which code to extend does not by itself require a phase plan. Otherwise skip to **2c** (use `phase-1/`).
 
 #### Phase size limits
 - Each phase is one **vertical slice** that can ship and verify on its own.
 - Prefer a checklist of **≤5 implementation steps** per phase.
-- Scope a phase around one coherent module boundary. It may change many files when needed to move complexity behind that boundary and update its callers atomically.
-- Split work when it spans independent behaviors, boundaries, or risk/rollback units, not merely to satisfy a file-count limit.
+- Scope a phase around one coherent outcome. It may change the files that outcome needs.
+- Split a phase when it contains another independently shippable behavior, a separate migration or compatibility transition, or work that needs its own context window.
 - Phases must be vertical slices, not horizontal layers (e.g., "Add DB table" is bad; "Add 'Save Draft' button that writes to DB" is good).
 
 #### Template `.working_items/{task}/phase_plan.md`
@@ -208,7 +212,7 @@ After drafting the phase plan, proceed to **2b**.
 
 ### 2b. Phase plan chat summary
 If you wrote `phase_plan.md` in **2a**, do **2b**. Else go to **2c**.
-- Provide a highly concise, high-level summary of proposed phases **(maximum 3-4 bullets total)** in the chat, followed by a relative link to `.working_items/{task}/phase_plan.md`.
+- In the chat, answer: "Brief overview of how each phase fixes the issue." Then add a relative link to `.working_items/{task}/phase_plan.md`.
 - **Do not ask for APPROVED** here. The only approval gate is step **3**.
 - If the user requests phase-plan revisions, update the plan, then present **2b** again.
 - Then proceed to **2c**. Include the phase plan in the implementation-plan review at step 3.
@@ -220,79 +224,69 @@ Use `{N}` from **Phase choice**. If this chat just wrote `phase_plan.md` in **2a
 
 If a phase plan is being used, limit scope to phase `{N}` and change that phase’s `- [ ]` to `- [o]` in `phase_plan.md`.
 
+Keep the plan as short as it can be while still approving the diff. Product language. One line per item.
+
 Implementation-plan format:
-- Omit **RISKS** and **IMPORTANT** independently when empty; do not add `none` placeholders. Risks cover possible breaking changes caused by the work. Important covers other key, potentially non-obvious implications the user should know. If an item fits both, put it only under Risks.
-- Under **Proposed changes**, use a numbered list with short product-language headings and bullets beneath each. Mix file/function references with direct behavior descriptions as useful; neither style is required for every change. Use references only as labels for new or existing files/functions, with nested bullets describing expected changes. All headings and change notes use product language.
-- **Error handling / validation** under Deep-module design is the only authorization for new guards or validation. Default `none — trust callers; existing errors propagate`. Anything not named there is unplanned.
-- **Expected diff** estimates product-code size excluding tests: `~{lines} lines across {files} files`. Use `{lines}` and `{files}` here — `{N}` is the phase index.
+- **Expected diff** is advisory. It estimates product-code size excluding tests: `~{lines} lines across {files} files`. Use `{lines}` and `{files}` here — `{N}` is the phase index. Size does not stop the phase.
+- Omit **RISKS** and **IMPORTANT** independently when empty; do not add `none` placeholders. Risks cover possible breaking changes caused by the work. Important covers only non-obvious implications. If an item fits both, put it only under Risks. Behavior belongs under **Proposed changes**.
+- **Decisions from clarify**: when `phase_plan.md` or an attached parent step already records them, write `see phase plan` or `see {step}` instead of copying them.
+- **Proposed changes**: write the section as the answer to "Walk me through how this fixes the issue step by step." Use numbered steps. Under each step, list the files or functions it touches as sub-bullets. Cover only this phase, and name anything that is deferred.
+- **Refactor**: omit unless this phase includes deepening related to the task. Deepening the user or an attached step already asked for is part of the outcome. Agent-proposed deepening stays within about 10–20% of the effort. This section is the only approval for private restructuring. Name what moves behind the boundary, the files or boundary, and the caller simplification.
+- **Deep-module design**: three one-sentence bullets. **Scope limits** names what this phase will not change and any new trust-boundary validation. Default validation is `none — trust callers; existing errors propagate`. Anything not named there is unplanned.
+- **Verification**: existing coverage, new or extended cases, and manual checks. This is the only authorization for planned new or extended tests. Prefer the minimum cases that distinguish the approved public contracts. Prefer extending an existing case. If none are needed, write `none — reuse existing`. Test bans live in **4** Implementation.
+- When a parent project is attached, link the approved step file and `architecture.md`. Do not restate their architecture or decisions. Keep **Proposed changes** (including **Refactor** when this phase deepens), the **Scope limits** bullet, **Expected diff**, and **Verification**. Omit the other sections unless this phase adds a decision the step does not contain.
+- **Human verify file**: name `none`, `verify.sql`, `verify.py`, or both, and what it would assert. Step **5** writes the script.
 
 #### Template `.working_items/{task}/phase-{N}/implementation_plan.md`
 ```markdown
 # Implementation Plan: {title} (Phase {N})
 
-{one sentence summarizing what should be done, in product language; no paths, symbols, or implementation details}
-
-**Expected diff**: ~{lines} lines across {files} files (excluding tests)
-
 ## Problem statement
 
-- {1–3 bullets highlighting the ask: the need or requested outcome, in product language; no paths, symbols, or implementation details}
+{one sentence: the need, in product language}
+
+**Expected diff** (advisory): ~{lines} lines across {files} files (excluding tests)
 
 ## User Review Required
 
 ### RISKS
 
-1. {possible breaking change caused by this work — terse; omit this section when none}
+1. {possible breaking change — omit this section when none}
 
 ### IMPORTANT
 
-1. {key implication the user should be aware of that may not be obvious — terse; omit this section when none}
+1. {non-obvious implication — omit this section when none}
 
 ### Decisions from clarify
 
-- {D1, D2, ... from phase plan, or resolved decision if no phase plan}
+- {`see phase plan` / `see {step}` / one brief decision}
 
 ## Proposed changes
 
-1. **{short product-language change heading}**
-   - **{new or existing file/function reference, when useful}**
-     - {expected change in product language}
-   - {expected behavior change in product language}
-2. **{next short product-language change heading}**
-   - {expected behavior change in product language}
+1. **{step in how this fixes the issue}**
+   - {file or function}
+2. **{next step}**
+   - {file or function}
+
+### Refactor
+
+{omit this whole subsection unless this phase includes related deepening}
+
+1. **{what moves behind the boundary}** — {caller simplification; files or boundary}
 
 ## Deep-module design
 
-- **System context**: {owning boundary and its role in the system; who calls it, at a high level; what this slice does not own. One sentence default, two max. No file tree. Same sentence as the Step 3 chat line.}
-- **Interface**: {small public surface callers will use}
-- **Hidden complexity**: {sequencing, invariants, representation, errors, or dependencies moved behind it}
-- **Error handling / validation**: {named trust boundaries, or `none — trust callers; existing errors propagate`}
-- **Caller impact**: {coordination or concepts removed from callers}
-- **Boundary rationale**: {why this module should own the complexity}
+- **Boundary**: {owning boundary, who calls it, what this slice does not own}
+- **Complexity hidden**: {what moves behind the boundary, or `none`}
+- **Scope limits**: {what this phase will not change}. Validation: {named trust boundaries, or `none — trust callers; existing errors propagate`}
 
-## Verification plan
+## Verification
 
-Automated Verification is the **only** place that authorizes planned new or extended tests. Prefer the minimum number of cases that distinguish the approved public contracts and material edge conditions. Prefer extending an existing case over adding a new one. If no new public contract needs locking, write `none — reuse existing` under New/extended cases.
-
-### Automated Verification
-
-**Existing coverage to run**
-- {commands / suites / cases already covering this boundary — or `none`}
-
-**New/extended cases** (each must name the public contract; else `none — reuse existing`)
-- {extend|new}: {case} — locks: {public contract / observable behavior}
-- Ban: private-helper tests, call-count/mock interaction tests, duplicate cases for the same contract, tests whose sole job is to go red then green, snapshot/golden files unless named here
-
-**Test budget (planned)**
-- new: {N} | extended: {M} | reused only: {yes/no}
-
-### Manual Verification
-{numbered human steps to confirm landed behavior; OK as primary check for low-risk plumbing when New/extended is none}
-
-**Human verify file** (optional; in addition to unit tests)
-- {`none` | `verify.sql` | `verify.py` | both} — assert: {observable post-run result}
-- Write the file only when the new behavior is fully visible only after a pipeline, job, warehouse, or similar remote run that unit tests do not exercise. Skip for pure refactors, local UI, and in-process contracts already locked by tests unless a human still cannot see the result without a post-run check.
-- Plan names whether a file is expected and what it will assert. Write the actual script during Verification/Review from **landed** behavior (not a stub at plan time).
+- **Existing**: {commands / suites, or `none`}
+- **New/extended**: {`none — reuse existing`, or `extend|new`: {case} — locks: {public contract}}
+- **Test budget**: new: {N} | extended: {M} | reused only: {yes/no}
+- **Manual**: {human steps, or `none`}
+- **Human verify file**: {`none` | `verify.sql` | `verify.py` | both} — {observable result when a file is expected}
 ```
 
 #### Template `.working_items/{task}/phase-{N}/tasks.md`
@@ -324,8 +318,8 @@ After drafting `implementation_plan.md` and `tasks.md`, proceed to **3**.
 
 ### 3. User review
 The **only** APPROVED gate. Never treat 2b as approval.
-- In the chat, first a **System context** line (verbatim from the implementation plan’s Deep-module **System context** bullet): one sentence by default, two max. Name the owning boundary and its role so the user can tell what part of the system is changing; who calls it at a high level; what this slice does not own. No file tree. Always include it, even for thin wiring — still name the owning boundary.
-- Then a highly concise, high-level summary of proposed changes **(maximum 3-4 bullets total)**, followed by a relative link to `.working_items/{task}/phase-{N}/implementation_plan.md`.
+- In the chat, first the plan’s **Boundary** sentence, verbatim. It names the owning boundary, who calls it, and what this slice does not own. When a parent step already defines that boundary, one sentence on what this phase changes is enough.
+- Then answer "Walk me through how this fixes the issue step by step." from **Proposed changes**. Show the steps and their related notes; leave out the file and function sub-bullets. If the plan has a **Refactor** section, show it as a labeled step. End with a relative link to `.working_items/{task}/phase-{N}/implementation_plan.md`.
 - If a phase plan is being used and its frontmatter is still `approved: false`, include its relative link in the same review (one gate covers both).
 - Ask the user to reply with **APPROVED** to proceed. Repeat if revisions are requested.
 - If the user requests plan revisions before APPROVED, update the plan/`tasks.md` (and phase plan if needed), then present this review again.
@@ -333,8 +327,10 @@ The **only** APPROVED gate. Never treat 2b as approval.
 
 ### 4. Implementation
 - Implement via a **Contract-first verify** loop (not mandatory red/green per step).
+- Spend the effort on the asked outcome. Agent-proposed complexity reduction beyond that outcome may use at most 10–20% of the effort. Further improvement waits for a plan revision.
+- **Refactor**: Do this only when the approved plan has a **Refactor** section. Do only what that section names, inside its named files or boundary. With no **Refactor** section, do not move complexity, remove paths, or redesign a boundary.
 - **Delegation is optional**: Use the `Task` tool (subagent) when the work is self-contained, parallelizable, mechanically large, or delegation materially protects the main agent's context budget. Keep implementation in the main agent when success depends heavily on architectural context accumulated during research or the change is tightly coupled.
-- If delegating, copy the **subagent brief** below; fill `{task}` and `{N}`. Do not omit sections.
+- If delegating, copy the **subagent brief** below; fill `{task}` and `{N}`. Do not paste **Design rules**, **Diff hygiene**, or the `agent_notes.md` rules into the brief.
 
 #### Subagent brief (copy)
 ```
@@ -343,63 +339,39 @@ Implement the approved phase. Read these files first, in order:
 - .working_items/{task}/phase-{N}/tasks.md
 - .working_items/{task}/agent_notes.md
 
-Stay within the approved plan’s scope. Do not start later phases. Do not introduce a new public/module boundary, dependency, externally visible concept, or major abstraction unless the plan names it. Private implementation structure may evolve when needed to realize the approved design without widening scope.
+Follow Design rules, Diff hygiene, and the agent_notes.md rules in the d-antigravity skill.
 
-Follow the approved plan’s Automated Verification for planned tests. Do not invent new behavioral requirements. If implementation exposes a concrete regression in an already-approved public contract, a focused new/extended regression case is allowed; record it under ## Discoveries and report it as a verification-plan delta. Stop for re-approval only if the case changes the approved behavior, architecture, or scope.
+Stay within the approved plan. Do not start later phases. Do not add a public or module boundary, dependency, or concept the plan does not name. Private restructuring only as the plan’s Refactor section names it, inside that section’s files or boundary. If there is no Refactor section, do not refactor. Deliver the asked outcome. Agent-proposed improvement beyond that outcome may use at most 10–20% of the effort.
 
-As each checklist step completes, change `- [ ]` to `- [x]` in .working_items/{task}/phase-{N}/tasks.md. Update agent_notes.md in-section when durable map knowledge is learned; check the notes checklist item when done (or when intentionally confirming no new durable knowledge). Do not rewrite agent_notes.md in full.
+Follow the plan’s Verification for tests. Do not invent behavioral requirements. If implementation exposes a concrete regression in an already-approved public contract, a focused new or extended regression case is allowed; record it under ## Discoveries and report it as a verification-plan delta. Stop for re-approval only if the case changes the approved behavior, architecture, or scope.
+
+As each checklist step completes, change `- [ ]` to `- [x]` in .working_items/{task}/phase-{N}/tasks.md. Update agent_notes.md in the relevant section when durable map knowledge is learned; check the notes checklist item when done. Do not rewrite agent_notes.md in full.
 
 Return a clean summary of changes, commands run, discoveries, and Test budget (new: N | extended: M | reused only: yes/no).
-
-## Design rules (priority order)
-A module is any file, class, object, package, service, or subsystem with a boundary. Apply in this order when they conflict:
-1. Reduce system complexity: optimize for simpler callers, fewer concepts, and less coordination—not the smallest diff or fastest implementation. Lines that simplify no caller (guards, wrappers, reformatting, redundant tests) are complexity, not thoroughness.
-2. Deep modules: prefer small, intent-oriented interfaces that hide substantial cohesive implementation. Callers express intent without coordinating internal steps. Favor fewer, deeper modules over shallow wrappers, pass-through methods, fragmented helpers, or interfaces that mirror implementation details.
-3. Push complexity downward: keep invariants, sequencing, representation, policy, and special cases behind the module that owns them. Owning error handling means the module absorbs or surfaces errors that already arise there — not adding new guards. Co-locate state, policy, invariants, and related complexity when that reduces knowledge shared across modules. Prefer eliminating invalid states and special cases over repeatedly exposing them.
-4. Prefer clear boundaries: minimize coupling, information leakage, pass-through layers, and duplicated orchestration. Organize around responsibility and knowledge, not execution order.
-5. Judge abstractions by caller complexity removed, not by size or line count. For important or reshaped boundaries, consider alternative designs. Treat excessive coordination, awkward naming, or difficult-to-describe interfaces as signs the abstraction may be wrong.
-6. Extend/reuse sound code, but do not preserve shallow abstractions or misplaced responsibilities merely to minimize changes.
-7. Keep the approved vertical slice: larger changes are allowed when required to deepen a module or simplify its boundary; no unrelated cleanup or speculative generalization. New or reshaped public/module boundaries must be named in the approved plan; private implementation structure may evolve to realize that design. Preserve public behavior and compatibility unless the approved plan includes an interface migration.
-8. Trust internal callers: validate only at trust boundaries the plan names (user input, external I/O, warehouse rows, config). Inside the boundary, trust callers and the type system and let existing errors propagate. No new guards, wrappers, re-validation of already-checked data, or new exception types (e.g. `isinstance`, `None` checks, `try/except`) unless the plan names them.
-9. Test restraint: prefer high-signal contract tests over test volume; do not add tests merely to perform a red/green loop.
-10. Comments explain what code cannot: document non-obvious intent, invariants, or rationale; avoid comments that restate understandable code.
-
-## Diff hygiene
-- New validation only where the plan’s **Error handling / validation** bullet names a trust boundary. No new guards, wrappers, re-validation, or exception types beyond that bullet.
-- Match surrounding style. Only lines with a semantic change may differ from the recorded baseline. Run the repo formatter on a file only when that file was already formatter-clean at baseline (the format run must add no churn). Never run a whole-file or whole-repo formatter otherwise. No import reordering, quote-style, trailing-comma, or line-wrap edits on untouched lines.
-
-## agent_notes.md rules
-- Purpose: durable code map only (paths/symbols/commands/one-line facts). Not a second plan or walkthrough.
-- Write: edit the relevant section in place; never rewrite the whole file.
-- Banned: plan/walkthrough duplication; user-facing summaries; approval status; test pass/fail narratives; phase changelogs; speculative TODOs / design debate.
-- Prune toward ≤~30 bullets; keep all five section headers even when empty.
 ```
 
 - Follow **Contract-first verify** whether implementation is performed by the main agent or a subagent:
-  - **Default**: Implement the approved change, then run **Existing coverage to run**. No new test required for refactors, wiring, or plumbing.
-  - **When New/extended cases lists a case**: light red→green only for that **net-new or extended public contract** — write/extend the listed case against observable boundary behavior, confirm it fails for the right reason (new) or asserts the new contract (extend), then make the smallest coherent change that passes while following the approved boundary design.
-  - **When New/extended is `none — reuse existing`**: do not add planned tests; implement and run existing coverage (plus Manual Verification if listed). A focused regression test is still allowed under the discovered-regression rule above.
-  - **Refactor**: Move complexity inward, simplify callers, remove obsolete shallow paths, and keep the public interface narrow; keep authorized tests green.
+  - **Default**: Implement the approved change, then run **Existing**. No new test is required for wiring or plumbing.
+  - **When New/extended lists a case**: light red→green only for that **net-new or extended public contract** — write or extend the listed case against observable boundary behavior, confirm it fails for the right reason (new) or asserts the new contract (extend), then make the smallest coherent change that passes while following the approved boundary design.
+  - **When New/extended is `none — reuse existing`**: do not add planned tests; implement and run existing coverage (plus **Manual** when listed). A focused regression test is still allowed under the discovered-regression rule above.
   - **Ban**: tests for private helpers, call counts, mock interaction shape, duplicates of the same contract, or any test whose sole purpose is to satisfy a red/green ritual.
-- **Discoveries**: Record only material implementation discoveries in `tasks.md` — plan adjustments, newly discovered invariants, verification deltas, or unexpected scope. Adapt autonomously to local/reversible discoveries. Pause for user guidance if a discovery changes public behavior, an approved architecture/module boundary, migration strategy, significant dependency, or substantial scope.
+- **Discoveries**: Record material implementation discoveries in `tasks.md` — plan adjustments, newly discovered invariants, verification deltas, or unexpected scope. A local complexity reduction that relates to the task may be done inside the 10–20% budget for agent-proposed improvement. Pause for user guidance before private restructuring, a new or reshaped boundary, a migration change, a significant dependency, a public-behavior change, or other work the plan does not name.
 - **Project report-back (optional)**: If a parent project is attached, write material tradeoffs and work pushed out of this step onto `{project}/scope.md` (`## Tradeoffs / push-outs`, `## Later`, later tracker steps / new last step). If deepening or quality work was dropped or deferred, patch `{project}/architecture.md` (`## Deep modules`, `## Quality backlog`, `## Edge cases` as needed; create the file from leftover scope headings if missing). Prefer deferring widening work over expanding this step. Pause if that changes approved project outcomes, owning boundaries, or drops/replaces a step. If no parent is attached, skip.
-- **Trust internal callers** (design rule 8): new validation only at trust boundaries named in the plan’s **Error handling / validation** bullet. Otherwise trust callers and let existing errors propagate. No new guards, wrappers, re-validation, or exception types (e.g. `isinstance`, `None` checks, `try/except`) beyond that bullet.
-- **Formatting**: match surrounding style. Only lines with a semantic change may differ from the recorded baseline. Run the repo formatter on a file only when that file was already formatter-clean at baseline (the format run must add no churn). Never run a whole-file or whole-repo formatter otherwise. No import reordering, quote-style, trailing-comma, or line-wrap edits on untouched lines. Avoid placeholder code.
+- Follow design rule 8 and **Diff hygiene**. Avoid placeholder code.
 
 ### 5. Verification
 - **Main agent** owns verification and review artifacts (not the implementation subagent).
 - Update `phase: verification` in `phase-{N}/tasks.md`.
-- Execute all automated verification checks from the approved plan (Existing coverage + any listed New/extended cases) plus any focused regression case allowed and recorded under `## Discoveries`.
-- Confirm Test budget matches the plan’s **Test budget (planned)** plus any recorded regression delta (`new: N | extended: M | reused only: yes/no`).
+- Execute all automated verification checks from the approved plan (**Existing** plus any listed **New/extended** cases) plus any focused regression case allowed and recorded under `## Discoveries`.
+- Confirm the result matches the plan’s **Test budget** plus any recorded regression delta (`new: N | extended: M | reused only: yes/no`).
 - **Soft warn (do not block)**: if tests were added beyond the approved Verification plan and were not a recorded regression delta, note them in the walkthrough and prefer removing or folding into an amended plan next time — still allow phase completion if checks pass.
-- **Human verify file**: If Manual Verification named `verify.sql` and/or `verify.py` (or landed behavior now requires one), write it under `phase-{N}/` from landed behavior. One file matching how a human inspects the result: SQL when the proof is warehouse rows/state; Python when the proof is API/files/logs/local artifacts. Both only if those proofs are independent. Names must be exactly `verify.sql` and/or `verify.py`. Script is read-only checks with comments stating expected rows/shape/invariants; exit non-zero or print a clear fail. Do not mutate data or trigger the pipeline from the script. Do **not** run warehouse/pipeline verify scripts (do not substitute Snowflake MCP). Local unit tests still run here as today. If not applicable, write `none` in the walkthrough and omit the file.
-- Verify callers use the intended simple interface and do not depend on newly private implementation details.
-- Verify the refactor removed obsolete paths and did not leave duplicate orchestration across the old and new boundaries.
-- **Diff-to-plan check**: Review the final git diff against the recorded baseline. Confirm changed files and behavior match the approved vertical slice, unrelated user changes remain intact, and no unplanned public/module boundary or dependency was introduced.
-- **Unplanned validation (hard)**: If the diff adds guards, wrappers, re-validation, or exception types not named in **Error handling / validation**, remove them before the phase can complete. If one is actually required, stop for re-approval instead of keeping it. Do not count that stop as a repair attempt.
+- **Human verify file**: If the plan names `verify.sql` and/or `verify.py` (or landed behavior now requires one), write it under `phase-{N}/` from landed behavior. One file matching how a human inspects the result: SQL when the proof is warehouse rows/state; Python when the proof is API/files/logs/local artifacts. Both only if those proofs are independent. Names must be exactly `verify.sql` and/or `verify.py`. Script is read-only checks with comments stating expected rows/shape/invariants; exit non-zero or print a clear fail. Do not mutate data or trigger the pipeline from the script. Do **not** run warehouse/pipeline verify scripts (do not substitute Snowflake MCP). Local unit tests still run here as today. If not applicable, write `none` in the walkthrough and omit the file.
+- When the plan has a **Refactor** section, verify callers use the interface that section names and that the obsolete paths it names are gone. With no **Refactor** section, do not require path removal or boundary consolidation.
+- **Diff-to-plan check**: Review the final git diff against the recorded baseline. Confirm changed files and behavior match the approved vertical slice, unrelated user changes remain intact, and no unplanned public or module boundary, dependency, or private restructuring was introduced.
+- **Unplanned validation (hard)**: If the diff adds guards, wrappers, re-validation, or exception types not named in **Scope limits**, remove them before the phase can complete. If one is actually required, stop for re-approval instead of keeping it. Do not count that stop as a repair attempt.
 - **Formatting-noise check (hard)**: Compare `git diff` to `git diff -w --ignore-blank-lines` against the recorded baseline. Revert any hunk that disappears under `-w`, and any hunk whose only change is quotes, import order, wrapping, or trailing commas, before the phase can complete.
-- **Expected-diff check (hard)**: If the plan has an **Expected diff** and the actual diff excluding tests exceeds about 3× that size, stop and report planned vs actual and what the extra lines are. Do not complete the phase. Do not count this stop as a repair attempt. Skip this check when the plan has no **Expected diff** line.
-- When the phase completes, list removed unplanned validation and reverted formatting-only hunks on the walkthrough **Extras beyond plan** line.
+- **Expected-diff check (advisory)**: If the plan has an **Expected diff** and the actual product diff excluding tests is materially larger, report planned vs actual and what the extra lines are in the walkthrough. Size alone does not stop the phase.
+- When the phase completes, list removed unplanned validation, reverted formatting-only hunks, and the advisory size note on the walkthrough **Extras beyond plan** line.
 - **agent_notes hard check**: Re-read `.working_items/{task}/agent_notes.md`. Confirm it reflects this phase’s durable map/gotchas (prune superseded bullets; soft cap ~30). Ensure the `tasks.md` notes checkbox is checked. If there was no new durable knowledge, checking the box alone is enough — do **not** add meta status lines into `agent_notes.md`. Do **not** mark the phase complete until this check passes. If a parent project is attached, also patch `{project}/agent_notes.md` in-section for durable facts that outlive this step (same rules; no full-file rewrite).
 - If checks fail: increment `verification_attempts`, classify the failure (`environment`, `existing baseline`, `implementation defect`, `verification defect`, or `plan invalidated`), and record the concise error/classification in `last_error` in `phase-{N}/tasks.md` frontmatter. Apply fixes and re-run when the failure is within the approved scope.
 - If the same material failure class remains unresolved after **3 repair attempts**, halt and report logs. Halt earlier if resolution requires changing an approved behavioral/architectural decision or substantial scope. Do not treat unrelated sequential failures (e.g. compile, then lint) as the same stuck loop.
@@ -410,13 +382,12 @@ A module is any file, class, object, package, service, or subsystem with a bound
 ### 6. Review changes
 - **Main agent** creates `.working_items/{task}/phase-{N}/walkthrough.md` (new file for this phase; never overwrite another phase’s walkthrough).
 - Print the chat wrap-up in this order (do not use GitHub; only this implementation pass vs the recorded baseline):
-  1. **Change story.** 1–3 `###` headings named in product language (one independently judgeable behavior each), plus `### Residual` only when something is still unproven. Each heading body is 1–3 sentences: actor, situation, observable result, and any important must-not. Never include file paths, type/symbol names, SQL/table names, artifact names, or coverage jargon. Do not use HTML `<details>`. Omit unchanged behavior from earlier phases.
+  1. **How this fixes the issue.** Answer "Walk me through how this fixes the issue step by step." for what landed in this phase. Name anything that is deferred.
   2. **Changed-path tree (chat only).** Nested tree of every path this pass changed vs the recorded baseline, with `+adds` / `-deletes` per file and directory subtotals. Include generated files and lockfiles. Do not use GitHub or a full-PR diff.
-  3. **How we know it works.** 1–3 sentences, same bans as the change story: what was checked (contracts/tests in product language), not commands or file names. If tests were added beyond the approved plan and were not a recorded regression delta, add one short extras soft-warn sentence here (do not print command/budget otherwise).
-  4. **Human verify.** Numbered steps the user can run to confirm landed behavior after any required pipeline/job. Include a relative link to `verify.sql` and/or `verify.py` when those files exist. Do not trigger the pipeline from the agent.
-  5. Relative link to the walkthrough file.
-- Do not print System context, Summary of Changes, Code Overview, or test-budget/commands in chat.
-- Copy the same change-story headings into `walkthrough.md`. Automated commands, contracts, test budget, and extras live in the walkthrough only. Path tree and **How we know it works** stay in chat; do not duplicate them in the walkthrough.
+  3. **Human verify.** Numbered steps the user can run to confirm landed behavior after any required pipeline/job. Include a relative link to `verify.sql` and/or `verify.py` when those files exist. Do not trigger the pipeline from the agent.
+  4. Relative link to the walkthrough file.
+- Do not print Boundary, Summary of Changes, Code Overview, or test-budget/commands in chat.
+- Copy the same step-by-step answer into `walkthrough.md`. Automated commands, contracts, test budget, and extras live in the walkthrough only. The path tree stays in chat.
 - **Next phase (new chat)**: If `phase_plan.md` has remaining `- [ ]` phases, end with a short prompt to start a **new chat** for the next phase, and include a relative link to `.working_items/{task}/phase_plan.md` (and the next phase title). Do **not** implement the next phase in this chat — the next chat must create a new `phase-{N+1}/` with its own plan, tasks, and walkthrough.
 - **Next project step (new chat)**: If a parent project is attached, this step is `- [x]`, and `scope.md` has later `- [ ]` steps, also prompt a **new chat** with `/d-antigravity` and a relative link to the next step file. Do not start that step here.
 
@@ -424,18 +395,15 @@ A module is any file, class, object, package, service, or subsystem with a bound
 ```markdown
 # Walkthrough: {title} (Phase {N})
 
-### {behavior in product language}
-{1–3 sentences: actor, situation, observable result, must-not. No paths, types, or SQL/table names.}
-
-### Residual
-{only if something is still unproven; otherwise omit this heading}
+### How this fixes the issue
+{same step-by-step answer as chat}
 
 ### Automated Verification
 - Commands/suites run: {terse}
 - Contracts covered: {terse}
 - Test budget: new: {N} | extended: {M} | reused only: {yes/no}
 - Regression deltas: {none | list}
-- Extras beyond plan (soft warn): {none | extra tests}. Removed before completion: {none | unplanned validation}. Reverted formatting-only hunks: {none | list}
+- Extras beyond plan (soft warn): {none | extra tests}. Removed before completion: {none | unplanned validation}. Reverted formatting-only hunks: {none | list}. Expected diff (advisory): {planned vs actual, or `within estimate`}
 
 ### Manual Verification
 1. {trigger pipeline/job or other human action — or `none`}
