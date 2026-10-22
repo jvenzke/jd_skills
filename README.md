@@ -47,6 +47,7 @@ fresh chat resumes by reading those files instead of re-deriving context.
 | --- | --- |
 | [`/research-first`](research-first/SKILL.md) | Same-chat prefix: web landscape + alignment before other work |
 | [`/scope-project`](scope-project/SKILL.md) | Multi-week project roadmap: migrations, dependencies, cross-step refactoring (no code) |
+| [`/light-antigravity`](light-antigravity/SKILL.md) | Production development through one flat, resumable implementation plan |
 | [`/d-antigravity`](d-antigravity/SKILL.md) | Real development: architecture, maintainable diffs, vertical slices |
 | [`/r-antigravity`](r-antigravity/SKILL.md) | Research spikes, throwaway tooling, analysis-backed prototypes |
 | [`/review-pr`](review-pr/SKILL.md) | GitHub pull request quality review |
@@ -62,7 +63,7 @@ Unused skills live in [`old/`](old/). Do not invoke them; they are archive only.
 
 [`/meta-review`](meta-review/SKILL.md) is the quality bar. Run it after a session that used a skill. [`/clean-skill`](clean-skill/SKILL.md) is for editing a skill file itself: flag implementing-agent problems, wait for option replies, then change files only after explicit approval. Log recurring misses in `meta-review/problems.md`.
 
-**One invokable skill per workflow.** Tightly coupled steps stay inside that skill. Do not split a pipeline across slash commands the user must chain in a later chat. [`/research-first`](research-first/SKILL.md) is an optional **same-chat prefix**: landscape + alignment, then continue the user's task (and any other skill attached in that message) from `.working_items/{task}/field_research.md`. Do not require a second invocation in a new chat. [`/scope-project`](scope-project/SKILL.md) is a complete planning skill; it only names `/d-antigravity` at handoff. [`/review-pr`](review-pr/SKILL.md) and [`/d-antigravity`](d-antigravity/SKILL.md) are the models for full workflows: numbered tasks, durable artifacts, resume from disk.
+**One invokable skill per workflow.** Tightly coupled steps stay inside that skill. Do not split a pipeline across slash commands the user must chain in a later chat. [`/research-first`](research-first/SKILL.md) is an optional **same-chat prefix**: landscape + alignment, then continue the user's task (and any other skill attached in that message) from `.working_items/{task}/field_research.md`. Do not require a second invocation in a new chat. [`/scope-project`](scope-project/SKILL.md) is a complete planning skill; it names `/d-antigravity` at handoff, while `/light-antigravity` can consume the same linked step when the user wants one whole-task plan. [`/review-pr`](review-pr/SKILL.md), [`/light-antigravity`](light-antigravity/SKILL.md), and [`/d-antigravity`](d-antigravity/SKILL.md) are the models for full workflows: numbered tasks, durable artifacts, resume from disk.
 
 **Progressive disclosure.** `SKILL.md` holds the contract: when to run, artifact layout, ordered rules, task list, gates, and resume. Load detail only for the active task (`review-pr/phases/…`, templates, scripts). Keep references one level deep. Prefer `SKILL.md` well under 500 lines.
 
@@ -70,7 +71,7 @@ Unused skills live in [`old/`](old/). Do not invoke them; they are archive only.
 
 **Artifact-first, not chat-memory.** Persist under `.working_items/` in the target repo. A later chat resumes by reading those files. Typical pieces:
 
-- `tasks.md` — checklist plus frontmatter (`approved`, current phase, SHAs)
+- `tasks.md` — checklist plus frontmatter (`approved`, lifecycle/phase state, SHAs)
 - `implementation_plan.md` / `phase_plan.md` — intent the user approved
 - `agent_notes.md` — agent-only code map (paths, symbols, gotchas); not a second plan
 - `walkthrough.md` — what shipped and how it was verified
@@ -79,13 +80,13 @@ Unused skills live in [`old/`](old/). Do not invoke them; they are archive only.
 
 **Gates.** Ask only blocking questions. Implementation, GitHub writes, skill-file edits, and similar irreversible work wait for an explicit **APPROVED** (or the skill's named equivalent — `/research-first` logs option-id replies in `field_research.md`; `/review-pr` submits when the user names `APPROVE` / `REQUEST_CHANGES` / `COMMENT`). The main agent owns verification, artifacts, and presentation. Subagents are optional, read-constrained, and do not approve or post.
 
-**Shape.** Short intent, numbered workflow, small rule set, named artifacts, explicit out-of-scope. [`/d-antigravity`](d-antigravity/SKILL.md) is the multi-step reference. [`/grill-me`](grill-me/SKILL.md) is the single-purpose reference. Be terse. Gate file moves, deletions, commits, and pushes behind user approval.
+**Shape.** Short intent, numbered workflow, small rule set, named artifacts, explicit out-of-scope. [`/light-antigravity`](light-antigravity/SKILL.md) and [`/d-antigravity`](d-antigravity/SKILL.md) are the development-workflow references. [`/grill-me`](grill-me/SKILL.md) is the single-purpose reference. Be terse. Gate file moves, deletions, commits, and pushes behind user approval.
 
 Do not treat “one README step = one skill” as a rule. That produced the old split review and research pipelines now in `old/`.
 
 ## `/research-first` (Last updated: 2026-09-03)
 
-Optional same-chat prefix when field context matters. Thin local orientation → sourced web landscape (last ~2–3 years) → numbered alignment questions with recommended options → log answers → continue the original task. Follow `/d-antigravity` or `/r-antigravity` only if that skill is also in the chat.
+Optional same-chat prefix when field context matters. Thin local orientation → sourced web landscape (last ~2–3 years) → numbered alignment questions with recommended options → log answers → continue the original task. Follow `/light-antigravity`, `/d-antigravity`, or `/r-antigravity` only if that skill is also in the chat.
 
 Artifact: `.working_items/{task}/field_research.md` (Orientation, Landscape, Questions, Decisions). Resume from disk; refresh only if asked.
 
@@ -99,7 +100,7 @@ Artifacts: `.working_items/{project}/scope.md`, `architecture.md`, `agent_notes.
 
 ## `/d-antigravity` (Last updated: 2026-10-16)
 
-Phased development when architecture and long-lived quality matter. Prefer over `/r-antigravity` for product code. Works with no `/scope-project` output.
+Phased development when architecture and long-lived quality matter and the user wants independently approved vertical slices. Prefer `/light-antigravity` when the whole production task should share one resumable implementation plan, and `/r-antigravity` for research spikes. Works with no `/scope-project` output.
 
 Cycle: research and blocking clarify → optional phase plan → implementation plan + `tasks.md` → **APPROVED** → implement (delegation optional) → main-agent verification → walkthrough. One phase per chat when a phase plan exists; never overwrite a completed `phase-{N}/`. A phase plan is for multiple shippable behaviors, a migration or compatibility transition, or work that spans context windows.
 
@@ -109,13 +110,28 @@ Artifacts: `.working_items/{task}/phase_plan.md` (optional), `agent_notes.md`, a
 
 Clarify is blocking: independent questions in one numbered pass with recommended options; do not plan while user decisions remain open. Implementation plans stay short. Agent-proposed deepening goes under **Refactor**, relates to the asked outcome, and stays within about 10–20% of the effort. Deep-module rules apply inside that approved slice. Internal code trusts callers; new validation only at trust boundaries named in **Scope limits**. Verification removes unplanned guards and formatting-only hunks. Expected diff is advisory.
 
+## `/light-antigravity` (Last updated: 2026-10-21)
+
+Single-plan development for maintainable production code. It retains
+`/d-antigravity`'s deep-module rules, grill-style alignment, explicit
+**APPROVED** gate, contract-first implementation, scope enforcement, diff
+hygiene, hard verification checks, and walkthrough, but removes every phase
+concept.
+
+The whole task lives in flat artifacts under `.working_items/{task}/`:
+`implementation_plan.md`, `tasks.md`, `agent_notes.md`, and `walkthrough.md`.
+Every proposed-change step appears in `tasks.md`; larger tasks simply have more
+steps, and later chats resume the same approved plan from the first unchecked
+item. It can consume a linked `/scope-project` step. It does not create human
+`verify.sql` or `verify.py` files.
+
 ## `/r-antigravity` (Last updated: 2026-09-25)
 
 Spike-light cycle for research tools and throwaway prototypes. Same clarify → plan → **APPROVED** → implement → smoke verify → walkthrough shape, without phases or `agent_notes`.
 
 Artifacts: `.working_items/{task}/{implementation_plan,tasks,walkthrough}.md`. Runnable code stays in repo conventions (`src/`, notebooks, `scratch/{task}/`), not under `.working_items/`.
 
-Optimize for a simple researcher entrypoint and hidden plumbing. Implementation trusts internal callers and matches surrounding style. Prefer `/d-antigravity` once the work should live as maintained software.
+Optimize for a simple researcher entrypoint and hidden plumbing. Implementation trusts internal callers and matches surrounding style. Prefer `/light-antigravity` for maintained software managed as one whole-task plan, or `/d-antigravity` when independently approved vertical slices are useful.
 
 ## `/review-pr` (Last updated: 2026-09-28)
 
