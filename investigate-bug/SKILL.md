@@ -3,8 +3,8 @@ name: investigate-bug
 description: >-
   Read-only root-cause analysis from production logs against default-branch
   (prod) code. Classifies code/config bugs, observability gaps, and transient
-  infra, then either stops or emits a new-chat /d-antigravity prompt. Use when
-  the user invokes investigate-bug, pastes incident logs, or asks for a
+  infra, then either stops or emits a new-chat /light-antigravity prompt. Use
+  when the user invokes investigate-bug, pastes incident logs, or asks for a
   root cause before a fix.
 disable-model-invocation: true
 ---
@@ -12,7 +12,7 @@ disable-model-invocation: true
 # Investigate bug
 
 Determine **why** the logs happened against **prod-equivalent code**. Report in
-chat. Do not edit product code, add tests, or start `/d-antigravity` in this
+chat. Do not edit product code, add tests, or start `/light-antigravity` in this
 chat.
 
 ## Rules
@@ -136,10 +136,10 @@ code/telemetry/hardening follow-up.
 whose right next step is logging, retries, or hardening.
 
 Paste a fenced block the user can drop into a **new** chat. Do **not** run
-`/d-antigravity` here.
+`/light-antigravity` here.
 
 ```markdown
-/d-antigravity
+/light-antigravity
 
 Confirmed git ref for the incident: {branch/tag/sha}
 
